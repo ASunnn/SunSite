@@ -26,7 +26,7 @@ public class DataSourceConfiguration {
     private long maxWaitTime;
 
 
-    @Bean(name = "dataSource", destroyMethod = "close")
+    @Bean(name = "dataSource", destroyMethod = "")  //可能会导致连续关闭两次数据源
     public BasicDataSource createDataSource(){
         BasicDataSource dataSource = new BasicDataSource();
 
