@@ -10,10 +10,14 @@ import sunnn.sunsite.interceptor.VerifyInterceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * 统一异常处理
+ * @author ASun
+ */
 @Component
 public class GlobalExceptionResolver implements HandlerExceptionResolver {
 
-    private static Logger log = LoggerFactory.getLogger(VerifyInterceptor.class);
+    private static Logger log = LoggerFactory.getLogger(GlobalExceptionResolver.class);
 
     @Override
     public ModelAndView resolveException(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, Exception e) {

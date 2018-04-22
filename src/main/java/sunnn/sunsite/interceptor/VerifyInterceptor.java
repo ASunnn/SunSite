@@ -8,6 +8,10 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * 认证拦截器
+ * @author ASun
+ */
 public class VerifyInterceptor implements HandlerInterceptor {
 
     private static Logger log = LoggerFactory.getLogger(VerifyInterceptor.class);

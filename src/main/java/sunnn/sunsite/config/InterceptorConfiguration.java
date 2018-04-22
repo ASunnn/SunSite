@@ -7,6 +7,10 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistration
 import sunnn.sunsite.interceptor.RequestInterceptor;
 import sunnn.sunsite.interceptor.VerifyInterceptor;
 
+/**
+ * 拦截器配置
+ * @author ASun
+ */
 @Configuration
 public class InterceptorConfiguration  extends WebMvcConfigurerAdapter {
 

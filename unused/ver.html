@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Login</title>
+
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link rel="stylesheet" href="./static/css/bootstrap.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="./static/css/font-awesome.min.css">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="./static/css/ionicons.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="./static/css/AdminLTE.min.css">
+
+
+    <style type="text/css">
+     body{
+        background: url(./static/img/background.jpg) 0% 50% no-repeat;
+        background-size: 100% auto;
+    }
+
+
+    @media screen and (max-width: 768px){
+      body{
+
+        background: url(./static/img/background.jpg) 0% 0% no-repeat;
+        background-size: 140% auto;
+      }
+    }
+
+    </style>
+</head>
+
+<body>
+    <div class="login-box">
+        <div class="login-logo">
+            <a href="#" style="color:#fff"><b>Spi</b>der</a>
+        </div>
+        <!-- /.login-logo -->
+        <div class="login-box-body">
+            <p class="login-box-msg">登录</p>
+
+                <div class="form-group ">
+                  <label class="control-label" for="password"></label>
+                  <input type="password" class="form-control" id="password" placeholder="口令">
+                </div>
+
+                <div class="row">
+                    <!-- /.col -->
+                    <div class="col-md-offset-4 col-xs-4 col-xs-offset-4">
+                        <button type="button" class="btn btn-primary btn-block btn-flat">Sign In</button>
+                    </div>
+                    <!-- /.col -->
+                </div>
+            <!-- /.login-box-body -->
+        </div>
+  </div>
+        <script src="./static/js/jquery.min.js"></script>
+        <!-- Bootstrap 3.3.7 -->
+        <script src="./static/js/bootstrap.min.js"></script>
+        <!-- AdminLTE App -->
+        <script src="./static/js/adminlte.min.js"></script>
+        <script type="text/javascript">
+            const label = $('label');
+            const input = $('#password');
+            const parent = label.parent();
+
+            $('button').click( function(){
+                const password = input.val();
+                parent.removeClass('has-success has-error');
+
+                if( password == ''){
+                    editMessage('error','口令不能为空!');
+                    return false;
+                }
+                
+                // 密码其实应该加密的
+                const data = {
+                    password:password
+                };
+                
+                $.ajax({
+                    url:'../login',
+                    type: "POST",
+                    data:JSON.stringify(data),
+                    beforeSend:function(){
+                        // this.url = "/DataCollectionSystem" + this.url;
+                        editMessage('success','验证中...');
+                    },
+                    contentType:"application/json",
+                    dataType:"JSON",
+                    timeout:5000
+                }).done(function(data){
+                    if(data.code == '10'){
+                        editMessage('success',"验证成功，1s后自动跳转!");
+                        setTimeout(function(){ window.location.href = './admin';},1000);
+                        
+                    }else{
+                        editMessage('error',"口令错误!");  
+                    }
+                }).fail( function(err){
+                    editMessage('error',"未知错误!");
+                    console.log(err);
+                });
+
+                return false;
+            })
+
+            function editMessage(status,mes){
+                parent.addClass(`has-${status}`);
+                if(status == "success"){
+                    $('label').html(`<i class="fa fa-check"></i> ${mes}`);
+                }else{
+                    $('label').html(`<i class="fa fa-warning"></i> ${mes}`);
+                }
+            }
+
+        </script>
+</body>
+
+</html>

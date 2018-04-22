@@ -12,15 +12,24 @@ import sunnn.sunsite.util.MD5s;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 
+/**
+ * 登录认证控制层
+ * @author ASun
+ */
 @Controller
 public class VerifyController {
 
     @Autowired
     private MeDao meDao;
 
+    /**
+     * 登录认证
+     * @param passCode  密码
+     * @param session   session
+     * @return  若认证成功，请求转发至主页，否则至错误页面
+     */
     @RequestMapping(value = "/verify", method = RequestMethod.GET)
     public String login(@RequestParam(value = "code", defaultValue = "")String passCode, HttpSession session) {
-
         if(passCode.equals(""))
             throw new RuntimeException();
         String md5Code = MD5s.getMD5(passCode);
@@ -35,9 +44,12 @@ public class VerifyController {
         return "redirect:/home";
     }
 
+    /**
+     * 拦截器拦截非法访问后，通过此controller转发至错误页面
+     * @return  错误页面
+     */
     @RequestMapping(value = "/interceptor", method = RequestMethod.GET)
-    public String interceptor(@RequestParam(value = "code", defaultValue = "") String passCode, HttpSession session) {
-
+    public String interceptor() {
         return "redirect:/error";
     }
 

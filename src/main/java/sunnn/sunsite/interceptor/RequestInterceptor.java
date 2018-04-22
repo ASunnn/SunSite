@@ -10,6 +10,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * 请求拦截器，用于日志记录
+ * @author ASun
+ */
 public class RequestInterceptor implements HandlerInterceptor {
 
     private static Logger log = LoggerFactory.getLogger(RequestInterceptor.class);

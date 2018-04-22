@@ -3,7 +3,7 @@
 <configuration>
 
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
-        展示格式 layout
+        <!--展示格式 layout-->
         <layout class="ch.qos.logback.classic.PatternLayout">
             <pattern>
                 <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level --- [%thread] %logger : %msg%n</pattern>

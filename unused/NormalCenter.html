@@ -1,0 +1,592 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>个人中心</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="~/Style/font-awesome.min.css">
+    <link rel="stylesheet" href="~/Style/ionicons.min.css">
+    <link rel="stylesheet" href="~/Style/AdminLTE.min.css">
+    <link rel="stylesheet" href="~/Style/skin-red.min.css">
+    <link rel="shortcut icon" href="~/Style/favicon.ico" type="image/x-icon">
+
+
+    <style>
+        .my-group {
+            margin-top: 20px;
+            border: 1px solid orange;
+            padding: 15px 5%;
+        }
+
+        .myDie {
+            display: none;
+        }
+    </style>
+
+</head>
+<body class="hold-transition skin-red sidebar-mini">
+    <div class="wrapper">
+        <!-- Main Header -->
+        <header class="main-header">
+            <!-- Logo -->
+            <a href="#" class="logo">
+                <!-- mini logo for sidebar mini 50x50 pixels -->
+                <span class="logo-mini "><i class="glyphicon glyphicon-home"></i></span>
+                <!-- logo for regular state and mobile devices -->
+                <span class="logo-lg">个人中心</span>
+            </a>
+            <!-- Header Navbar -->
+            <nav class="navbar navbar-static-top" role="navigation">
+                <!-- Sidebar toggle button-->
+                <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+                    <span class="sr-only">Toggle navigation</span>
+                </a>
+                @*<!-- Navbar Right Menu -->
+                <div class="navbar-custom-menu">
+                    <ul class="nav navbar-nav">
+                        <!-- Messages: style can be found in dropdown.less-->
+                        <li class="dropdown messages-menu">
+                            <!-- Menu toggle button -->
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <i class="fa fa-envelope-o"></i>
+                                <span class="label label-success">4</span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li class="header">你有4条消息</li>
+                                <li>
+                                    <!-- inner menu: contains the messages -->
+                                    <ul class="menu">
+                                        <li>
+                                            <!-- start message -->
+                                            <a href="#">
+                                                <div class="pull-left">
+                                                    <!-- User Image -->
+                                                    <img src="~/Image/user2-160x160.jpg" class="img-circle" alt="User Image">
+                                                </div>
+                                                <!-- Message title and timestamp -->
+                                                <h4>
+                                                    Support Team
+                                                    <small><i class="fa fa-clock-o"></i> 5 mins</small>
+                                                </h4>
+                                                <!-- The message -->
+                                                <p>Why not buy a new awesome theme?</p>
+                                            </a>
+                                        </li>
+                                        <!-- end message -->
+                                    </ul>
+                                    <!-- /.menu -->
+                                </li>
+                                <li class="footer"><a href="#">查看所有消息</a></li>
+                            </ul>
+                        </li>
+                        <!-- /.messages-menu -->
+                        <!-- Notifications Menu -->
+                        <li class="dropdown notifications-menu">
+                            <!-- Menu toggle button -->
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <i class="fa fa-bell-o"></i>
+                                <span class="label label-warning">10</span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li class="header">你有10条通知</li>
+                                <li>
+                                    <!-- Inner Menu: contains the notifications -->
+                                    <ul class="menu">
+                                        <li>
+                                            <!-- start notification -->
+                                            <a href="#">
+                                                <i class="fa fa-users text-aqua"></i> 5 new members joined today
+                                            </a>
+                                        </li>
+                                        <!-- end notification -->
+                                    </ul>
+                                </li>
+                                <li class="footer"><a href="#">查看所有通知</a></li>
+                            </ul>
+                        </li>
+
+
+                        <!-- Tasks Menu -->
+                        <li class="dropdown tasks-menu">
+                            <!-- Menu Toggle Button -->
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <i class="fa fa-flag-o"></i>
+                                <span class="label label-danger">9</span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li class="header">你有9个任务</li>
+                                <li>
+                                    <!-- Inner menu: contains the tasks -->
+                                    <ul class="menu">
+                                        <li>
+                                            <!-- Task item -->
+                                            <a href="#">
+                                                <!-- Task title and progress text -->
+                                                <h3>
+                                                    Design some buttons
+                                                    <small class="pull-right">20%</small>
+                                                </h3>
+                                                <!-- The progress bar -->
+                                                <div class="progress xs">
+                                                    <!-- Change the css width attribute to simulate progress -->
+                                                    <div class="progress-bar progress-bar-aqua" style="width: 20%" role="progressbar"
+                                                         aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">
+                                                        <span class="sr-only">20% Complete</span>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <!-- end task item -->
+                                    </ul>
+                                </li>
+                                <li class="footer">
+                                    <a href="#">查看所有任务</a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <!-- User Account Menu -->
+                        <li class="dropdown user user-menu">
+                            <!-- Menu Toggle Button -->
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <!-- The user image in the navbar-->
+                                <img src="~/Image/user2-160x160.jpg" class="user-image" alt="User Image">
+                                <!-- hidden-xs hides the username on small devices so only the image appears. -->
+                                <span class="hidden-xs">@ViewBag.people.Name</span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <!-- The user image in the menu -->
+                                <li class="user-header">
+                                    <img src="~/Image/user2-160x160.jpg" class="img-circle" alt="User Image">
+                                    <p>
+                                        爸爸 - 深藏功与名
+                                        <small>Member since Nov. 2012</small>
+                                    </p>
+                                </li>
+                                <!-- Menu Body -->
+                                <li class="user-body">
+                                    <div class="row">
+                                        <div class="col-xs-4 text-center">
+                                            <a href="#">Followers</a>
+                                        </div>
+                                        <div class="col-xs-4 text-center">
+                                            <a href="#">Sales</a>
+                                        </div>
+                                        <div class="col-xs-4 text-center">
+                                            <a href="#">Friends</a>
+                                        </div>
+                                    </div>
+                                    <!-- /.row -->
+                                </li>
+                                <!-- Menu Footer-->
+                                <li class="user-footer">
+                                    <div class="pull-left">
+                                        <a href="#" class="btn btn-default btn-flat">Profile</a>
+                                    </div>
+                                    <div class="pull-right">
+                                        <a href="#" class="btn btn-default btn-flat">Sign out</a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- Control Sidebar Toggle Button -->
+                        <li>
+                            <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
+                        </li>
+                    </ul>
+                </div>*@
+            </nav>
+        </header>
+        <!-- Left side column. contains the logo and sidebar -->
+        <aside class="main-sidebar">
+            <!-- sidebar: style can be found in sidebar.less -->
+            <section class="sidebar">
+
+                <!-- Sidebar user panel (optional) -->
+                <div class="user-panel">
+                    <div class="pull-left image">
+                        <img src="~/Image/user2-160x160.jpg" class="img-circle" alt="User Image">
+                    </div>
+                    <div class="pull-left info">
+                        <p>@ViewBag.people.Name</p>
+                        <!-- Status -->
+                        <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+                    </div>
+                </div>
+
+                <!-- search form (Optional) -->
+                <form action="#" method="get" class="sidebar-form">
+                    <div class="input-group">
+                        <input type="text" name="q" class="form-control" placeholder="Search...">
+                        <span class="input-group-btn">
+                            <button type="submit" name="search" id="search-btn" class="btn btn-flat">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </span>
+                    </div>
+                </form>
+                <!-- /.search form -->
+                <!-- Sidebar Menu -->
+                <ul class="sidebar-menu" data-widget="tree">
+                    <li class="header">HEADER</li>
+                    <!-- Optionally, you can add icons to the links -->
+                    <li name="personInfo"><a href="javascript:void(0)"><i class="fa fa-link"></i> <span>个人信息</span></a></li>
+                    <li name="downloadInfo"><a href="javascript:void(0)"><i class="fa fa-link"></i> <span>下载文件</span></a></li>
+                    <li><a href="/Home/Video"><i class="fa fa-link"></i> <span>视频会议</span></a></li>
+                    <li name="meetingManage"><a href="javascript:void(0)"><i class="fa fa-link"></i> <span>会议管理</span></a></li>
+
+                </ul>
+                <!-- /.sidebar-menu -->
+            </section>
+            <!-- /.sidebar -->
+        </aside>
+
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <!-- Main content -->
+            <!-- 个人信息 -->
+            <section class="content container myDie" data-name="personInfo">
+                <div class="col-sm-offset-3">
+                    <!-- 账户信息表 -->
+                    @*<form action="" method="get">*@
+                    <div class="col-sm-7 my-group">
+                        <h3>账户信息</h3>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i><label style="width:60px;text-align: center">姓名</label></span>
+                                <input id="username" type="text" class="form-control" placeholder="姓名" disabled aria-describedby="username" name="username" value=@ViewBag.people.Name>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-list-alt"></i><label style="width:60px;text-align: center">学号</label></span>
+                                <input id="usernumber" type="text" class="form-control" placeholder="学号" disabled aria-describedby="usernumber" value=@ViewBag.people.StuNumber>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-earphone"></i><label style="width:60px;text-align: center">密码</label></span>
+                                <input id="password" type="password" class="form-control" placeholder="密码" aria-describedby="password" value=@ViewBag.people.Password>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-envelope"></i><label style="width:60px;text-align: center">邮箱</label></span>
+                                <input id="email" type="text" class="form-control" placeholder="邮箱" aria-describedby="email" value=@ViewBag.people.Email>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-earphone"></i><label style="width:60px;text-align: center">联系方式</label></span>
+                                <input id="dzbConnect" type="text" class="form-control" placeholder="联系方式" aria-describedby="dzbConnect" value=@ViewBag.people.Phone>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-education"></i><label style="width:60px;text-align: center">年级</label></span>
+                                <input id="userGrade" type="text" class="form-control" placeholder="年级" disabled aria-describedby="userGrade" value=@ViewBag.people.Grade>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-education"></i><label style="width:60px;text-align: center">专业</label></span>
+                                <input id="userMajor" type="text" class="form-control" placeholder="专业" disabled aria-describedby="userMajor" value=@ViewBag.people.Major>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-book"></i><label style="width:60px;text-align: center">班级</label></span>
+                                <input id="userClass" type="text" class="form-control" placeholder="班级" disabled aria-describedby="userClass" value=@ViewBag.people.Class>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i><label style="width:60px;text-align: center">入党时间</label></span>
+                                <input id="dzbTime" type="text" class="form-control" placeholder="入党时间" disabled aria-describedby="dzbTime" value=@ViewBag.people.RDTime>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-cloud"></i><label style="width:60px;text-align: center">党支部全称</label></span>
+                                <input id="dzbName" type="text" class="form-control" placeholder="党支部名称" disabled aria-describedby="dzbName" value=@ViewBag.people.DZBName>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-heart"></i><label style="width:60px;text-align: center">身份</label></span>
+                                <input id="dzbIdentify" type="text" class="form-control" placeholder="身份" disabled aria-describedby="dzbIdentify" value=@ViewBag.people.Identities>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-heart"></i><label style="width:60px;text-align: center">职务</label></span>
+                                <input id="dzbRole" type="text" class="form-control" placeholder="职务" disabled aria-describedby="dzbRole" value=@ViewBag.people.Role>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-bullhorn"></i><label style="width:60px;text-align: center">入党联系人</label></span>
+                                <input id="dzbFriend" type="text" class="form-control" placeholder="入党联系人" disabled aria-describedby="dzbFriend" value=@ViewBag.people.RDJSR>
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-offset-5">
+                            <button id="savePersonData" class="btn btn-success" onclick="Save();">保存信息</button>
+                            <button id="Return" class="btn btn-success" style="display:none" onclick="document.location.href = '/Normal/NormalCenter'">返回</button>
+                        </div>
+                    </div>
+                    @*</form>*@
+
+                    <!-- /.个人信息表 -->
+                </div>
+            </section>
+            <!-- 下载文件 -->
+            <section class="content container myDie" data-name="downloadInfo">
+                <div class="box box-info">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">下载中心</h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="table-responsive" style="height:400px;">
+                            <table class="table no-margin">
+                                <thead>
+                                    <tr>
+                                        <th style="text-align:center">文件名</th>
+                                        <th style="text-align:center">时间</th>
+                                        <th style="text-align:center">下载量</th>
+                                        <th style="text-align:center">下载</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="FileBody">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="pageturn">
+                    <ul class="pager">
+                        <li>
+                            <label>共有&nbsp;<span id="fileNum" class="text-success">0</span>&nbsp;条记录</label>
+                        </li>
+                        <li>
+                            <a id="file-lnkBtnFirst" class="btn">首页</a>
+                        </li>
+                        <li>
+                            <a id="file-lnkBtnPrevious" class="btn index">上一页</a>
+                        </li>
+                        <li>
+                            <span class="label" id="file-currentRecordPage" style="color: #0d6aad">0</span>/<span class="label" id="file-totalRecordPage" style="color: #0d6aad">0</span>
+                        </li>
+                        <li>
+                            <a id="file-lnkBtnNext" class=" btn index">下一页</a>
+                        </li>
+                        <li>
+                            <a id="file-lnkBtnLast" class="btn index">尾页</a>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+            <!-- 会议管理 -->
+            <section class="content container myDie" data-name="meetingManage">
+                <div class="box box-info" style="background-color: ghostwhite">
+
+                    <div class="box-header with-border">
+                        <h3 class="box-title">会议留言记录</h3>
+                    </div>
+
+                    <form style="position:absolute; right:10%; top:1%" role="form">
+                        <div id="sel">
+                            <input id="searchContent">
+                            <select id="select">
+                                <option>全部</option>
+                                @foreach (string name in ViewData.Model)
+                                {
+                                    <option>@name</option>
+                                }
+                            </select>
+                            <button id="btnCheck" type="button" class="btn-info">查看</button>
+                        </div>
+                    </form>
+
+                    <div class="box-body">
+                        <div class="table-responsive" style="height:400px; ">
+                            <table class="table no-margin">
+                                <thead>
+                                    <tr>
+                                        <th class="text-danger" style="width:5%;text-align: center; ">序号</th>
+                                        <th class="text-success" style="width:15%;text-align: center; ">留言者</th>
+                                        <th class="text-info" style="width:60%;text-align: center">留言</th>
+                                        <th class="text-muted" style="width:20%;text-align: center">时间</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody id="normalRecordBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pageturn">
+                    <ul class="pager">
+                        <li>
+                            <label>共搜索到&nbsp;<span id="recordNum" class="text-success">0</span>&nbsp;条记录</label>
+                        </li>
+                        <li>
+                            <a id="lnkBtnFirst" class="btn">首页</a>
+                        </li>
+                        <li>
+                            <a id="lnkBtnPrevious" class="btn index">上一页</a>
+                        </li>
+                        <li>
+                            <span class="label" id="currentRecordPage" style="color: #0d6aad">1</span>/<span class="label" id="totalRecordPage" style="color: #0d6aad">3</span>
+                        </li>
+                        <li>
+                            <a id="lnkBtnNext" class=" btn index">下一页</a>
+                        </li>
+                        <li>
+                            <a id="lnkBtnLast" class="btn index">尾页</a>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+            <!-- /.content -->
+        </div>
+        <!-- /.content-wrapper -->
+        <!-- Main Footer -->
+        <footer class="main-footer">
+            <!-- To the right -->
+            <div class="pull-right hidden-xs">
+                党支部组织基层建设
+            </div>
+            <!-- Default to the left -->
+            <strong>Copyright &copy; 2017 <a href="#">党支部</a>.</strong> All rights reserved.
+        </footer>
+
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-dark">
+            <!-- Create the tabs -->
+            <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
+                <li class="active"><a href="#control-sidebar-home-tab" data-toggle="tab"><i class="fa fa-home"></i></a></li>
+                <li><a href="#control-sidebar-settings-tab" data-toggle="tab"><i class="fa fa-gears"></i></a></li>
+            </ul>
+            <!-- Tab panes -->
+            <div class="tab-content">
+                <!-- Home tab content -->
+                <div class="tab-pane active" id="control-sidebar-home-tab">
+                    <h3 class="control-sidebar-heading">Recent Activity</h3>
+                    <ul class="control-sidebar-menu">
+                        <li>
+                            <a href="javascript:;">
+                                <i class="menu-icon fa fa-birthday-cake bg-red"></i>
+
+                                <div class="menu-info">
+                                    <h4 class="control-sidebar-subheading">Langdon's Birthday</h4>
+
+                                    <p>Will be 23 on April 24th</p>
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
+                    <!-- /.control-sidebar-menu -->
+
+                    <h3 class="control-sidebar-heading">Tasks Progress</h3>
+                    <ul class="control-sidebar-menu">
+                        <li>
+                            <a href="javascript:;">
+                                <h4 class="control-sidebar-subheading">
+                                    Custom Template Design
+                                    <span class="pull-right-container">
+                                        <span class="label label-danger pull-right">70%</span>
+                                    </span>
+                                </h4>
+
+                                <div class="progress progress-xxs">
+                                    <div class="progress-bar progress-bar-danger" style="width: 70%"></div>
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
+                    <!-- /.control-sidebar-menu -->
+
+                </div>
+                <!-- /.tab-pane -->
+                <!-- Stats tab content -->
+                <div class="tab-pane" id="control-sidebar-stats-tab">Stats Tab Content</div>
+                <!-- /.tab-pane -->
+                <!-- Settings tab content -->
+                <div class="tab-pane" id="control-sidebar-settings-tab">
+                    <form method="post">
+                        <h3 class="control-sidebar-heading">General Settings</h3>
+
+                        <div class="form-group">
+                            <label class="control-sidebar-subheading">
+                                Report panel usage
+                                <input type="checkbox" class="pull-right" checked>
+                            </label>
+
+                            <p>
+                                Some information about this general settings option
+                            </p>
+                        </div>
+                        <!-- /.form-group -->
+                    </form>
+                </div>
+                <!-- /.tab-pane -->
+            </div>
+        </aside>
+        <!-- /.control-sidebar -->
+        <!-- Add the sidebar's background. This div must be placed
+        immediately after the control sidebar -->
+        <div class="control-sidebar-bg"></div>
+    </div>
+    <!-- ./wrapper -->
+    <script>
+        function Save() {
+            var password = document.getElementById("password");
+            var email = document.getElementById("email");
+            var dzbConnect = document.getElementById("dzbConnect");
+            var userMajor = document.getElementById("userMajor");
+
+            if (email.value != "" && dzbConnect.value != "") {
+                $.ajax({
+                    url: "/Home/SaveMessage",
+                    type: "POST",
+                    datatype: "json",
+                    data: {
+                        "password": password.value,
+                        "email": email.value,
+                        "dzbConnect": dzbConnect.value,
+                        "userMajor": userMajor.value
+                    },
+                    error: function (err) { alert("出错了") },
+                    success: function (result) {
+                        var data = $.parseJSON(result);
+                        $("#password").val(data["Password"]);
+                        $("#email").val(data["Email"]);
+                        $("#dzbConnect").val(data["Phone"]);
+                        $("#password").attr("disabled", "true");
+                        $("#email").attr("disabled", "true");
+                        $("#dzbConnect").attr("disabled", "true");
+                        var save = document.getElementById("savePersonData");
+                        var back = document.getElementById("Return");
+                        save.style.display = "none";
+                        back.style.display = "block";
+                    }
+                });
+            }
+            else {
+                alert("请完整填写信息");
+            }
+        }
+    </script>
+    <script src="~/Scripts/jquery-3.2.1.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="~/Scripts/adminlte.min.js"></script>
+    <script src="~/Scripts/userCenter.js"></script>
+    <script src="~/Scripts/normalMeetingManage.js"></script>
+    <script src="~/Scripts/NormalFileManager.js"></script>
+</body>
+</html>
