@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.query.Update;
 
 import java.util.List;
 
-public class MongoBaseImpl<T> implements MongoBase<T> {
+public abstract class MongoBaseImpl<T> implements MongoBase<T> {
 
     @Autowired
     private MongoTemplate mongoTemplate;
