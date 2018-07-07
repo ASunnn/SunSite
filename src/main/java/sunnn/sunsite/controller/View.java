@@ -16,7 +16,7 @@ public class View {
      */
     @GetMapping(value = "/hello")
     public String helloWorld(){
-        return "helloworld";
+        return "helloWorld";
     }
 
     /**

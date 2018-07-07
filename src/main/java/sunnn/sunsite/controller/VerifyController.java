@@ -33,10 +33,11 @@ public class VerifyController {
         if(passCode.equals(""))
             throw new RuntimeException();
         String md5Code = MD5s.getMD5(passCode);
+        System.out.println(md5Code);
 //        String realCode = meDao.selectMe().getPassCode();
         String realCode = meDao.findAll(Me.class).get(0).getPassCode();
         if(md5Code.equals(realCode)) {
-            session.setMaxInactiveInterval(60);
+            session.setMaxInactiveInterval(600);
             session.setAttribute("pass", System.currentTimeMillis());
         } else {
             return "redirect:/error";

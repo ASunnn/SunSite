@@ -29,15 +29,15 @@ public class MongoConfig {
     public MongoClient createMongoClient() throws Exception {
         ServerAddress serverAddress = new ServerAddress(host, port);
 
-        MongoClientOptionsFactoryBean clientOptionsFactory = new MongoClientOptionsFactoryBean();
-        clientOptionsFactory.setConnectTimeout(2);
-        clientOptionsFactory.setThreadsAllowedToBlockForConnectionMultiplier(4);
-        clientOptionsFactory.setConnectTimeout(20000);
-        clientOptionsFactory.setMaxWaitTime(10000);
+//        MongoClientOptionsFactoryBean clientOptionsFactory = new MongoClientOptionsFactoryBean();
+//        clientOptionsFactory.setConnectTimeout(2);
+//        clientOptionsFactory.setThreadsAllowedToBlockForConnectionMultiplier(4);
+//        clientOptionsFactory.setConnectTimeout(20000);
+//        clientOptionsFactory.setMaxWaitTime(10000);
+//
+//        MongoClientOptions clientOptions = clientOptionsFactory.getObject();
 
-        MongoClientOptions clientOptions = clientOptionsFactory.getObject();
-
-        return new MongoClient(serverAddress, clientOptions);
+        return new MongoClient(serverAddress);
     }
 
     @Bean
