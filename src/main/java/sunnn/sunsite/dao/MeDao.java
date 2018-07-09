@@ -1,12 +1,13 @@
 package sunnn.sunsite.dao;
 
+import org.springframework.stereotype.Repository;
 import sunnn.sunsite.entity.Me;
 
 /**
  * Me实体类的持久层
  * @author ASun
  */
-public interface MeDao extends MongoBase<Me> {
-
+@Repository
+public class MeDao extends MongoBase<Me> {
 
 }

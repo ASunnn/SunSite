@@ -10,7 +10,6 @@ import sunnn.sunsite.entity.Me;
 import sunnn.sunsite.util.MD5s;
 
 import javax.servlet.http.HttpSession;
-import java.util.List;
 
 /**
  * 登录认证控制层
@@ -19,8 +18,12 @@ import java.util.List;
 @Controller
 public class VerifyController {
 
+    private final MeDao meDao;
+
     @Autowired
-    private MeDao meDao;
+    public VerifyController(MeDao meDao) {
+        this.meDao = meDao;
+    }
 
     /**
      * 登录认证
@@ -32,10 +35,10 @@ public class VerifyController {
     public String login(@RequestParam(value = "code", defaultValue = "")String passCode, HttpSession session) {
         if(passCode.equals(""))
             throw new RuntimeException();
+
         String md5Code = MD5s.getMD5(passCode);
-        System.out.println(md5Code);
-//        String realCode = meDao.selectMe().getPassCode();
         String realCode = meDao.findAll(Me.class).get(0).getPassCode();
+
         if(md5Code.equals(realCode)) {
             session.setMaxInactiveInterval(600);
             session.setAttribute("pass", System.currentTimeMillis());

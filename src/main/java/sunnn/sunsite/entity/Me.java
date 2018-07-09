@@ -13,7 +13,7 @@ public class Me {
     /**
      * 验证密码
      */
-    @Field(value = "passcode")
+    @Field(value = "passCode")
     private String passCode;
 
     public Me(String passCode) {

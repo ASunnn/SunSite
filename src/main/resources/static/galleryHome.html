@@ -18,27 +18,46 @@
     </style>
     <script>
         function upload() {
-            var uploadArea = document.createElement("div");
-            uploadArea.setAttribute("id", "upload");
-             
-            var button = document.createElement("input");
-            button.setAttribute("type", "button");
-            button.setAttribute("valur", "upload");
+            var menu = document.getElementById("menu");
+            menu.style.display = "none";
 
-            uploadArea.appendChild(button);
+            var upload = document.getElementById("upload");
+            upload.style.display = "block";
+
+            var title = document.getElementById("titleText");
+            title.onclick = null;
         }
     </script>
-            
 </head>
+
 <body>
     <div id="title">
-        <h1 onclick="upload()"
+        <h1 id="titleText"
+            onclick="upload()"
             style="text-align:center;font-size:50px"
             >Gallery</h1>
     </div>
     <div id="menu">
         <h3 class="menu">Gallery</h3>
         <h3 class="menu">Books</h3>
+    </div>
+    <div id="upload" style="display: none">
+        <form action="/upload" method="post" enctype="multipart/form-data">
+            <!-- <label for="illustrator">illustrator</label>
+            <input type="text" id="illustrator" />
+            <br />
+            <label for="collection">collection</label>
+            <input type="text" id="collection" />
+            <br />
+            <label for="adultOnly">R18？</label>
+            <input type="text" id="adultOnly" />
+            <br />
+            <label for="type">type</label>
+            <input type="text" id="type" />
+            <br /> -->
+            <input type="file" name="file" id="file" size="50">
+            <input type="submit" value="sumbit!" accesskey="s">
+        </form>
     </div>
 </body>
 </html>
