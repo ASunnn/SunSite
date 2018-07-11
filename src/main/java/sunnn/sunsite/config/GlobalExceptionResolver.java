@@ -23,7 +23,6 @@ public class GlobalExceptionResolver implements HandlerExceptionResolver {
     public ModelAndView resolveException(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, Exception e) {
         e.printStackTrace();
         log.error("Enter GlobalExceptionResolver");
-        ModelAndView mv = new ModelAndView("error");
-        return mv;
+        return new ModelAndView("error");
     }
 }

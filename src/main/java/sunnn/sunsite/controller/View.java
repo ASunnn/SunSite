@@ -22,11 +22,11 @@ public class View {
     /**
      * 主页映射
      */
-    @RequestMapping("home")
+    @RequestMapping(value = "/home")
     public String home() {
         return "home";
     }
-
+    
 //    @RequestMapping("error")
 //    public String error() {
 //        return "error";

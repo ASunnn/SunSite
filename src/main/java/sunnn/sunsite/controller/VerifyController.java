@@ -33,6 +33,7 @@ public class VerifyController {
      */
     @RequestMapping(value = "/verify", method = RequestMethod.GET)
     public String login(@RequestParam(value = "code", defaultValue = "")String passCode, HttpSession session) {
+        //for test
         if(passCode.equals(""))
             throw new RuntimeException();
 
