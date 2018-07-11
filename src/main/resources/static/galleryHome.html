@@ -22,16 +22,23 @@
             var menu = document.getElementById("menu");
             menu.style.display = "none";
 
-            var upload = document.getElementById("upload");
-            upload.style.display = "block";
+            var uploadFile = document.getElementById("uploadFile");
+            uploadFile.style.display = "block";
 
             var title = document.getElementById("titleText");
             title.onclick = null;
         }
+        function uploadInfo() {
+            var uploadFile = document.getElementById("uploadFile");
+            uploadFile.style.display = "none";
+
+            var uploadInfo = document.getElementById("uploadInfo");
+            uploadInfo.style.display = "block";
+        }
     </script>
     <script type="text/javascript">
         $(function () {
-            $("#submit").click(function () {
+            $("#submitFile").click(function () {
                 var formData = new FormData($('#uploadForm')[0]);
                 $.ajax({
                     type: 'post',
@@ -41,7 +48,8 @@
                     processData: false, //用于对data参数进行序列化处理 这里必须false
                     contentType: false, //必须
                 }).success(function (data) {
-                    alert("okey");
+                    alert(data.msg);
+                    uploadInfo();
                 }).error(function () {
                     alert("> <");
                 });
@@ -62,30 +70,29 @@
         <h3 class="menu">Gallery</h3>
         <h3 class="menu">Books</h3>
     </div>
-    <div id="upload" style="display: none">
+    <div id="uploadFile" style="display: none">
         <form id="uploadForm" enctype="multipart/form-data">
             <input type="file" name="file" multiple="multiple"/>
-            <input id="submit" type="submit" value="sumbit!">
+            <input id="submitFile" type="submit" value="sumbit!">
+        </form>
+    </div>
+    <div id="uploadInfo" style="display: none">
+        <form action="/uploadInfo" method="post">
+             <label for="illustrator">illustrator</label>
+            <input type="text" id="illustrator" />
+            <br />
+            <label for="collection">collection</label>
+            <input type="text" id="collection" />
+            <br />
+            <label for="adultOnly">R18？</label>
+            <input type="text" id="adultOnly" />
+            <br />
+            <label for="type">type</label>
+            <input type="text" id="type" />
+            <br />
+            <input type="submit" value="sumbit!" accesskey="s">
         </form>
     </div>
 </body>
 </html>
 
-<!-- <div id="upload" style="display: none">
-    <form action="/upload" method="post" enctype="multipart/form-data">
-         <label for="illustrator">illustrator</label>
-        <input type="text" id="illustrator" />
-        <br />
-        <label for="collection">collection</label>
-        <input type="text" id="collection" />
-        <br />
-        <label for="adultOnly">R18？</label>
-        <input type="text" id="adultOnly" />
-        <br />
-        <label for="type">type</label>
-        <input type="text" id="type" />
-        <br />
-        <input type="file" name="file" id="file" size="50">
-        <input type="submit" value="sumbit!" accesskey="s">
-    </form>
-</div> -->

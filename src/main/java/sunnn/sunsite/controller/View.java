@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class View {
 
     /**
-     * HelloWorld页面映射
+     * HelloWorld页面
      */
     @GetMapping(value = "/hello")
     public String helloWorld(){
@@ -20,11 +20,19 @@ public class View {
     }
 
     /**
-     * 主页映射
+     * 主页
      */
     @RequestMapping(value = "/home")
     public String home() {
         return "home";
+    }
+
+    /**
+     * 画册主页
+     */
+    @RequestMapping(value = "/galleryHome")
+    public String galleryHome() {
+        return "galleryHome";
     }
     
 //    @RequestMapping("error")
