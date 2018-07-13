@@ -1,6 +1,6 @@
-package sunnn.sunsite.message.response;
+package sunnn.sunsite.dto.response;
 
-import sunnn.sunsite.message.StatusCode;
+import sunnn.sunsite.dto.StatusCode;
 
 public class BaseResponse {
 

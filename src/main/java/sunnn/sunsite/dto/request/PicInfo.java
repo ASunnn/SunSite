@@ -1,4 +1,4 @@
-package sunnn.sunsite.message.request;
+package sunnn.sunsite.dto.request;
 
 public class PicInfo {
 

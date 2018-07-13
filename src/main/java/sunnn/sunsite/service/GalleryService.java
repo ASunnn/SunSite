@@ -1,8 +1,8 @@
 package sunnn.sunsite.service;
 
 import org.springframework.web.multipart.MultipartFile;
-import sunnn.sunsite.message.StatusCode;
-import sunnn.sunsite.message.request.PicInfo;
+import sunnn.sunsite.dto.StatusCode;
+import sunnn.sunsite.dto.request.PicInfo;
 
 import javax.servlet.http.HttpSession;
 

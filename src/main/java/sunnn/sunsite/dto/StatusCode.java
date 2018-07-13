@@ -1,4 +1,4 @@
-package sunnn.sunsite.message;
+package sunnn.sunsite.dto;
 
 public enum StatusCode {
     OJBK(0),

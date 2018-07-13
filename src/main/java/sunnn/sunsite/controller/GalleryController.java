@@ -4,10 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import sunnn.sunsite.message.StatusCode;
-import sunnn.sunsite.message.request.PicInfo;
-import sunnn.sunsite.message.response.BaseResponse;
-import sunnn.sunsite.message.response.FileUploadResponse;
+import sunnn.sunsite.dto.StatusCode;
+import sunnn.sunsite.dto.request.PicInfo;
+import sunnn.sunsite.dto.response.BaseResponse;
+import sunnn.sunsite.dto.response.FileUploadResponse;
 import sunnn.sunsite.service.GalleryService;
 
 import javax.servlet.http.HttpSession;
