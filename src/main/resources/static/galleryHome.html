@@ -39,7 +39,7 @@
     <script>
         $(function () {
             $("#submitFile").click(function () {
-                var formData = new FormData($('#uploadForm')[0]);
+                var formData = new FormData($('#uploadFileForm')[0]);
                 $.ajax({
                     method: 'post',
                     url: "/upload",

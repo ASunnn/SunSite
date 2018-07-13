@@ -30,13 +30,14 @@ public class GalleryServiceImpl implements GalleryService {
     public StatusCode checkFile(MultipartFile file, HttpSession session) {
         if(file == null || file.isEmpty())
             return StatusCode.EMPTY_UPLOAD;
-
         if(pictureDao.findOne(file.getOriginalFilename()) != null)
             return StatusCode.DUPLICATED_FILENAME;
-
         //TODO 把图片放入缓存
         Cache cache = cacheManager.getCache("fileCache");
-        Element e = new Element(session, file);
+        System.out.println("put:");
+        System.out.println(session.getAttribute("pass"));
+        System.out.println(file.hashCode());
+        Element e = new Element(session.getAttribute("pass"), file);
         cache.put(e);
 
         return StatusCode.OJBK;
@@ -57,8 +58,13 @@ public class GalleryServiceImpl implements GalleryService {
     @Override
     public boolean saveUpload(HttpSession session) {
         Cache cache = cacheManager.getCache("fileCache");
-        Element e = cache.get(session);
+        System.out.println("get:");
+        System.out.println(cache.toString());
+        System.out.println(cache.hashCode());
+        Element e = cache.get(session.getAttribute("pass"));
         MultipartFile file = (MultipartFile) e.getObjectValue();
+        System.out.println(session.getAttribute("pass"));
+        System.out.println(file.hashCode());
         File dir = new File("D:\\" + file.getOriginalFilename());
         try {
             file.transferTo(dir);
