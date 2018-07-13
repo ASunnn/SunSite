@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
  * 图册实体类
  */
 @Document(collection = "gallery")
-public class GalleryPicture {
+public class Picture {
     @Id
     private String id;
 
@@ -43,12 +43,6 @@ public class GalleryPicture {
      */
     @DBRef
     private Collection collection;
-
-    /**
-     * ???
-     */
-    @Field(value = "adultOnly")
-    private boolean adultOnly;
 
     public String getId() {
         return id;
@@ -96,13 +90,5 @@ public class GalleryPicture {
 
     public void setCollection(Collection collection) {
         this.collection = collection;
-    }
-
-    public boolean isAdultOnly() {
-        return adultOnly;
-    }
-
-    public void setAdultOnly(boolean adultOnly) {
-        this.adultOnly = adultOnly;
     }
 }

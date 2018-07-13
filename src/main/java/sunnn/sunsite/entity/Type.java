@@ -19,14 +19,7 @@ public class Type {
     @Field(value = "name")
     private String name;
 
-    /**
-     * ???
-     */
-    @Field(value = "adultOnly")
-    private boolean adultOnly;
-
-    public Type(String name, boolean adultOnly) {
+    public Type(String name) {
         this.name = name;
-        this.adultOnly = adultOnly;
     }
 }

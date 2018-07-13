@@ -2,7 +2,11 @@ package sunnn.sunsite.message;
 
 public enum StatusCode {
     OJBK(0),
-    UPLOAD_ERROR(1 << 0);
+    EMPTY_UPLOAD(1 << 0),
+    DUPLICATED_FILENAME(1 << 1),
+    ILLEGAL_DATA(1 << 2);
+
+
 
     private int code;
 

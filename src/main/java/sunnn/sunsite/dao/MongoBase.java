@@ -17,7 +17,7 @@ import java.util.List;
 public abstract class MongoBase<T> {
 
     @Autowired
-    private MongoTemplate mongoTemplate;
+    protected MongoTemplate mongoTemplate;
 
     public long count(Query query,Class<T> entityClass) {
         return mongoTemplate.count(query,entityClass);
@@ -39,14 +39,12 @@ public abstract class MongoBase<T> {
         return mongoTemplate.findAll(entityClass);
     }
 
-    public void updateFirst(Query query, Update update, Class<T> entityClass) {
-        UpdateResult updateResult = mongoTemplate.updateFirst(query, update, entityClass);
-        System.out.println(updateResult.toString());
+    public UpdateResult updateFirst(Query query, Update update, Class<T> entityClass) {
+        return mongoTemplate.updateFirst(query, update, entityClass);
     }
 
-    public void updateMulti(Query query, Update update, Class<T> entityClass) {
-        UpdateResult updateResult = mongoTemplate.updateMulti(query, update, entityClass);
-        System.out.println(updateResult.toString());
+    public UpdateResult updateMulti(Query query, Update update, Class<T> entityClass) {
+        return mongoTemplate.updateMulti(query, update, entityClass);
     }
 
     public void remove(Query query, Class<T> entityClass) {

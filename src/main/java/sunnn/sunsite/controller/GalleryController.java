@@ -1,43 +1,52 @@
 package sunnn.sunsite.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import sunnn.sunsite.message.StatusCode;
 import sunnn.sunsite.message.request.PicInfo;
 import sunnn.sunsite.message.response.BaseResponse;
+import sunnn.sunsite.message.response.FileUploadResponse;
+import sunnn.sunsite.service.GalleryService;
 
-import java.io.File;
-import java.io.IOException;
+import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 
 @Controller
 public class GalleryController {
 
+    @Autowired
+    private GalleryService galleryService;
+
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     @ResponseBody
-    public BaseResponse upload(@RequestParam("file") MultipartFile[] files) {
+    public BaseResponse upload(@RequestParam("file") MultipartFile[] files, HttpSession session) {
                 //notice:RequestParam里的值需要与页面内的id一致
+        ArrayList<String> duplicatedFile = new ArrayList<>();
         for(MultipartFile file : files) {
-            if(file == null || file.isEmpty())
-                return new BaseResponse(StatusCode.UPLOAD_ERROR);
-
-            File dir = new File("D:\\" + file.getOriginalFilename());
-            try {
-                file.transferTo(dir);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            StatusCode s = galleryService.checkFile(file, session);
+            if (s == StatusCode.EMPTY_UPLOAD)
+                return new FileUploadResponse(s);
+            else if (s == StatusCode.DUPLICATED_FILENAME)
+                duplicatedFile.add(file.getOriginalFilename());
         }
-        return new BaseResponse(StatusCode.OJBK);
+
+        if(duplicatedFile.isEmpty())
+            return new FileUploadResponse(StatusCode.OJBK);
+        else
+            return new FileUploadResponse(StatusCode.DUPLICATED_FILENAME,
+                    (String[])duplicatedFile.toArray());
     }
 
     @RequestMapping(value = "/uploadInfo", method = RequestMethod.POST)
     @ResponseBody
-    public String upload(@RequestBody PicInfo info) {
+    public BaseResponse upload(@RequestBody PicInfo info, HttpSession session) {
         if (info == null)
-            return "redirect:/error";
-        System.out.println(info.toString());
-        return "redirect:/home";
+            return new BaseResponse(StatusCode.EMPTY_UPLOAD);
+        galleryService.checkInfo(info);
+        galleryService.saveUpload(session);
+        return new BaseResponse(StatusCode.OJBK);
     }
 
 }

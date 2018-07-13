@@ -6,11 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import sunnn.sunsite.dao.CollectionDao;
-import sunnn.sunsite.dao.GalleryPictureDao;
+import sunnn.sunsite.dao.PictureDao;
 import sunnn.sunsite.dao.IllustratorDao;
 import sunnn.sunsite.dao.TypeDao;
 import sunnn.sunsite.entity.Collection;
-import sunnn.sunsite.entity.GalleryPicture;
+import sunnn.sunsite.entity.Picture;
 import sunnn.sunsite.entity.Illustrator;
 import sunnn.sunsite.entity.Type;
 
@@ -19,7 +19,7 @@ import sunnn.sunsite.entity.Type;
 public class SunSiteApplicationTests {
 
 	@Autowired
-	private GalleryPictureDao galleryPictureDao;
+	private PictureDao pictureDao;
 
 	@Autowired
 	private CollectionDao collectionDao;
@@ -32,7 +32,7 @@ public class SunSiteApplicationTests {
 
 	@Test
 	public void insertPicture() {
-		Type type = new Type("illustration", false);
+		Type type = new Type("illustration");
 		typeDao.insert(type);
 
 		Illustrator illustrator = new Illustrator("しらたま");
@@ -41,14 +41,13 @@ public class SunSiteApplicationTests {
 		Collection collection = new Collection("Other", type);
 		collectionDao.insert(collection);
 
-		GalleryPicture picture = new GalleryPicture();
-		picture.setAdultOnly(false);
+		Picture picture = new Picture();
 		picture.setIllustrator(illustrator);
 		picture.setCollection(collection);
 		picture.setPath("/usr/sunsite/");
 		picture.setFileName("0000000.png");
 		picture.setUploadTime(System.currentTimeMillis());
-		galleryPictureDao.insert(picture);
+		pictureDao.insert(picture);
 	}
 
 

@@ -10,10 +10,12 @@ public class PicInfo {
 
     private String type;
 
+    public PicInfo() {
+    }   //必须要有空construct，不然json转换时会报错
+
     public PicInfo(String illustrator, String collection, String adultOnly, String type) {
         this.illustrator = illustrator;
         this.collection = collection;
-        this.adultOnly = adultOnly;
         this.type = type;
     }
 
@@ -33,29 +35,11 @@ public class PicInfo {
         this.collection = collection;
     }
 
-    public String getAdultOnly() {
-        return adultOnly;
-    }
-
-    public void setAdultOnly(String adultOnly) {
-        this.adultOnly = adultOnly;
-    }
-
     public String getType() {
         return type;
     }
 
     public void setType(String type) {
         this.type = type;
-    }
-
-    @Override
-    public String toString() {
-        return "PicInfo{" +
-                "illustrator='" + illustrator + '\'' +
-                ", collection='" + collection + '\'' +
-                ", adultOnly='" + adultOnly + '\'' +
-                ", type='" + type + '\'' +
-                '}';
     }
 }
