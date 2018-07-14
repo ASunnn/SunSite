@@ -23,7 +23,6 @@ public class GalleryController {
     @ResponseBody
     public BaseResponse upload(@RequestParam("file") MultipartFile[] files, HttpSession session) {
                 //notice:RequestParam里的值需要与页面内的id一致
-        System.out.println(files.length);
         if(files.length == 0)
             return new FileUploadResponse(StatusCode.EMPTY_UPLOAD);
         ArrayList<String> duplicatedFile = new ArrayList<>();

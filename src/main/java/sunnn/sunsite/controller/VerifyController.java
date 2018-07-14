@@ -1,5 +1,10 @@
 package sunnn.sunsite.controller;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.IncorrectCredentialsException;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,14 +23,7 @@ import javax.servlet.http.HttpSession;
  */
 @Controller
 public class VerifyController {
-
-    private final MeDao meDao;
-
-    @Autowired
-    public VerifyController(MeDao meDao) {
-        this.meDao = meDao;
-    }
-
+    
     /**
      * 登录认证
      * @param passCode  密码
@@ -34,19 +32,16 @@ public class VerifyController {
      */
     @RequestMapping(value = "/verify", method = RequestMethod.GET)
     public String login(@RequestParam(value = "code", defaultValue = "")String passCode, HttpSession session) {
-        //for test
-        if(passCode.equals(""))
-            throw new RuntimeException();
-
         String md5Code = MD5s.getMD5(passCode);
-        String realCode = meDao.findAll(Me.class).get(0).getPassCode();
 
-        if(md5Code.equals(realCode)) {
-            session.setMaxInactiveInterval(600);
-            session.setAttribute("pass", System.currentTimeMillis());
-        } else {
+        UsernamePasswordToken token = new UsernamePasswordToken("", md5Code);
+        Subject subject = SecurityUtils.getSubject();
+        try {
+            subject.login(token);
+        } catch (AuthenticationException e) {
             return "redirect:/error";
         }
+
         return "redirect:/home";
     }
 

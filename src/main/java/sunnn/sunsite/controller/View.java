@@ -12,9 +12,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class View {
 
     /**
+     * 主页
+     */
+    @RequestMapping(value = "/index")
+    public String index(){
+        return "index";
+    }
+
+    /**
      * HelloWorld页面
      */
-    @GetMapping(value = "/hello")
+    @RequestMapping(value = "/hello")
     public String helloWorld(){
         return "helloWorld";
     }
@@ -34,10 +42,5 @@ public class View {
     public String galleryHome() {
         return "galleryHome";
     }
-    
-//    @RequestMapping("error")
-//    public String error() {
-//        return "error";
-//    }
 
 }
