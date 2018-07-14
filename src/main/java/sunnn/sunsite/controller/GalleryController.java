@@ -48,8 +48,10 @@ public class GalleryController {
         if (info == null)
             return new BaseResponse(StatusCode.EMPTY_UPLOAD);
         galleryService.checkInfo(info);
-        galleryService.saveUpload(session);
-        return new BaseResponse(StatusCode.OJBK);
+        if(galleryService.saveUpload(session))
+            return new BaseResponse(StatusCode.OJBK);
+        else
+            return new BaseResponse(StatusCode.ERROR);
     }
 
 }

@@ -1,5 +1,6 @@
 package sunnn.sunsite.service.impl;
 
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -10,8 +11,8 @@ import sunnn.sunsite.dto.request.PicInfo;
 import sunnn.sunsite.service.GalleryService;
 
 import javax.servlet.http.HttpSession;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.nio.channels.FileChannel;
 
 @Service
 public class GalleryServiceImpl implements GalleryService {
@@ -29,7 +30,7 @@ public class GalleryServiceImpl implements GalleryService {
         if(pictureDao.findOne(file.getOriginalFilename()) != null)
             return StatusCode.DUPLICATED_FILENAME;
         //TODO 把图片放入缓存
-        File f = new File("F:\\test\\");
+        File f = new File("F:\\" + file.getOriginalFilename());
         try {
             file.transferTo(f);
         } catch (IOException e) {
@@ -55,8 +56,16 @@ public class GalleryServiceImpl implements GalleryService {
     @Override
     public boolean saveUpload(HttpSession session) {
         File file = fileCache.getFile(session.getId());
-        System.out.println("move : " + file.renameTo(new File("D:\\")));
 
-        return false;
+        try {
+            FileChannel inputChannel = new FileInputStream(file).getChannel();
+            FileChannel outputChannel = new FileOutputStream(new File("D:\\" + file.getName()))
+                    .getChannel();
+            outputChannel.transferFrom(inputChannel, 0, inputChannel.size());
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 }
