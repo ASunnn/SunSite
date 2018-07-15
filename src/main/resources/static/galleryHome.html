@@ -49,9 +49,14 @@
                     contentType: false, //必须
                 }).done(function (data) {
                     alert(data.msg);
-                    uploadInfo();
+                    if(data.code == 0) {
+                        var uploadCode = document.getElementById("uploadCode");
+                        uploadCode.value = data.uploadCode;
+                        uploadInfo();
+                    }
                 }).fail(function () {
                     alert("error");
+                    window.location.href="./error";
                 });
             });
         });
@@ -60,11 +65,13 @@
                 var illustrator = $('#illustrator').val();
                 var collection = $('#collection').val();
                 var type = $('#type').val();
+                var uploadCode = $('#uploadCode').val();
 
                 var data = {
                     "illustrator":illustrator,
                     "collection":collection,
-                    "type":type
+                    "type":type,
+                    "uploadCode":uploadCode
                 };
 
                 $.ajax({
@@ -103,6 +110,7 @@
     </div>
     <div id="uploadInfo" style="display: none">
         <form id="uploadInfoForm">
+            <input type="hidden" name="uploadCode" id="uploadCode" value="" />
             <label for="illustrator">illustrator</label>
             <input type="text" name="illustrator" id="illustrator" />
             <br />

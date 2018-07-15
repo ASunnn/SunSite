@@ -8,7 +8,6 @@ public enum StatusCode {
     ILLEGAL_DATA(1 << 2);
 
 
-
     private int code;
 
     StatusCode(int code) {

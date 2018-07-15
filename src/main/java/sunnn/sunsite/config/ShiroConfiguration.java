@@ -26,7 +26,7 @@ public class ShiroConfiguration {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
         shiroFilterFactoryBean.setSecurityManager(securityManager);
 
-        Map<String,String> filterChainDefinitionMap = new LinkedHashMap<String,String>();
+        Map<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
         /*
             顺序拦截
          */
@@ -50,15 +50,15 @@ public class ShiroConfiguration {
 
 
     @Bean
-    public org.apache.shiro.mgt.SecurityManager securityManager(SunRealm realm){
-        DefaultWebSecurityManager securityManager =  new DefaultWebSecurityManager();
+    public org.apache.shiro.mgt.SecurityManager securityManager(SunRealm realm) {
+        DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
         securityManager.setRealm(realm);
         return securityManager;
     }
 
 
     @Bean
-    public SunRealm myShiroRealm(){
+    public SunRealm myShiroRealm() {
         return new SunRealm();
     }
 }
@@ -77,6 +77,7 @@ class SunRealm extends AuthorizingRealm {
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
         return null;
     }
+
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
         String passCode = meDao.findAll(Me.class).get(0).getPassCode();

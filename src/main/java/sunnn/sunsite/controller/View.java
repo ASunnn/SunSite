@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * 视图映射
+ *
  * @author ASun
  */
 @Controller
@@ -15,7 +16,7 @@ public class View {
      * 主页
      */
     @RequestMapping(value = "/index")
-    public String index(){
+    public String index() {
         return "index";
     }
 
@@ -23,7 +24,7 @@ public class View {
      * HelloWorld页面
      */
     @RequestMapping(value = "/hello")
-    public String helloWorld(){
+    public String helloWorld() {
         return "helloWorld";
     }
 

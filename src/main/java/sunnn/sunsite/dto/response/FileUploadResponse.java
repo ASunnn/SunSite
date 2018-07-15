@@ -6,9 +6,17 @@ public class FileUploadResponse extends BaseResponse {
 
     private String[] duplicatedFile;
 
+    private String uploadCode;
+
     public FileUploadResponse(StatusCode statusCode) {
         super(statusCode);
     }
+
+    public FileUploadResponse(StatusCode statusCode, String uploadCode) {
+        super(statusCode);
+        this.uploadCode = uploadCode;
+    }
+
     public FileUploadResponse(StatusCode statusCode, String[] duplicatedFile) {
         super(statusCode);
         this.duplicatedFile = duplicatedFile;
@@ -20,5 +28,13 @@ public class FileUploadResponse extends BaseResponse {
 
     public void setDuplicatedFile(String[] duplicatedFile) {
         this.duplicatedFile = duplicatedFile;
+    }
+
+    public String getUploadCode() {
+        return uploadCode;
+    }
+
+    public void setUploadCode(String uploadCode) {
+        this.uploadCode = uploadCode;
     }
 }
