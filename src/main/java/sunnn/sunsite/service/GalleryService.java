@@ -1,10 +1,8 @@
 package sunnn.sunsite.service;
 
 import org.springframework.web.multipart.MultipartFile;
-import sunnn.sunsite.dto.StatusCode;
-import sunnn.sunsite.dto.request.PicInfo;
-
-import javax.servlet.http.HttpSession;
+import sunnn.sunsite.util.StatusCode;
+import sunnn.sunsite.dto.request.PictureInfo;
 
 public interface GalleryService {
 
@@ -19,6 +17,6 @@ public interface GalleryService {
      * 保存上传的内容
      * @return 保存结果
      */
-    boolean saveUpload(PicInfo info);
+    boolean saveUpload(PictureInfo info);
 
 }

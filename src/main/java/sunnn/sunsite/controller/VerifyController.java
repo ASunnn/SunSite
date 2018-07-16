@@ -45,6 +45,7 @@ public class VerifyController {
      * 拦截器拦截非法访问后，通过此controller转发至错误页面
      * @return  错误页面
      */
+    @Deprecated
     @RequestMapping(value = "/interceptor", method = RequestMethod.GET)
     public String interceptor() {
         return "redirect:/error";

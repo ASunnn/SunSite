@@ -8,8 +8,8 @@ import sunnn.sunsite.dao.IllustratorDao;
 import sunnn.sunsite.dao.PictureDao;
 import sunnn.sunsite.dao.TypeDao;
 import sunnn.sunsite.dto.FileCache;
-import sunnn.sunsite.dto.StatusCode;
-import sunnn.sunsite.dto.request.PicInfo;
+import sunnn.sunsite.util.StatusCode;
+import sunnn.sunsite.dto.request.PictureInfo;
 import sunnn.sunsite.entity.Collection;
 import sunnn.sunsite.entity.Illustrator;
 import sunnn.sunsite.entity.Picture;
@@ -64,15 +64,14 @@ public class GalleryServiceImpl implements GalleryService {
             //发生IO错误的情况下，直接返回
             return StatusCode.ERROR;
         }
-
-
         return StatusCode.OJBK;
     }
 
     @Override
-    public boolean saveUpload(PicInfo info) {
+    public boolean saveUpload(PictureInfo info) {
+        checkInfo(info);
         /*
-            先进行文件的保存
+            进行文件的保存
          */
         //获取上传的文件
         List<File> files = fileCache.getFile(info.getUploadCode());
@@ -103,7 +102,7 @@ public class GalleryServiceImpl implements GalleryService {
      * @param info 图片信息
      * @return 生成的图片实体
      */
-    private Picture checkInfo(PicInfo info) {
+    private Picture checkInfo(PictureInfo info) {
 //        if (info.getIllustrator().equals("") ||
 //                info.getCollection().equals("") ||
 //                info.getType().equals(""))

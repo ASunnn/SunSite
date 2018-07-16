@@ -5,12 +5,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import sunnn.sunsite.dto.StatusCode;
-import sunnn.sunsite.dto.request.PicInfo;
+import sunnn.sunsite.util.StatusCode;
+import sunnn.sunsite.dto.request.PictureInfo;
 import sunnn.sunsite.dto.response.BaseResponse;
 import sunnn.sunsite.dto.response.FileUploadResponse;
 import sunnn.sunsite.service.GalleryService;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 
 @Controller
@@ -62,10 +63,7 @@ public class GalleryController {
 
     @RequestMapping(value = "/uploadInfo", method = RequestMethod.POST)
     @ResponseBody
-    public BaseResponse upload(@RequestBody PicInfo info) {
-        //TODO 使用验证
-        if (info == null)
-            return new BaseResponse(StatusCode.EMPTY_UPLOAD);
+    public BaseResponse upload(@Valid @RequestBody PictureInfo info) {
         /*
             保存上传
          */

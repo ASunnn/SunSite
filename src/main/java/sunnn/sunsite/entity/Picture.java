@@ -91,4 +91,16 @@ public class Picture {
     public void setCollection(Collection collection) {
         this.collection = collection;
     }
+
+    @Override
+    public String toString() {
+        return "Picture{" +
+                "id='" + id + '\'' +
+                ", fileName='" + fileName + '\'' +
+                ", path='" + path + '\'' +
+                ", illustrator=" + illustrator +
+                ", uploadTime=" + uploadTime +
+                ", collection=" + collection +
+                '}';
+    }
 }

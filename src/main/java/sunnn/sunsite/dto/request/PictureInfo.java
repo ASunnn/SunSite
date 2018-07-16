@@ -1,19 +1,24 @@
 package sunnn.sunsite.dto.request;
 
-public class PicInfo {
+import javax.validation.constraints.NotBlank;
 
+public class PictureInfo {
+
+    @NotBlank(message = "Illustrator Can't Be Empty")
     private String illustrator;
 
+    @NotBlank(message = "Collection Can't Be Empty")
     private String collection;
 
+    @NotBlank(message = "Type Can't Be Empty")
     private String type;
 
     private String uploadCode;
 
-    public PicInfo() {
+    public PictureInfo() {
     }   //必须要有空construct，不然json转换时会报错
 
-    public PicInfo(String illustrator, String collection, String uploadCode, String type) {
+    public PictureInfo(String illustrator, String collection, String uploadCode, String type) {
         this.illustrator = illustrator;
         this.collection = collection;
         this.type = type;
@@ -53,7 +58,7 @@ public class PicInfo {
 
     @Override
     public String toString() {
-        return "PicInfo{" +
+        return "PictureInfo{" +
                 "illustrator='" + illustrator + '\'' +
                 ", collection='" + collection + '\'' +
                 ", type='" + type + '\'' +

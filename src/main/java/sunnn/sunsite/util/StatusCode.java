@@ -1,4 +1,4 @@
-package sunnn.sunsite.dto;
+package sunnn.sunsite.util;
 
 public enum StatusCode {
     OJBK(0),
@@ -6,7 +6,6 @@ public enum StatusCode {
     EMPTY_UPLOAD(1 << 0),
     DUPLICATED_FILENAME(1 << 1),
     ILLEGAL_DATA(1 << 2);
-
 
     private int code;
 

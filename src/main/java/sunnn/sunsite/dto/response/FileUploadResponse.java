@@ -1,6 +1,6 @@
 package sunnn.sunsite.dto.response;
 
-import sunnn.sunsite.dto.StatusCode;
+import sunnn.sunsite.util.StatusCode;
 
 public class FileUploadResponse extends BaseResponse {
 
