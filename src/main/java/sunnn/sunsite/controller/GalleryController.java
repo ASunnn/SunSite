@@ -45,7 +45,7 @@ public class GalleryController {
         for (MultipartFile file : files) {
             StatusCode s = galleryService.checkFile(file, uploadCode);
             //非法文件，直接返回错误
-            if (s == StatusCode.EMPTY_UPLOAD)
+            if (s == StatusCode.ILLEGAL_DATA)
                 return new FileUploadResponse(s);
                 //重复文件
             else if (s == StatusCode.DUPLICATED_FILENAME)
@@ -56,9 +56,11 @@ public class GalleryController {
          */
         if (duplicatedFile.isEmpty())
             return new FileUploadResponse(StatusCode.OJBK, uploadCode);
-        else
-            return new FileUploadResponse(StatusCode.DUPLICATED_FILENAME,
-                    (String[]) duplicatedFile.toArray());
+        else {
+            String[] dFile = new String[duplicatedFile.size()];
+            duplicatedFile.toArray(dFile);
+            return new FileUploadResponse(StatusCode.DUPLICATED_FILENAME, dFile);
+        }
     }
 
     @RequestMapping(value = "/uploadInfo", method = RequestMethod.POST)
@@ -67,6 +69,7 @@ public class GalleryController {
         /*
             保存上传
          */
+        //TODO 业务流程具备一定的事务能力
         if (galleryService.saveUpload(info))
             return new BaseResponse(StatusCode.OJBK);
         else
