@@ -48,7 +48,7 @@ public class GalleryServiceImpl implements GalleryService {
             检测文件是否为空
          */
         if (file == null || file.isEmpty())
-            return StatusCode.EMPTY_UPLOAD;
+            return StatusCode.ILLEGAL_DATA;
         /*
             查重处理
          */
@@ -69,25 +69,47 @@ public class GalleryServiceImpl implements GalleryService {
 
     @Override
     public boolean saveUpload(PictureInfo info) {
-        checkInfo(info);
+        Picture picture = checkInfo(info);
         /*
             进行文件的保存
          */
         //获取上传的文件
         List<File> files = fileCache.getFile(info.getUploadCode());
+        //对文件记录进行保存
         for (File file : files) {
             try {
+                //生成图片系统信息
+                picture.setUploadTime(System.currentTimeMillis());
+                picture.setFileName(file.getName());
+                picture.setPath("D:\\sunsite\\"
+                        + picture.getIllustrator().getName()
+                        + "\\"
+                        + picture.getCollection().getName()
+                        + "\\");
+                picture.setId(null);    //不想一次次构建pic实体类的话就每次插入前先把id置为null
+
                 //保存原图
+                //判断路径是否存在
+                File path = new File(picture.getPath());
+                if (!path.exists())
+                    if (!path.mkdirs())
+                        throw new IOException();
+                //保存
                 FileChannel inputChannel = new FileInputStream(file).getChannel();
-                FileChannel outputChannel = new FileOutputStream(new File("D:\\" + file.getName()))
+                FileChannel outputChannel = new FileOutputStream(
+                        new File(picture.getPath() + picture.getFileName()))
                         .getChannel();
                 outputChannel.transferFrom(inputChannel, 0, inputChannel.size());
                 inputChannel.close();
                 outputChannel.close();
+
                 //TODO 生成缩略图
-                //TODO 将图片记录保存到数据库
+
+                //将图片记录保存到数据库
+                pictureDao.insert(picture);
             } catch (IOException e) {
                 //若中间出错，直接报错
+                e.printStackTrace();
                 return false;
             }
         }
@@ -103,28 +125,32 @@ public class GalleryServiceImpl implements GalleryService {
      * @return 生成的图片实体
      */
     private Picture checkInfo(PictureInfo info) {
-//        if (info.getIllustrator().equals("") ||
-//                info.getCollection().equals("") ||
-//                info.getType().equals(""))
-//            return StatusCode.ILLEGAL_DATA;
+        System.out.println(info.toString());
         /*
             检查是否为新画师
          */
         Illustrator illustrator = illustratorDao.findOne(info.getIllustrator());
-        if (illustrator == null)
+        if (illustrator == null) {
             illustrator = new Illustrator(info.getIllustrator());
+            illustratorDao.insert(illustrator);
+        }
+
         /*
             检查是否为新的图片类型
          */
         Type type = typeDao.findOne(info.getType());
-        if (type == null)
+        if (type == null) {
             type = new Type(info.getType());
+            typeDao.insert(type);
+        }
         /*
             检查是否为新的画册
          */
         Collection collection = collectionDao.findOne(info.getCollection());
-        if (collection == null)
+        if (collection == null) {
             collection = new Collection(info.getCollection(), type);
+            collectionDao.insert(collection);
+        }
         /*
             生成图片信息
          */
