@@ -21,6 +21,8 @@ import sunnn.sunsite.service.GalleryService;
 import java.io.*;
 import java.nio.channels.FileChannel;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class GalleryServiceImpl implements GalleryService {
@@ -52,11 +54,17 @@ public class GalleryServiceImpl implements GalleryService {
         if (file == null || file.isEmpty())
             return StatusCode.ILLEGAL_DATA;
         /*
+            对文件名进行检查
+         */
+        Matcher fileNameMatcher = Pattern.compile("\\.(jpg|jpeg|png)$")
+                .matcher(file.getOriginalFilename());
+        if (!fileNameMatcher.find())
+            return StatusCode.ILLEGAL_DATA;
+        /*
             查重处理
          */
         if (pictureDao.findOne(file.getOriginalFilename()) != null)
             return StatusCode.DUPLICATED_FILENAME;
-        //TODO 对文件名进行处理：没有后缀名的、不支持的图像格式返回错误
         /*
             将图片放入缓存
          */
@@ -115,7 +123,6 @@ public class GalleryServiceImpl implements GalleryService {
                 pictureDao.insert(picture);
             } catch (IOException e) {
                 //若中间出错，直接报错
-                e.printStackTrace();
                 return false;
             }
         }

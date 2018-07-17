@@ -13,11 +13,4 @@ public class BeanConfiguration {
     public FileCache fileCache() {
         return new FileCache();
     }
-
-//    @Bean
-//    @Scope("singleton")
-//    public SunSiteConfiguration sunSiteConfiguration() throws IOException {
-//        return new SunSiteConfiguration();
-//    }
-
 }

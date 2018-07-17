@@ -14,18 +14,20 @@ import sunnn.sunsite.config.SunSiteConstant;
 
 /**
  * 登录认证控制层
+ *
  * @author ASun
  */
 @Controller
 public class VerifyController {
-    
+
     /**
      * 登录认证
-     * @param passCode  密码
-     * @return  若认证成功，请求转发至主页，否则至错误页面
+     *
+     * @param passCode 密码
+     * @return 若认证成功，请求转发至主页，否则至错误页面
      */
     @RequestMapping(value = "/verify", method = RequestMethod.GET)
-    public String login(@RequestParam(value = "code", defaultValue = "")String passCode) {
+    public String login(@RequestParam(value = "code", defaultValue = "") String passCode) {
         String md5Code = MD5s.getMD5(passCode);
 
         UsernamePasswordToken token = new UsernamePasswordToken("", md5Code);
@@ -38,15 +40,13 @@ public class VerifyController {
 
         Session session = subject.getSession();
         session.setTimeout(120000);
-
-        System.out.println(SunSiteConstant.picturePath);
-        System.out.println(SunSiteConstant.pictureTempPath);
         return "redirect:/home";
     }
 
     /**
      * 拦截器拦截非法访问后，通过此controller转发至错误页面
-     * @return  错误页面
+     *
+     * @return 错误页面
      */
     @Deprecated
     @RequestMapping(value = "/interceptor", method = RequestMethod.GET)
