@@ -1,13 +1,15 @@
 package sunnn.sunsite.service.impl;
 
+import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import sunnn.sunsite.config.SunSiteConstant;
 import sunnn.sunsite.dao.CollectionDao;
 import sunnn.sunsite.dao.IllustratorDao;
 import sunnn.sunsite.dao.PictureDao;
 import sunnn.sunsite.dao.TypeDao;
-import sunnn.sunsite.dto.FileCache;
+import sunnn.sunsite.util.FileCache;
 import sunnn.sunsite.util.StatusCode;
 import sunnn.sunsite.dto.request.PictureInfo;
 import sunnn.sunsite.entity.Collection;
@@ -81,7 +83,7 @@ public class GalleryServiceImpl implements GalleryService {
                 //生成图片系统信息
                 picture.setUploadTime(System.currentTimeMillis());
                 picture.setFileName(file.getName());
-                picture.setPath("D:\\sunsite\\"
+                picture.setPath(SunSiteConstant.picturePath
                         + picture.getIllustrator().getName()
                         + "\\"
                         + picture.getCollection().getName()
@@ -103,7 +105,11 @@ public class GalleryServiceImpl implements GalleryService {
                 inputChannel.close();
                 outputChannel.close();
 
-                //TODO 生成缩略图
+                //生成缩略图
+                Thumbnails.of(picture.getPath() + picture.getFileName())
+                        .size(640, 640)
+                        .toFile(picture.getPath()
+                                + Picture.THUMBNAIL_PREFIX + picture.getFileName());
 
                 //将图片记录保存到数据库
                 pictureDao.insert(picture);
@@ -125,7 +131,6 @@ public class GalleryServiceImpl implements GalleryService {
      * @return 生成的图片实体
      */
     private Picture checkInfo(PictureInfo info) {
-        System.out.println(info.toString());
         /*
             检查是否为新画师
          */
@@ -134,7 +139,6 @@ public class GalleryServiceImpl implements GalleryService {
             illustrator = new Illustrator(info.getIllustrator());
             illustratorDao.insert(illustrator);
         }
-
         /*
             检查是否为新的图片类型
          */

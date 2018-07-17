@@ -1,8 +1,9 @@
-package sunnn.sunsite.dto;
+package sunnn.sunsite.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
+import sunnn.sunsite.config.SunSiteConstant;
 
 import java.io.File;
 import java.io.IOException;
@@ -93,7 +94,7 @@ public class FileCache {
     }
 
     private File storeFile(MultipartFile file) throws IOException {
-        File f = new File("F:\\" + file.getOriginalFilename());
+        File f = new File(SunSiteConstant.pictureTempPath + file.getOriginalFilename());
         file.transferTo(f);
         return f;
     }

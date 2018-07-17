@@ -44,6 +44,8 @@ public class Picture {
     @DBRef
     private Collection collection;
 
+    public static final String THUMBNAIL_PREFIX = "m_";
+
     public String getId() {
         return id;
     }

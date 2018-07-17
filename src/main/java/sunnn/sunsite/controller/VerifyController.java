@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import sunnn.sunsite.util.MD5s;
+import sunnn.sunsite.config.SunSiteConstant;
 
 /**
  * 登录认证控制层
@@ -37,7 +38,9 @@ public class VerifyController {
 
         Session session = subject.getSession();
         session.setTimeout(120000);
-        System.out.println(session.getId());
+
+        System.out.println(SunSiteConstant.picturePath);
+        System.out.println(SunSiteConstant.pictureTempPath);
         return "redirect:/home";
     }
 

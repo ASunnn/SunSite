@@ -10,6 +10,7 @@ public enum StatusCode {
     private int code;
 
     StatusCode(int code) {
+        this.code = code;
     }
 
     public int getCode() {

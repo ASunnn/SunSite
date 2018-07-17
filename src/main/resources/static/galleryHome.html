@@ -53,6 +53,13 @@
                         var uploadCode = document.getElementById("uploadCode");
                         uploadCode.value = data.uploadCode;
                         uploadInfo();
+                    } else if(data.code == 2) {
+                        alert(data.duplicatedFile);
+                        // duplicatedFile = code.duplicatedFile;
+                        // var msg;
+                        // $.each(co,function(i,n){
+
+                        // }
                     }
                 }).fail(function () {
                     alert("error");
@@ -82,8 +89,12 @@
                     contentType: "application/json",
                 }).done(function (data) {
                     alert(data.msg);
+                    if(data.code == 0) {
+                        window.location.reload();
+                    }
                 }).fail(function () {
                     alert("error");
+                    window.location.href="./error";
                 });
             });
         });
