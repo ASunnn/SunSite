@@ -18,10 +18,11 @@ public class PictureInfo {
     public PictureInfo() {
     }   //必须要有空construct，不然json转换时会报错
 
-    public PictureInfo(String illustrator, String collection, String uploadCode, String type) {
+    public PictureInfo(String illustrator, String collection, String type, String uploadCode) {
         this.illustrator = illustrator;
         this.collection = collection;
         this.type = type;
+        this.uploadCode = uploadCode;
     }
 
     public String getIllustrator() {

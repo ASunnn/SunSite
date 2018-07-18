@@ -8,11 +8,6 @@ public class BaseResponse {
 
     private String msg;
 
-    public BaseResponse(int code, String msg) {
-        this.code = code;
-        this.msg = msg;
-    }
-
     public BaseResponse(StatusCode statusCode) {
         this.code = statusCode.getCode();
         this.msg = statusCode.name();

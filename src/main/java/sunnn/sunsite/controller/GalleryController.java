@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import sunnn.sunsite.dto.response.PictureListResponse;
 import sunnn.sunsite.util.StatusCode;
 import sunnn.sunsite.dto.request.PictureInfo;
 import sunnn.sunsite.dto.response.BaseResponse;
@@ -12,9 +13,11 @@ import sunnn.sunsite.dto.response.FileUploadResponse;
 import sunnn.sunsite.service.GalleryService;
 
 import javax.validation.Valid;
+import javax.websocket.server.PathParam;
 import java.util.ArrayList;
 
 @Controller
+@RequestMapping("/gallery")
 public class GalleryController {
 
     private final GalleryService galleryService;
@@ -24,9 +27,16 @@ public class GalleryController {
         this.galleryService = galleryService;
     }
 
-    @RequestMapping(value = "/upload", method = RequestMethod.POST)
+    @RequestMapping(value = "list")
     @ResponseBody
-    public BaseResponse upload(@RequestParam("file") MultipartFile[] files) {
+    public PictureListResponse getPictureList(@RequestParam("p") int page,
+                                              @RequestParam("s") int pageSize) {
+        return galleryService.getPictureList(page, pageSize);
+    }
+
+    @PostMapping(value = "/upload")
+    @ResponseBody
+    public FileUploadResponse upload(@RequestParam("file") MultipartFile[] files) {
         //notice:RequestParam里的值需要与页面内的id一致
         /*
             检查是否为空上传
@@ -63,7 +73,7 @@ public class GalleryController {
         }
     }
 
-    @RequestMapping(value = "/uploadInfo", method = RequestMethod.POST)
+    @PostMapping(value = "/uploadInfo")
     @ResponseBody
     public BaseResponse upload(@Valid @RequestBody PictureInfo info) {
         /*
@@ -75,5 +85,4 @@ public class GalleryController {
         else
             return new BaseResponse(StatusCode.ERROR);
     }
-
 }

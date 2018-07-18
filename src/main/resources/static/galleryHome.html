@@ -5,6 +5,7 @@
     <title>Gallery</title>
     <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.9.0.min.js"></script>
     <style>
+        /* 标题菜单 */
         .menu {
             text-align: center;
             float: left;
@@ -16,7 +17,28 @@
             width: 300px;
             height: 50px;
         }
+        /* 表单 */
+        #uploadFile,#uploadInfo {
+            text-align: center;
+        }
+        label {
+            display: inline-block;
+            width: 100px;
+            text-align: right;
+        }
     </style>
+    <script>
+        window.onload=function() { 
+            $.get("/gallery/list?p=0&s=20", function(data) {
+                if(data.code == 0) {
+                    alert(data.pictureList);
+                    alert(data.pageCount);
+                }
+                else
+                    window.location.href = "/error";
+            });
+        }
+    </script> 
     <script>
         function upload() {
             var menu = document.getElementById("menu");
@@ -42,7 +64,7 @@
                 var formData = new FormData($('#uploadFileForm')[0]);
                 $.ajax({
                     method: 'post',
-                    url: "/upload",
+                    url: "/gallery/upload",
                     data: formData,
                     cache: false,   //上传文件无需缓存
                     processData: false, //用于对data参数进行序列化处理 这里必须false
@@ -55,11 +77,6 @@
                         uploadInfo();
                     } else if(data.code == 2) {
                         alert(data.duplicatedFile);
-                        // duplicatedFile = code.duplicatedFile;
-                        // var msg;
-                        // $.each(co,function(i,n){
-
-                        // }
                     }
                 }).fail(function () {
                     alert("error");
@@ -83,7 +100,7 @@
 
                 $.ajax({
                     method: 'post',
-                    url: "/uploadInfo",
+                    url: "/gallery/uploadInfo",
                     data: JSON.stringify(data),
                     dataType: "JSON",
                     contentType: "application/json",

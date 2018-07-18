@@ -9,6 +9,7 @@ import sunnn.sunsite.dao.CollectionDao;
 import sunnn.sunsite.dao.IllustratorDao;
 import sunnn.sunsite.dao.PictureDao;
 import sunnn.sunsite.dao.TypeDao;
+import sunnn.sunsite.dto.response.PictureListResponse;
 import sunnn.sunsite.util.FileCache;
 import sunnn.sunsite.util.StatusCode;
 import sunnn.sunsite.dto.request.PictureInfo;
@@ -44,6 +45,31 @@ public class GalleryServiceImpl implements GalleryService {
         this.collectionDao = collectionDao;
         this.typeDao = typeDao;
         this.fileCache = fileCache;
+    }
+
+    @Override
+    public PictureListResponse getPictureList(int page, int pageSize) {
+        /*
+            参数检查
+         */
+        if (page < 0 || pageSize < 1)
+            return new PictureListResponse(StatusCode.ILLEGAL_DATA);
+        /*
+            查询
+         */
+        List<Picture> pictureList = pictureDao.getPicture(page, pageSize);
+        if (pictureList.isEmpty())
+            return new PictureListResponse(StatusCode.ILLEGAL_DATA);
+        long count = pictureDao.count();
+        int pageCount = (int) Math.ceil(count / (double) pageSize);
+        /*
+            转换结果
+         */
+        String[] fileNameList = new String[pictureList.size()];
+        for (int i = 0; i < pictureList.size(); ++i)
+            fileNameList[i] =
+                    pictureList.get(i).getFileName();
+        return new PictureListResponse(StatusCode.OJBK, fileNameList, pageCount);
     }
 
     @Override
