@@ -4,7 +4,7 @@ import sunnn.sunsite.util.StatusCode;
 
 public class PictureListResponse extends BaseResponse {
 
-    private String[] pictureList;
+    private String[] fileList;
 
     private int pageCount;
 
@@ -14,16 +14,16 @@ public class PictureListResponse extends BaseResponse {
 
     public PictureListResponse(StatusCode statusCode, String[] pictureList, int pageCount) {
         super(statusCode);
-        this.pictureList = pictureList;
+        this.fileList = pictureList;
         this.pageCount = pageCount;
     }
 
-    public String[] getPictureList() {
-        return pictureList;
+    public String[] getFileList() {
+        return fileList;
     }
 
-    public void setPictureList(String[] pictureList) {
-        this.pictureList = pictureList;
+    public void setFileList(String[] fileList) {
+        this.fileList = fileList;
     }
 
     public int getPageCount() {

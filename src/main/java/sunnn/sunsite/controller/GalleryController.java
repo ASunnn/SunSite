@@ -1,7 +1,12 @@
 package sunnn.sunsite.controller;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,7 +18,8 @@ import sunnn.sunsite.dto.response.FileUploadResponse;
 import sunnn.sunsite.service.GalleryService;
 
 import javax.validation.Valid;
-import javax.websocket.server.PathParam;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 @Controller
@@ -32,6 +38,20 @@ public class GalleryController {
     public PictureListResponse getPictureList(@RequestParam("p") int page,
                                               @RequestParam("s") int pageSize) {
         return galleryService.getPictureList(page, pageSize);
+    }
+
+    @RequestMapping(value = "m")
+    public ResponseEntity getThumbnail(@RequestParam("thumbnail") String pictureName) throws IOException {
+        File file = galleryService.getThumbnail(pictureName);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.IMAGE_JPEG);
+//        String destFileName = new String(
+//                file.getName().getBytes("utf-8"), "iso8859-1");
+        //这货是用来告诉浏览器：此资源是用来下载的
+//        headers.setContentDispositionFormData("attachment", destFileName);
+
+        return new ResponseEntity<>(FileUtils.readFileToByteArray(file), headers, HttpStatus.OK);
     }
 
     @PostMapping(value = "/upload")

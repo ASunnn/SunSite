@@ -5,6 +5,8 @@ import sunnn.sunsite.dto.response.PictureListResponse;
 import sunnn.sunsite.util.StatusCode;
 import sunnn.sunsite.dto.request.PictureInfo;
 
+import java.io.File;
+
 public interface GalleryService {
 
     /**
@@ -15,6 +17,14 @@ public interface GalleryService {
      * @return 图片文件列表
      */
     PictureListResponse getPictureList(int page, int pageSize);
+
+    /**
+     * 获取图片缩略图
+     *
+     * @param pictureName 图片名
+     * @return 缩略图文件
+     */
+    File getThumbnail(String pictureName);
 
     /**
      * 检查文件合法性

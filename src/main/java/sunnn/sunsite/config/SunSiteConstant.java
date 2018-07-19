@@ -5,7 +5,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConfigurationProperties
+@ConfigurationProperties(prefix = "sunsite")
 @PropertySource("file:${properties-file.path}")
 public class SunSiteConstant {
 

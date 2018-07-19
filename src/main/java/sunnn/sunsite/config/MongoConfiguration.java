@@ -1,14 +1,12 @@
 package sunnn.sunsite.config;
 
 import com.mongodb.MongoClient;
-import com.mongodb.MongoClientOptions;
 import com.mongodb.ServerAddress;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.mongodb.MongoDbFactory;
-import org.springframework.data.mongodb.core.MongoClientOptionsFactoryBean;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
 
@@ -26,7 +24,7 @@ public class MongoConfiguration {
 
     @Bean
     @Primary
-    public MongoClient createMongoClient() throws Exception {
+    public MongoClient createMongoClient() {
         ServerAddress serverAddress = new ServerAddress(host, port);
 
 //        MongoClientOptionsFactoryBean clientOptionsFactory = new MongoClientOptionsFactoryBean();

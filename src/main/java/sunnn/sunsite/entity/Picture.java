@@ -26,6 +26,12 @@ public class Picture {
     private String path;
 
     /**
+     * 缩略图文件名
+     */
+    @Field(value = "thumbnail")
+    private String thumbnailName;
+
+    /**
      * 画师
      */
     @Field(value = "illustrator")
@@ -68,6 +74,14 @@ public class Picture {
 
     public void setPath(String path) {
         this.path = path;
+    }
+
+    public String getThumbnailName() {
+        return thumbnailName;
+    }
+
+    public void setThumbnailName(String thumbnailName) {
+        this.thumbnailName = thumbnailName;
     }
 
     public Illustrator getIllustrator() {

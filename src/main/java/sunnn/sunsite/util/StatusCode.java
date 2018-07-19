@@ -5,7 +5,8 @@ public enum StatusCode {
     ERROR(-1),
     EMPTY_UPLOAD(1 << 0),
     DUPLICATED_FILENAME(1 << 1),
-    ILLEGAL_DATA(1 << 2);
+    ILLEGAL_DATA(1 << 2),
+    NO_DATA(1 << 3);
 
     private int code;
 

@@ -30,7 +30,6 @@ public class ShiroConfiguration {
         /*
             顺序拦截
          */
-//        filterChainDefinitionMap.put("/index.html", "anon");
         filterChainDefinitionMap.put("/hello", "anon");
         filterChainDefinitionMap.put("/verify", "anon");
         filterChainDefinitionMap.put("/error", "anon");
@@ -48,14 +47,12 @@ public class ShiroConfiguration {
         return shiroFilterFactoryBean;
     }
 
-
     @Bean
     public org.apache.shiro.mgt.SecurityManager securityManager(SunRealm realm) {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
         securityManager.setRealm(realm);
         return securityManager;
     }
-
 
     @Bean
     public SunRealm myShiroRealm() {

@@ -1,6 +1,8 @@
 package sunnn.sunsite.service.impl;
 
 import net.coobird.thumbnailator.Thumbnails;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,6 +29,9 @@ import java.util.regex.Pattern;
 
 @Service
 public class GalleryServiceImpl implements GalleryService {
+
+    private static Logger log = LoggerFactory.getLogger(GalleryServiceImpl.class);
+
 
     private PictureDao pictureDao;
 
@@ -59,7 +64,7 @@ public class GalleryServiceImpl implements GalleryService {
          */
         List<Picture> pictureList = pictureDao.getPicture(page, pageSize);
         if (pictureList.isEmpty())
-            return new PictureListResponse(StatusCode.ILLEGAL_DATA);
+            return new PictureListResponse(StatusCode.NO_DATA);
         long count = pictureDao.count();
         int pageCount = (int) Math.ceil(count / (double) pageSize);
         /*
@@ -70,6 +75,13 @@ public class GalleryServiceImpl implements GalleryService {
             fileNameList[i] =
                     pictureList.get(i).getFileName();
         return new PictureListResponse(StatusCode.OJBK, fileNameList, pageCount);
+    }
+
+    @Override
+    public File getThumbnail(String pictureName) {
+        Picture picture = pictureDao.findOne(pictureName);
+        String path = picture.getPath() + picture.getThumbnailName();
+        return new File(path);
     }
 
     @Override
@@ -140,15 +152,24 @@ public class GalleryServiceImpl implements GalleryService {
                 outputChannel.close();
 
                 //生成缩略图
+                String thumbnailName = Picture.THUMBNAIL_PREFIX + picture.getFileName();
+                //判断是否为非jpg文件
+                Matcher fileNameMatcher = Pattern.compile("\\.(jpg|jpeg)$")
+                        .matcher(picture.getFileName());
+                if (!fileNameMatcher.find())
+                    thumbnailName = thumbnailName.substring(
+                            0, thumbnailName.lastIndexOf('.')) + ".jpg";
+                picture.setThumbnailName(thumbnailName);
+                //转换
                 Thumbnails.of(picture.getPath() + picture.getFileName())
                         .size(640, 640)
-                        .toFile(picture.getPath()
-                                + Picture.THUMBNAIL_PREFIX + picture.getFileName());
+                        .toFile(picture.getPath() + picture.getThumbnailName());
 
                 //将图片记录保存到数据库
                 pictureDao.insert(picture);
             } catch (IOException e) {
-                //若中间出错，直接报错
+                //若中间出错，
+                log.error("Error At SaveUpload : ", e);
                 return false;
             }
         }
