@@ -1,4 +1,4 @@
-package sunnn.sunsite.config;
+package sunnn.sunsite.util;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.PropertySource;
@@ -12,6 +12,8 @@ public class SunSiteConstant {
     public static String pictureTempPath;
 
     public static String picturePath;
+
+    public static int thumbnailSize;
 
     public String getPictureTempPath() {
         return pictureTempPath;
@@ -27,5 +29,13 @@ public class SunSiteConstant {
 
     public void setPicturePath(String picturePath) {
         SunSiteConstant.picturePath = picturePath;
+    }
+
+    public static int getThumbnailSize() {
+        return thumbnailSize;
+    }
+
+    public static void setThumbnailSize(int thumbnailSize) {
+        SunSiteConstant.thumbnailSize = thumbnailSize;
     }
 }

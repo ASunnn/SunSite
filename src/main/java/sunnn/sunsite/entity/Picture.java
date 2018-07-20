@@ -1,5 +1,9 @@
 package sunnn.sunsite.entity;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.Accessors;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -9,6 +13,10 @@ import org.springframework.data.mongodb.core.mapping.Field;
  * 图册实体类
  */
 @Document(collection = "gallery")
+@Getter
+@Setter
+@Accessors(chain = true)
+@ToString
 public class Picture {
     @Id
     private String id;
@@ -51,72 +59,4 @@ public class Picture {
     private Collection collection;
 
     public static final String THUMBNAIL_PREFIX = "m_";
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getFileName() {
-        return fileName;
-    }
-
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
-    }
-
-    public String getThumbnailName() {
-        return thumbnailName;
-    }
-
-    public void setThumbnailName(String thumbnailName) {
-        this.thumbnailName = thumbnailName;
-    }
-
-    public Illustrator getIllustrator() {
-        return illustrator;
-    }
-
-    public void setIllustrator(Illustrator illustrator) {
-        this.illustrator = illustrator;
-    }
-
-    public long getUploadTime() {
-        return uploadTime;
-    }
-
-    public void setUploadTime(long uploadTime) {
-        this.uploadTime = uploadTime;
-    }
-
-    public Collection getCollection() {
-        return collection;
-    }
-
-    public void setCollection(Collection collection) {
-        this.collection = collection;
-    }
-
-    @Override
-    public String toString() {
-        return "Picture{" +
-                "id='" + id + '\'' +
-                ", fileName='" + fileName + '\'' +
-                ", path='" + path + '\'' +
-                ", illustrator=" + illustrator +
-                ", uploadTime=" + uploadTime +
-                ", collection=" + collection +
-                '}';
-    }
 }

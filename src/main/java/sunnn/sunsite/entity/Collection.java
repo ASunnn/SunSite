@@ -1,5 +1,9 @@
 package sunnn.sunsite.entity;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.Accessors;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -9,6 +13,10 @@ import org.springframework.data.mongodb.core.mapping.Field;
  * 图片所属的文件夹
  */
 @Document(collection = "collection")
+@Getter
+@Setter
+@Accessors(chain = true)
+@ToString
 public class Collection {
 
     @Id

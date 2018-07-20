@@ -1,5 +1,9 @@
 package sunnn.sunsite.entity;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.Accessors;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -8,6 +12,9 @@ import org.springframework.data.mongodb.core.mapping.Field;
  * 图的类型
  */
 @Document(collection = "type")
+@Getter
+@Setter
+@ToString
 public class Type {
 
     @Id
@@ -20,22 +27,6 @@ public class Type {
     private String name;
 
     public Type(String name) {
-        this.name = name;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
         this.name = name;
     }
 }

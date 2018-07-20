@@ -1,7 +1,13 @@
 package sunnn.sunsite.dto.response;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import sunnn.sunsite.util.StatusCode;
 
+@Getter
+@Setter
+@ToString
 public class PictureListResponse extends BaseResponse {
 
     private String[] fileList;
@@ -15,22 +21,6 @@ public class PictureListResponse extends BaseResponse {
     public PictureListResponse(StatusCode statusCode, String[] pictureList, int pageCount) {
         super(statusCode);
         this.fileList = pictureList;
-        this.pageCount = pageCount;
-    }
-
-    public String[] getFileList() {
-        return fileList;
-    }
-
-    public void setFileList(String[] fileList) {
-        this.fileList = fileList;
-    }
-
-    public int getPageCount() {
-        return pageCount;
-    }
-
-    public void setPageCount(int pageCount) {
         this.pageCount = pageCount;
     }
 }

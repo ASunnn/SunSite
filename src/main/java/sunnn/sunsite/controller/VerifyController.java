@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import sunnn.sunsite.util.MD5s;
-import sunnn.sunsite.config.SunSiteConstant;
 
 /**
  * 登录认证控制层

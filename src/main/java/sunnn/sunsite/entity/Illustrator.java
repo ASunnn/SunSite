@@ -1,5 +1,8 @@
 package sunnn.sunsite.entity;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -8,6 +11,9 @@ import org.springframework.data.mongodb.core.mapping.Field;
  * 画师
  */
 @Document(collection = "illustrator")
+@Getter
+@Setter
+@ToString
 public class Illustrator {
 
     @Id
@@ -20,22 +26,6 @@ public class Illustrator {
     private String name;
 
     public Illustrator(String name) {
-        this.name = name;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
         this.name = name;
     }
 }

@@ -1,7 +1,13 @@
 package sunnn.sunsite.dto.response;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import sunnn.sunsite.util.StatusCode;
 
+@Getter
+@Setter
+@ToString
 public class FileUploadResponse extends BaseResponse {
 
     private String[] duplicatedFile;
@@ -20,21 +26,5 @@ public class FileUploadResponse extends BaseResponse {
     public FileUploadResponse(StatusCode statusCode, String[] duplicatedFile) {
         super(statusCode);
         this.duplicatedFile = duplicatedFile;
-    }
-
-    public String[] getDuplicatedFile() {
-        return duplicatedFile;
-    }
-
-    public void setDuplicatedFile(String[] duplicatedFile) {
-        this.duplicatedFile = duplicatedFile;
-    }
-
-    public String getUploadCode() {
-        return uploadCode;
-    }
-
-    public void setUploadCode(String uploadCode) {
-        this.uploadCode = uploadCode;
     }
 }

@@ -3,7 +3,6 @@ package sunnn.sunsite.util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
-import sunnn.sunsite.config.SunSiteConstant;
 
 import java.io.File;
 import java.io.IOException;

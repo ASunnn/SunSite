@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import sunnn.sunsite.config.SunSiteConstant;
+import sunnn.sunsite.util.SunSiteConstant;
 import sunnn.sunsite.dao.CollectionDao;
 import sunnn.sunsite.dao.IllustratorDao;
 import sunnn.sunsite.dao.PictureDao;
@@ -127,14 +127,14 @@ public class GalleryServiceImpl implements GalleryService {
         for (File file : files) {
             try {
                 //生成图片系统信息
-                picture.setUploadTime(System.currentTimeMillis());
-                picture.setFileName(file.getName());
-                picture.setPath(SunSiteConstant.picturePath
-                        + picture.getIllustrator().getName()
-                        + "\\"
-                        + picture.getCollection().getName()
-                        + "\\");
-                picture.setId(null);    //不想一次次构建pic实体类的话就每次插入前先把id置为null
+                picture.setUploadTime(System.currentTimeMillis())
+                        .setFileName(file.getName())
+                        .setPath(SunSiteConstant.picturePath
+                                + picture.getIllustrator().getName()
+                                + "\\"
+                                + picture.getCollection().getName()
+                                + "\\")
+                        .setId(null);   //不想一次次构建pic实体类的话就每次插入前先把id置为null
 
                 //保存原图
                 //判断路径是否存在
@@ -142,14 +142,6 @@ public class GalleryServiceImpl implements GalleryService {
                 if (!path.exists())
                     if (!path.mkdirs())
                         throw new IOException();
-                //保存
-                FileChannel inputChannel = new FileInputStream(file).getChannel();
-                FileChannel outputChannel = new FileOutputStream(
-                        new File(picture.getPath() + picture.getFileName()))
-                        .getChannel();
-                outputChannel.transferFrom(inputChannel, 0, inputChannel.size());
-                inputChannel.close();
-                outputChannel.close();
 
                 //生成缩略图
                 String thumbnailName = Picture.THUMBNAIL_PREFIX + picture.getFileName();
@@ -161,9 +153,18 @@ public class GalleryServiceImpl implements GalleryService {
                             0, thumbnailName.lastIndexOf('.')) + ".jpg";
                 picture.setThumbnailName(thumbnailName);
                 //转换
-                Thumbnails.of(picture.getPath() + picture.getFileName())
-                        .size(640, 640)
+                Thumbnails.of(file.getPath())
+                        .size(SunSiteConstant.thumbnailSize, SunSiteConstant.thumbnailSize)
                         .toFile(picture.getPath() + picture.getThumbnailName());
+
+                //保存
+                FileChannel inputChannel = new FileInputStream(file).getChannel();
+                FileChannel outputChannel = new FileOutputStream(
+                        new File(picture.getPath() + picture.getFileName()))
+                        .getChannel();
+                outputChannel.transferFrom(inputChannel, 0, inputChannel.size());
+                inputChannel.close();
+                outputChannel.close();
 
                 //将图片记录保存到数据库
                 pictureDao.insert(picture);
@@ -212,9 +213,8 @@ public class GalleryServiceImpl implements GalleryService {
         /*
             生成图片信息
          */
-        Picture picture = new Picture();
-        picture.setIllustrator(illustrator);
-        picture.setCollection(collection);
-        return picture;
+        return new Picture()
+                .setIllustrator(illustrator)
+                .setCollection(collection);
     }
 }
