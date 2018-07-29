@@ -10,7 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import sunnn.sunsite.dto.response.PictureInfoResponse;
 import sunnn.sunsite.dto.response.PictureListResponse;
+import sunnn.sunsite.entity.Picture;
 import sunnn.sunsite.util.StatusCode;
 import sunnn.sunsite.dto.request.PictureInfo;
 import sunnn.sunsite.dto.response.BaseResponse;
@@ -50,8 +52,20 @@ public class GalleryController {
 //                file.getName().getBytes("utf-8"), "iso8859-1");
         //这货是用来告诉浏览器：此资源是用来下载的
 //        headers.setContentDispositionFormData("attachment", destFileName);
-
         return new ResponseEntity<>(FileUtils.readFileToByteArray(file), headers, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "pictureInfo")
+    @ResponseBody
+    public PictureInfoResponse getPictureInfo(@RequestParam("p") String pictureName) {
+        Picture picture = galleryService.getPictureInfo(pictureName);
+
+        if (picture == null)
+            return new PictureInfoResponse(StatusCode.ILLEGAL_DATA);
+
+        PictureInfoResponse response = new PictureInfoResponse(StatusCode.OJBK);
+        return response.setIllustrator(picture.getIllustrator().getName())
+                .setCollection(picture.getCollection().getName());
     }
 
     @PostMapping(value = "/upload")
@@ -99,7 +113,6 @@ public class GalleryController {
         /*
             保存上传
          */
-        //TODO 业务流程具备一定的事务能力
         if (galleryService.saveUpload(info))
             return new BaseResponse(StatusCode.OJBK);
         else

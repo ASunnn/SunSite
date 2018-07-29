@@ -14,6 +14,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 @Document(collection = "type")
 @Getter
 @Setter
+@Accessors(chain = true)
 @ToString
 public class Type {
 

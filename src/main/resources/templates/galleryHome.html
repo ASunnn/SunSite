@@ -8,7 +8,8 @@
         /* 标题菜单 */
         .menu {
             text-align: center;
-            float: left;
+            /* 导致图片列表第一个图片位置错误的万恶之源 */
+            /* float: left; */
             width: 150px;
         }
         #menu {
@@ -26,36 +27,79 @@
             width: 100px;
             text-align: right;
         }
+        /* 图片列表 */
+        .pictureList {
+            display: inline-block;
+            /* 加上这个使得元素强行置顶，反而更难看 */
+            /* vertical-align: top; */
+            text-align: center;
+            width: 400px;   
+            height: 360px;
+            margin: 20px;
+        }
     </style>
+    <!-- 初始化 -->
     <script>
-        window.onload=function() { 
-            $.get("/gallery/list?p=0&s=20", function(data) {
-                if(data.code == 0) {
+        window.onload = function () {
+            $.get("/gallery/list?p=0&s=20", function (data) {
+                if (data.code == 0) {
                     alert(data.pageCount);
 
                     var pictureList = document.getElementById("pictureList");
 
-                    for(i=0; i<data.fileList.length; ++i) {
+                    for (i = 0; i < data.fileList.length; ++i) {
                         var pictureName = data.fileList[i];
+
+                        var divElement = document.createElement("div");
+                        divElement.setAttribute("class", "pictureList");
+                        divElement.setAttribute("id", pictureName);
+                        pictureList.appendChild(divElement);
+
                         var image = document.createElement("img");
                         image.src = "/gallery/m?thumbnail=" + pictureName;
-                        pictureList.appendChild(image);
+                        image.setAttribute("style", "display: block; margin: auto");
+                        divElement.appendChild(image);
+
+                        getPictureInfo(pictureName);
                     }
-                    pictureList.style.display = "block";
                 }
-                else if(data.code == 8)
-                alert(data.msg)
+                else if (data.code == 8)
+                    alert(data.msg)
                 else
                     window.location.href = "/error";
             });
         }
-    </script> 
+
+        function getPictureInfo(pictureName) {
+            $.get("/gallery/pictureInfo?p=" + pictureName, function (data) {
+                if (data.code != 0)
+                    return;
+                var illustrator = data.illustrator;
+                var collection = data.collection;
+
+                var divElement = document.getElementById(pictureName);
+
+                var illustratorElement = document.createElement("a");
+                illustratorElement.setAttribute("href", "/hello");
+                illustratorElement.innerHTML = illustrator;
+                illustratorElement.setAttribute("style", "display: block");
+                divElement.appendChild(illustratorElement);
+
+                var collectionElement = document.createElement("a");
+                collectionElement.setAttribute("href", "/hello");
+                collectionElement.innerHTML = collection;
+                collectionElement.setAttribute("style", "display: block");
+                divElement.appendChild(collectionElement);
+            });
+        }
+    </script>
+    <!-- 页面变换 -->
     <script>
         function upload() {
-            var menu = document.getElementById("menu");
-            menu.style.display = "none";
-            var pictureList = document.getElementById("pictureList");
-            pictureList.style.display = "none";
+            // var menu = document.getElementById("menu");
+            // menu.style.display = "none";
+            var content = document.getElementById("content");
+            content.style.display = "none";
 
             var uploadFile = document.getElementById("uploadFile");
             uploadFile.style.display = "block";
@@ -71,6 +115,7 @@
             uploadInfo.style.display = "block";
         }
     </script>
+    <!-- 上传 -->
     <script>
         $(function () {
             $("#submitFile").click(function () {
@@ -140,31 +185,36 @@
             Gallery</h1>
     </div>
     <div id="menu">
-        <h3 class="menu">Gallery</h3>
-        <!-- <h3 class="menu">Books</h3> -->
+        <h3 class="menu">
+            <a href="/galleryHome">
+            GALLERY</a></h3>
     </div>
-    <div id="uploadFile" style="display: none">
-        <form id="uploadFileForm" enctype="multipart/form-data">
-            <input type="file" name="file" multiple="multiple"/>
-            <input id="submitFile" type="button" value="sumbit!">
-        </form>
+    <div id="upload">
+        <div id="uploadFile" style="display: none">
+            <form id="uploadFileForm" enctype="multipart/form-data">
+                <input type="file" name="file" multiple="multiple" />
+                <input id="submitFile" type="button" value="sumbit!">
+            </form>
+        </div>
+        <div id="uploadInfo" style="display: none">
+            <form id="uploadInfoForm">
+                <input type="hidden" name="uploadCode" id="uploadCode" value="" />
+                <label for="illustrator">illustrator</label>
+                <input type="text" name="illustrator" id="illustrator" />
+                <br />
+                <label for="collection">collection</label>
+                <input type="text" name="collection" id="collection" />
+                <br />
+                <label for="type">type</label>
+                <input type="text" name="type" id="type" />
+                <br />
+                <input id="submitInfo" type="button" value="sumbit!">
+            </form>
+        </div>
     </div>
-    <div id="uploadInfo" style="display: none">
-        <form id="uploadInfoForm">
-            <input type="hidden" name="uploadCode" id="uploadCode" value="" />
-            <label for="illustrator">illustrator</label>
-            <input type="text" name="illustrator" id="illustrator" />
-            <br />
-            <label for="collection">collection</label>
-            <input type="text" name="collection" id="collection" />
-            <br />
-            <label for="type">type</label>
-            <input type="text" name="type" id="type" />
-            <br />
-            <input id="submitInfo" type="button" value="sumbit!" >
-        </form>
-    </div>
-    <div id="pictureList" style="display:none">
+    <div id="content">
+        <div id="pictureList">
+        </div>
     </div>
 </body>
 </html>

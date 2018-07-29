@@ -32,16 +32,15 @@ public class GalleryServiceImpl implements GalleryService {
 
     private static Logger log = LoggerFactory.getLogger(GalleryServiceImpl.class);
 
+    private final PictureDao pictureDao;
 
-    private PictureDao pictureDao;
+    private final IllustratorDao illustratorDao;
 
-    private IllustratorDao illustratorDao;
+    private final CollectionDao collectionDao;
 
-    private CollectionDao collectionDao;
+    private final TypeDao typeDao;
 
-    private TypeDao typeDao;
-
-    private FileCache fileCache;
+    private final FileCache fileCache;
 
     @Autowired
     public GalleryServiceImpl(PictureDao pictureDao, IllustratorDao illustratorDao, CollectionDao collectionDao, TypeDao typeDao, FileCache fileCache) {
@@ -70,11 +69,9 @@ public class GalleryServiceImpl implements GalleryService {
         /*
             转换结果
          */
-        String[] fileNameList = new String[pictureList.size()];
-        for (int i = 0; i < pictureList.size(); ++i)
-            fileNameList[i] =
-                    pictureList.get(i).getFileName();
-        return new PictureListResponse(StatusCode.OJBK, fileNameList, pageCount);
+        PictureListResponse response = new PictureListResponse(StatusCode.OJBK);
+        return response.convertTo(pictureList)
+                .setPageCount(pageCount);
     }
 
     @Override
@@ -82,6 +79,11 @@ public class GalleryServiceImpl implements GalleryService {
         Picture picture = pictureDao.findOne(pictureName);
         String path = picture.getPath() + picture.getThumbnailName();
         return new File(path);
+    }
+
+    @Override
+    public Picture getPictureInfo(String pictureName) {
+        return pictureDao.findOne(pictureName);
     }
 
     @Override

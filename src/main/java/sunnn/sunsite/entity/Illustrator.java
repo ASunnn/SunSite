@@ -3,6 +3,7 @@ package sunnn.sunsite.entity;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.Accessors;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -13,6 +14,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 @Document(collection = "illustrator")
 @Getter
 @Setter
+@Accessors(chain = true)
 @ToString
 public class Illustrator {
 

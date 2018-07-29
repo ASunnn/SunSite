@@ -5,6 +5,8 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 import sunnn.sunsite.entity.Type;
 
+import java.util.List;
+
 @Repository
 public class TypeDao extends MongoBase<Type> {
 
@@ -14,4 +16,7 @@ public class TypeDao extends MongoBase<Type> {
         return mongoTemplate.findOne(query, Type.class);
     }
 
+    public List<Type> getAllType() {
+        return mongoTemplate.findAll(Type.class);
+    }
 }

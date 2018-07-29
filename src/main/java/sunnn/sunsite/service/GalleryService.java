@@ -2,6 +2,7 @@ package sunnn.sunsite.service;
 
 import org.springframework.web.multipart.MultipartFile;
 import sunnn.sunsite.dto.response.PictureListResponse;
+import sunnn.sunsite.entity.Picture;
 import sunnn.sunsite.util.StatusCode;
 import sunnn.sunsite.dto.request.PictureInfo;
 
@@ -25,6 +26,14 @@ public interface GalleryService {
      * @return 缩略图文件
      */
     File getThumbnail(String pictureName);
+
+    /**
+     * 获取图片信息
+     *
+     * @param pictureName 图片名
+     * @return 图片信息
+     */
+    Picture getPictureInfo(String pictureName);
 
     /**
      * 检查文件合法性
