@@ -18,7 +18,7 @@ public class PictureDao extends MongoBase<Picture> {
     }
 
     public List<Picture> getPicture(int page, int pageSize) {
-        long skip = page * page;
+        long skip = page * pageSize;
 
         Query query = new Query();
         query.with(new Sort(Sort.Direction.ASC, "fileName"))

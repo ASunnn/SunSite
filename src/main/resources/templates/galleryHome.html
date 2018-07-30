@@ -1,50 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Gallery</title>
     <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.9.0.min.js"></script>
     <style>
         /* 标题菜单 */
+
         .menu {
+            margin-left: auto;
+            margin-right: auto;
+            width: 150px;
+            height: 50px;
+        }
+
+        .menuContent {
             text-align: center;
             /* 导致图片列表第一个图片位置错误的万恶之源 */
             /* float: left; */
             width: 150px;
         }
-        #menu {
-            margin-left:auto;
-            margin-right:auto;
-            width: 150px;
-            height: 50px;
-        }
+
         /* 表单 */
-        #uploadFile,#uploadInfo {
+
+        .upload {
             text-align: center;
         }
+
         label {
             display: inline-block;
             width: 100px;
             text-align: right;
         }
+
         /* 图片列表 */
+
         .pictureList {
             display: inline-block;
             /* 加上这个使得元素强行置顶，反而更难看 */
             /* vertical-align: top; */
             text-align: center;
-            width: 400px;   
+            width: 400px;
             height: 360px;
             margin: 20px;
+        }
+
+        .next {
+            text-align: center;
+            margin: 30px;
         }
     </style>
     <!-- 初始化 -->
     <script>
         window.onload = function () {
-            $.get("/gallery/list?p=0&s=20", function (data) {
+            getPictureList(0);
+        }
+        function getPictureList(page) {
+            $.get("/gallery/list?p=" + page + "&s=10", function (data) {
                 if (data.code == 0) {
-                    alert(data.pageCount);
-
                     var pictureList = document.getElementById("pictureList");
 
                     for (i = 0; i < data.fileList.length; ++i) {
@@ -61,6 +75,29 @@
                         divElement.appendChild(image);
 
                         getPictureInfo(pictureName);
+                    }
+
+                    page = page + 1;
+                    if (page >= data.pageCount) {
+                        alert("enter 1");
+                        if(page > 1) {
+                            var nextButton = document.getElementById("next");
+                            nextButton.remove();
+                        }
+                    } else if(page == 1) {
+                        alert("enter 2");
+                        var nextButton = document.createElement("h3");
+                        nextButton.setAttribute("id", "next");
+                        nextButton.setAttribute("class", "next");
+                        nextButton.innerHTML = page;
+                        nextButton.setAttribute("onclick", "getPictureList(" + nextButton.innerHTML + ")");
+
+                        var pageElement = document.getElementById("page");
+                        pageElement.appendChild(nextButton);
+                    } else {
+                        alert("enter 3");
+                        var nextButton = document.getElementById("next");
+                        nextButton.innerHTML = page;
                     }
                 }
                 else if (data.code == 8)
@@ -96,8 +133,6 @@
     <!-- 页面变换 -->
     <script>
         function upload() {
-            // var menu = document.getElementById("menu");
-            // menu.style.display = "none";
             var content = document.getElementById("content");
             content.style.display = "none";
 
@@ -129,16 +164,16 @@
                     contentType: false, //必须
                 }).done(function (data) {
                     alert(data.msg);
-                    if(data.code == 0) {
+                    if (data.code == 0) {
                         var uploadCode = document.getElementById("uploadCode");
                         uploadCode.value = data.uploadCode;
                         uploadInfo();
-                    } else if(data.code == 2) {
+                    } else if (data.code == 2) {
                         alert(data.duplicatedFile);
                     }
                 }).fail(function () {
                     alert("error");
-                    window.location.href="./error";
+                    window.location.href = "./error";
                 });
             });
         });
@@ -150,10 +185,10 @@
                 var uploadCode = $('#uploadCode').val();
 
                 var data = {
-                    "illustrator":illustrator,
-                    "collection":collection,
-                    "type":type,
-                    "uploadCode":uploadCode
+                    "illustrator": illustrator,
+                    "collection": collection,
+                    "type": type,
+                    "uploadCode": uploadCode
                 };
 
                 $.ajax({
@@ -164,39 +199,38 @@
                     contentType: "application/json",
                 }).done(function (data) {
                     alert(data.msg);
-                    if(data.code == 0) {
+                    if (data.code == 0) {
                         window.location.reload();
                     }
                 }).fail(function () {
                     alert("error");
-                    window.location.href="./error";
+                    window.location.href = "./error";
                 });
             });
         });
     </script>
-    
+
 </head>
 
 <body>
     <div id="title">
-        <h1 id="titleText"
-            onclick="upload()"
-            style="text-align:center;font-size:50px">
+        <h1 id="titleText" onclick="upload()" style="text-align:center;font-size:50px">
             Gallery</h1>
     </div>
-    <div id="menu">
-        <h3 class="menu">
+    <div class="menu">
+        <h3 class="menuContent">
             <a href="/galleryHome">
-            GALLERY</a></h3>
+                GALLERY</a>
+        </h3>
     </div>
     <div id="upload">
-        <div id="uploadFile" style="display: none">
+        <div class="upload" id="uploadFile" style="display: none">
             <form id="uploadFileForm" enctype="multipart/form-data">
                 <input type="file" name="file" multiple="multiple" />
                 <input id="submitFile" type="button" value="sumbit!">
             </form>
         </div>
-        <div id="uploadInfo" style="display: none">
+        <div class="upload" id="uploadInfo" style="display: none">
             <form id="uploadInfoForm">
                 <input type="hidden" name="uploadCode" id="uploadCode" value="" />
                 <label for="illustrator">illustrator</label>
@@ -215,14 +249,9 @@
     <div id="content">
         <div id="pictureList">
         </div>
+        <div id="page">
+        </div>
     </div>
 </body>
+
 </html>
-
-
-
-
-
-
-
-
