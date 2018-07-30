@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import sunnn.sunsite.dto.request.DeletePicture;
 import sunnn.sunsite.dto.response.PictureInfoResponse;
 import sunnn.sunsite.dto.response.PictureListResponse;
 import sunnn.sunsite.entity.Picture;
@@ -35,14 +36,14 @@ public class GalleryController {
         this.galleryService = galleryService;
     }
 
-    @RequestMapping(value = "list")
+    @GetMapping(value = "/list")
     @ResponseBody
     public PictureListResponse getPictureList(@RequestParam("p") int page,
                                               @RequestParam("s") int pageSize) {
         return galleryService.getPictureList(page, pageSize);
     }
 
-    @RequestMapping(value = "m")
+    @GetMapping(value = "/m")
     public ResponseEntity getThumbnail(@RequestParam("thumbnail") String pictureName) throws IOException {
         File file = galleryService.getThumbnail(pictureName);
 
@@ -55,7 +56,7 @@ public class GalleryController {
         return new ResponseEntity<>(FileUtils.readFileToByteArray(file), headers, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "pictureInfo")
+    @GetMapping(value = "/pictureInfo")
     @ResponseBody
     public PictureInfoResponse getPictureInfo(@RequestParam("p") String pictureName) {
         Picture picture = galleryService.getPictureInfo(pictureName);
@@ -64,8 +65,18 @@ public class GalleryController {
             return new PictureInfoResponse(StatusCode.ILLEGAL_DATA);
 
         PictureInfoResponse response = new PictureInfoResponse(StatusCode.OJBK);
-        return response.setIllustrator(picture.getIllustrator().getName())
+        return response.setName(picture.getFileName())
+                .setIllustrator(picture.getIllustrator().getName())
                 .setCollection(picture.getCollection().getName());
+    }
+
+    @GetMapping(value = "/l/{name}")
+    public ResponseEntity getPictureFile(@PathVariable("name") String pictureName) throws IOException {
+        File file = galleryService.getPictureFile(pictureName);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.IMAGE_JPEG);
+        return new ResponseEntity<>(FileUtils.readFileToByteArray(file), headers, HttpStatus.OK);
     }
 
     @PostMapping(value = "/upload")
@@ -117,5 +128,11 @@ public class GalleryController {
             return new BaseResponse(StatusCode.OJBK);
         else
             return new BaseResponse(StatusCode.ERROR);
+    }
+
+    @PostMapping(value = "/delete")
+    @ResponseBody
+    public BaseResponse deletePicture(@Valid @RequestBody DeletePicture deletePicture) {
+        return null;
     }
 }

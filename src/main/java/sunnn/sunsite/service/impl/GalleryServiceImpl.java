@@ -87,6 +87,13 @@ public class GalleryServiceImpl implements GalleryService {
     }
 
     @Override
+    public File getPictureFile(String pictureName) {
+        Picture picture = pictureDao.findOne(pictureName);
+        String path = picture.getPath() + picture.getFileName();
+        return new File(path);
+    }
+
+    @Override
     public StatusCode checkFile(MultipartFile file, String uploadCode) {
         /*
             检测文件是否为空
@@ -218,5 +225,10 @@ public class GalleryServiceImpl implements GalleryService {
         return new Picture()
                 .setIllustrator(illustrator)
                 .setCollection(collection);
+    }
+
+    @Override
+    public void deletePicture(String pictureName) {
+
     }
 }

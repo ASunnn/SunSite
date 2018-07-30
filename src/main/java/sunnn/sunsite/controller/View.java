@@ -1,7 +1,9 @@
 package sunnn.sunsite.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 /**
  * 视图映射
@@ -41,6 +43,18 @@ public class View {
     @RequestMapping(value = "/galleryHome")
     public String galleryHome() {
         return "galleryHome";
+    }
+
+    /**
+     * 图片显示
+     */
+    @RequestMapping(value = "/gallery/show/*")
+    public String gallery() {
+        return "gallery";
+//        ModelAndView mv = new ModelAndView();
+//        mv.setViewName("gallery");
+//        mv.addObject("p", pictureName);
+//        return mv;
     }
 
 }

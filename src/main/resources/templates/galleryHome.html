@@ -72,20 +72,22 @@
                         var image = document.createElement("img");
                         image.src = "/gallery/m?thumbnail=" + pictureName;
                         image.setAttribute("style", "display: block; margin: auto");
-                        divElement.appendChild(image);
+                        
+                        var imageLink = document.createElement("a");
+                        imageLink.setAttribute("href", "/gallery/show/" + pictureName);
+                        imageLink.appendChild(image);
+                        divElement.appendChild(imageLink);
 
                         getPictureInfo(pictureName);
                     }
 
                     page = page + 1;
                     if (page >= data.pageCount) {
-                        alert("enter 1");
                         if(page > 1) {
                             var nextButton = document.getElementById("next");
                             nextButton.remove();
                         }
                     } else if(page == 1) {
-                        alert("enter 2");
                         var nextButton = document.createElement("h3");
                         nextButton.setAttribute("id", "next");
                         nextButton.setAttribute("class", "next");
@@ -95,13 +97,12 @@
                         var pageElement = document.getElementById("page");
                         pageElement.appendChild(nextButton);
                     } else {
-                        alert("enter 3");
                         var nextButton = document.getElementById("next");
                         nextButton.innerHTML = page;
                     }
                 }
                 else if (data.code == 8)
-                    alert(data.msg)
+                    alert(data.msg);
                 else
                     window.location.href = "/error";
             });

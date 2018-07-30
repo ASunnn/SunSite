@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.9.0.min.js"></script>
+    <style>
+        /* 标题菜单 */
+        .menu {
+            margin-left: auto;
+            margin-right: auto;
+            width: 150px;
+            height: 50px;
+        }
+        .menuContent {
+            text-align: center;
+            width: 150px;
+        }
+        .picture {
+            width: 1000px;
+            height: 1000px;
+        }
+    </style>
+    <script>
+        window.onload = function () {
+            var r = window.location.href.split("/");
+            var pictureName = r[r.length-1];
+            document.title = pictureName;
+
+            $.get("/gallery/pictureInfo?p=" + pictureName, function (data) {
+                if (data.code == 4) {
+                    alert(data.msg);
+                    window.location.href = "/error";
+                }
+                    
+                var name = data.name;
+                var illustrator = data.illustrator;
+                var collection = data.collection;
+
+                var divElement = document.getElementById("info");
+
+                var nameElement = document.createElement("p");
+                nameElement.innerHTML = name;
+                divElement.appendChild(nameElement);
+
+                var illustratorElement = document.createElement("p");
+                illustratorElement.innerHTML = illustrator;
+                var illustratorLink = document.createElement("a");
+                illustratorLink.setAttribute("href", "/hello");
+                illustratorLink.setAttribute("style", "display: block");
+                illustratorLink.appendChild(illustratorElement);
+                divElement.appendChild(illustratorLink);
+
+                var collectionElement = document.createElement("p");
+                collectionElement.innerHTML = collection;
+                var collectionLink = document.createElement("a");
+                collectionLink.setAttribute("href", "/hello");
+                collectionLink.setAttribute("style", "display: block");
+                collectionLink.appendChild(collectionElement);
+                divElement.appendChild(collectionLink);
+            });
+            
+            var image = document.createElement("img");
+            image.src = "/gallery/l/" + pictureName;
+            // image.setAttribute("style", "display: block; margin: auto");
+            var divElement = document.getElementById("picture");
+            divElement.appendChild(image);
+        }
+    </script>
+</head>
+
+<body>
+    <div id="title">
+        <h1 id="titleText" onclick="upload()" style="text-align:center;font-size:50px">
+            Gallery</h1>
+    </div>
+    <div class="menu">
+        <h3 class="menuContent">
+            <a href="/galleryHome">
+                GALLERY</a>
+        </h3>
+    </div>
+    <div id="picture" class="picture">
+
+    </div>
+    <div id="info">
+
+    </div>
+    <div id="delete"></div>
+</body>
+
+</html>

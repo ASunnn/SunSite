@@ -30,4 +30,8 @@ public class PictureDao extends MongoBase<Picture> {
         return mongoTemplate.count(new Query(), Picture.class);
     }
 
+    public void delete(String fileName) {
+
+    }
+
 }

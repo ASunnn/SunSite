@@ -13,13 +13,13 @@ import javax.validation.constraints.NotBlank;
 @ToString
 public class PictureInfo {
 
-    @NotBlank(message = "Illustrator Can't Be Empty")
+    @NotBlank
     private String illustrator;
 
-    @NotBlank(message = "Collection Can't Be Empty")
+    @NotBlank
     private String collection;
 
-    @NotBlank(message = "Type Can't Be Empty")
+    @NotBlank
     private String type;
 
     private String uploadCode;

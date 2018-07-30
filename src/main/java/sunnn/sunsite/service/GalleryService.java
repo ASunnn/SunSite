@@ -36,6 +36,14 @@ public interface GalleryService {
     Picture getPictureInfo(String pictureName);
 
     /**
+     * 获取图片本体
+     *
+     * @param pictureName 图片名
+     * @return 图片文件
+     */
+    File getPictureFile(String pictureName);
+
+    /**
      * 检查文件合法性
      *
      * @param file 图片文件
@@ -49,5 +57,12 @@ public interface GalleryService {
      * @return 保存结果
      */
     boolean saveUpload(PictureInfo info);
+
+    /**
+     * 删除图片
+     *
+     * @param pictureName 图片名
+     */
+    void deletePicture(String pictureName);
 
 }

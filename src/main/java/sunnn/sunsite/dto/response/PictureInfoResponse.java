@@ -12,6 +12,8 @@ import sunnn.sunsite.util.StatusCode;
 @ToString
 public class PictureInfoResponse extends BaseResponse {
 
+    private String name;
+
     private String illustrator;
 
     private String collection;
@@ -20,8 +22,9 @@ public class PictureInfoResponse extends BaseResponse {
         super(statusCode);
     }
 
-    public PictureInfoResponse(StatusCode statusCode, String illustrator, String collection) {
+    public PictureInfoResponse(StatusCode statusCode, String name, String illustrator, String collection) {
         super(statusCode);
+        this.name = name;
         this.illustrator = illustrator;
         this.collection = collection;
     }
