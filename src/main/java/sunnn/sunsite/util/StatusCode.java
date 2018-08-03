@@ -17,4 +17,12 @@ public enum StatusCode {
     public int getCode() {
         return code;
     }
+
+    @Override
+    public String toString() {
+        return "Illustrator{" +
+                "msg='" + this.name() + '\'' +
+                ", code='" + code + '\'' +
+                '}';
+    }
 }

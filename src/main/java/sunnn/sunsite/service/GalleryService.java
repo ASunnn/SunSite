@@ -63,6 +63,6 @@ public interface GalleryService {
      *
      * @param pictureName 图片名
      */
-    void deletePicture(String pictureName);
+    StatusCode deletePicture(String pictureName);
 
 }

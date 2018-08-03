@@ -77,7 +77,7 @@ class SunRealm extends AuthorizingRealm {
 
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
-        String passCode = meDao.findAll(Me.class).get(0).getPassCode();
+        String passCode = meDao.getCorrectMe().getPassCode();
         return new SimpleAuthenticationInfo(
                 "", //个人系统验证不需要用户名
                 passCode,

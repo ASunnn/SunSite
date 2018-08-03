@@ -15,27 +15,21 @@ public class SunSiteConstant {
 
     public static int thumbnailSize;
 
-    public String getPictureTempPath() {
-        return pictureTempPath;
-    }
+    public static String pathSeparator;
 
     public void setPictureTempPath(String pictureTempPath) {
         SunSiteConstant.pictureTempPath = pictureTempPath;
-    }
-
-    public String getPicturePath() {
-        return picturePath;
     }
 
     public void setPicturePath(String picturePath) {
         SunSiteConstant.picturePath = picturePath;
     }
 
-    public static int getThumbnailSize() {
-        return thumbnailSize;
-    }
-
     public static void setThumbnailSize(int thumbnailSize) {
         SunSiteConstant.thumbnailSize = thumbnailSize;
+    }
+
+    public static void setPathSeparator(String pathSeparator) {
+        SunSiteConstant.pathSeparator = pathSeparator;
     }
 }

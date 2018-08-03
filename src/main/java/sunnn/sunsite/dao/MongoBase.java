@@ -11,44 +11,45 @@ import java.util.List;
 
 /**
  * MongoDB数据库操作通用方法
+ *
+ * @param <T> 数据库表实体
  * @author ASun
- * @param <T>   数据库表实体
  */
 public abstract class MongoBase<T> {
 
     @Autowired
     protected MongoTemplate mongoTemplate;
 
-    public long count(Query query,Class<T> entityClass) {
-        return mongoTemplate.count(query,entityClass);
-    }
-
     public void insert(T object) {
         mongoTemplate.insert(object);
     }
 
-    public T findOne(Query query, Class<T> entityClass) {
-        return mongoTemplate.findOne(query,entityClass);
+    T findOne(Query query, Class<T> entityClass) {
+        return mongoTemplate.findOne(query, entityClass);
     }
 
-    public List<T> find(Query query, Class<T> entityClass) {
-        return mongoTemplate.find(query,entityClass);
+    List<T> find(Query query, Class<T> entityClass) {
+        return mongoTemplate.find(query, entityClass);
     }
 
-    public List<T> findAll(Class<T> entityClass) {
+    List<T> findAll(Class<T> entityClass) {
         return mongoTemplate.findAll(entityClass);
     }
 
-    public UpdateResult updateFirst(Query query, Update update, Class<T> entityClass) {
-        return mongoTemplate.updateFirst(query, update, entityClass);
+    long count(Query query, Class<T> entityClass) {
+        return mongoTemplate.count(query, entityClass);
     }
 
-    public UpdateResult updateMulti(Query query, Update update, Class<T> entityClass) {
-        return mongoTemplate.updateMulti(query, update, entityClass);
+    boolean remove(Query query, Class<T> entityClass) {
+        DeleteResult result = mongoTemplate.remove(query, entityClass);
+        return result.wasAcknowledged() && result.getDeletedCount() == 1;
     }
 
-    public void remove(Query query, Class<T> entityClass) {
-        DeleteResult remove = mongoTemplate.remove(query, entityClass);
-        System.out.println(remove.toString());
-    }
+//    public UpdateResult updateFirst(Query query, Update update, Class<T> entityClass) {
+//        return mongoTemplate.updateFirst(query, update, entityClass);
+//    }
+//
+//    public UpdateResult updateMulti(Query query, Update update, Class<T> entityClass) {
+//        return mongoTemplate.updateMulti(query, update, entityClass);
+//    }
 }

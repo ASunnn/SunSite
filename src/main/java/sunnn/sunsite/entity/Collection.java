@@ -5,7 +5,6 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -31,7 +30,7 @@ public class Collection {
     /**
      * 图片类型
      */
-    @DBRef
+    @Field(value = "typex")
     private Type type;
 
     public Collection(String name, Type type) {

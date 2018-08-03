@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import sun.security.provider.Sun;
 import sunnn.sunsite.util.SunSiteConstant;
 import sunnn.sunsite.dao.CollectionDao;
 import sunnn.sunsite.dao.IllustratorDao;
@@ -118,6 +119,7 @@ public class GalleryServiceImpl implements GalleryService {
         try {
             fileCache.setFile(uploadCode, file);
         } catch (IOException e) {
+            log.error("Trans TempFile Failed : " + e);
             //发生IO错误的情况下，直接返回
             return StatusCode.ERROR;
         }
@@ -126,6 +128,9 @@ public class GalleryServiceImpl implements GalleryService {
 
     @Override
     public boolean saveUpload(PictureInfo info) {
+        /*
+            图片信息处理
+         */
         Picture picture = checkInfo(info);
         /*
             进行文件的保存
@@ -135,18 +140,20 @@ public class GalleryServiceImpl implements GalleryService {
         //对文件记录进行保存
         for (File file : files) {
             try {
+                /*
+                    存文件
+                 */
                 //生成图片系统信息
                 picture.setUploadTime(System.currentTimeMillis())
                         .setFileName(file.getName())
                         .setPath(SunSiteConstant.picturePath
                                 + picture.getIllustrator().getName()
-                                + "\\"
+                                + SunSiteConstant.pathSeparator
                                 + picture.getCollection().getName()
-                                + "\\")
+                                + SunSiteConstant.pathSeparator)
                         .setId(null);   //不想一次次构建pic实体类的话就每次插入前先把id置为null
 
-                //保存原图
-                //判断路径是否存在
+                //判断保存路径是否存在
                 File path = new File(picture.getPath());
                 if (!path.exists())
                     if (!path.mkdirs())
@@ -166,7 +173,7 @@ public class GalleryServiceImpl implements GalleryService {
                         .size(SunSiteConstant.thumbnailSize, SunSiteConstant.thumbnailSize)
                         .toFile(picture.getPath() + picture.getThumbnailName());
 
-                //保存
+                //保存原图
                 FileChannel inputChannel = new FileInputStream(file).getChannel();
                 FileChannel outputChannel = new FileOutputStream(
                         new File(picture.getPath() + picture.getFileName()))
@@ -174,8 +181,9 @@ public class GalleryServiceImpl implements GalleryService {
                 outputChannel.transferFrom(inputChannel, 0, inputChannel.size());
                 inputChannel.close();
                 outputChannel.close();
-
-                //将图片记录保存到数据库
+                /*
+                    存数据库
+                 */
                 pictureDao.insert(picture);
             } catch (IOException e) {
                 //若中间出错，
@@ -183,10 +191,8 @@ public class GalleryServiceImpl implements GalleryService {
                 return false;
             }
         }
-
         return true;
     }
-
 
     /**
      * 检查文件信息
@@ -228,7 +234,46 @@ public class GalleryServiceImpl implements GalleryService {
     }
 
     @Override
-    public void deletePicture(String pictureName) {
+    public StatusCode deletePicture(String pictureName) {
+        /*
+            检查文件
+         */
+        Picture p = pictureDao.findOne(pictureName);
+        if (p == null)
+            return StatusCode.ILLEGAL_DATA;
+        /*
+            删除
+         */
+        if (pictureDao.delete(pictureName)) {
+            delete(p.getPath() + p.getFileName());
+            delete(p.getPath() + p.getThumbnailName());
 
+            //检查collection是否为空
+            String collection = p.getCollection().getName();
+            if (pictureDao.findByCollection(collection).isEmpty()) {
+                //预先保存type
+                String type = collectionDao.findOne(collection).getType().getName();
+                collectionDao.delete(collection);
+                delete(p.getPath());
+
+                //检查type是否为空
+                if (collectionDao.findByType(type).isEmpty())
+                    typeDao.delete(type);
+            }
+
+            //检查illustrator是否为空
+            String illustrator = p.getIllustrator().getName();
+            if (pictureDao.findByIllustrator(illustrator).isEmpty()) {
+                illustratorDao.delete(illustrator);
+                delete(p.getIllustrator().getPath());
+            }
+        }
+        return StatusCode.OJBK;
     }
+
+    private void delete(String path) {
+        if (!new File(path).delete())
+            log.warn("Delete Picture Failed : " + path);
+    }
+
 }

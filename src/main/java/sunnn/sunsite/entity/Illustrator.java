@@ -7,6 +7,9 @@ import lombok.experimental.Accessors;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+import sunnn.sunsite.util.SunSiteConstant;
+
+import java.io.File;
 
 /**
  * 画师
@@ -27,7 +30,18 @@ public class Illustrator {
     @Field(value = "name")
     private String name;
 
+    /**
+     * 该画师图片的保存路径
+     */
+    @Field(value = "path")
+    private String path;
+
     public Illustrator(String name) {
         this.name = name;
+        this.path = SunSiteConstant.picturePath
+                + name
+                + SunSiteConstant.pathSeparator;
     }
+
+
 }

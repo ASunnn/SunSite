@@ -3,6 +3,7 @@ package sunnn.sunsite.dao;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
+import sunnn.sunsite.entity.Collection;
 import sunnn.sunsite.entity.Illustrator;
 
 import java.util.List;
@@ -11,13 +12,19 @@ import java.util.List;
 public class IllustratorDao extends MongoBase<Illustrator> {
 
     public Illustrator findOne(String name) {
-        Query query = new Query();
-        query.addCriteria(Criteria.where("name").is(name));
-        return mongoTemplate.findOne(query, Illustrator.class);
+        return findOne(
+                new Query().addCriteria(Criteria.where("name").is(name)),
+                Illustrator.class);
     }
 
     public List<Illustrator> getAllIllustrator() {
-        return mongoTemplate.findAll(Illustrator.class);
+        return findAll(Illustrator.class);
+    }
+
+    public boolean delete(String name) {
+        return remove(
+                new Query().addCriteria(Criteria.where("name").is(name)),
+                Illustrator.class);
     }
 
 }

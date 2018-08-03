@@ -5,7 +5,6 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -55,7 +54,7 @@ public class Picture {
      * 插画所属
      * 散图/本子/画集
      */
-    @DBRef
+    @Field(value = "collection")
     private Collection collection;
 
     public static final String THUMBNAIL_PREFIX = "m_";
