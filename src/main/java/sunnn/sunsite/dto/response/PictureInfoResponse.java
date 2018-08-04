@@ -12,29 +12,33 @@ import sunnn.sunsite.util.StatusCode;
 @ToString
 public class PictureInfoResponse extends BaseResponse {
 
+    private int sequence;
+
     private String name;
 
     private String illustrator;
 
     private String collection;
 
-    private String prev;
+    private int prev;
 
-    private String next;
+    private int next;
 
     public PictureInfoResponse(StatusCode statusCode) {
         super(statusCode);
     }
 
-    public PictureInfoResponse(StatusCode statusCode, String name, String illustrator, String collection) {
+    public PictureInfoResponse(StatusCode statusCode, int sequence, String name, String illustrator, String collection) {
         super(statusCode);
+        this.sequence = sequence;
         this.name = name;
         this.illustrator = illustrator;
         this.collection = collection;
     }
 
-    public PictureInfoResponse(StatusCode statusCode, String name, String illustrator, String collection, String prev, String next) {
+    public PictureInfoResponse(StatusCode statusCode, int sequence, String name, String illustrator, String collection, int prev, int next) {
         super(statusCode);
+        this.sequence = sequence;
         this.name = name;
         this.illustrator = illustrator;
         this.collection = collection;

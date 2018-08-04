@@ -22,27 +22,29 @@ public interface GalleryService {
     /**
      * 获取图片缩略图
      *
-     * @param pictureName 图片名
+     * @param sequenceCode 图片序列号
      * @return 缩略图文件
      */
-    File getThumbnail(String pictureName);
+    File getThumbnail(int sequenceCode);
 
     /**
      * 获取图片信息
      *
-     * @param pictureName 图片名
-     * @param extra       是否查询图片的前后信息
+     * @param sequenceCode 图片序列号
+     * @param extra        是否查询图片的前后信息
      * @return 图片信息
      */
-    PictureInfoResponse getPictureInfo(String pictureName, boolean extra);
+    PictureInfoResponse getPictureInfo(int sequenceCode, boolean extra);
 
     /**
      * 获取图片本体
      *
-     * @param pictureName 图片名
+     * @param illustrator 绘师
+     * @param collection  画集
+     * @param fileName    图片名
      * @return 图片文件
      */
-    File getPictureFile(String pictureName);
+    File getPictureFile(String illustrator, String collection, String fileName);
 
     /**
      * 检查文件合法性
@@ -62,8 +64,8 @@ public interface GalleryService {
     /**
      * 删除图片
      *
-     * @param pictureName 图片名
+     * @param sequenceCode 图片序列号
      */
-    StatusCode deletePicture(String pictureName);
+    StatusCode deletePicture(int sequenceCode);
 
 }

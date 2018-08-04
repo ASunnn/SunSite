@@ -44,8 +44,8 @@ public class GalleryController {
     }
 
     @GetMapping(value = "/m")
-    public ResponseEntity getThumbnail(@RequestParam("thumbnail") String pictureName) throws IOException {
-        File file = galleryService.getThumbnail(pictureName);
+    public ResponseEntity getThumbnail(@RequestParam("thumbnail") String sequenceCode) throws IOException {
+        File file = galleryService.getThumbnail(Integer.valueOf(sequenceCode));
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.IMAGE_JPEG);
@@ -58,13 +58,16 @@ public class GalleryController {
 
     @GetMapping(value = "/pictureInfo")
     @ResponseBody
-    public PictureInfoResponse getPictureInfo(@RequestParam("p") String pictureName, @RequestParam("e") boolean extra) {
-        return galleryService.getPictureInfo(pictureName, extra);
+    public PictureInfoResponse getPictureInfo(@RequestParam("p") String sequenceCode, @RequestParam("e") boolean extra) {
+        return galleryService.getPictureInfo(Integer.valueOf(sequenceCode), extra);
     }
 
-    @GetMapping(value = "/l/{name}")
-    public ResponseEntity getPictureFile(@PathVariable("name") String pictureName) throws IOException {
-        File file = galleryService.getPictureFile(pictureName);
+    @GetMapping(value = "/l/{illustrator}/{collection}/{pictureName}")
+    public ResponseEntity getPictureFile(@PathVariable("illustrator") String illustrator,
+                                         @PathVariable("collection") String collection,
+                                         @PathVariable("pictureName") String pictureName)
+            throws IOException {
+        File file = galleryService.getPictureFile(illustrator, collection, pictureName);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.IMAGE_JPEG);
@@ -88,26 +91,18 @@ public class GalleryController {
         /*
             对上传的文件进行逐个处理
          */
-        ArrayList<String> duplicatedFile = new ArrayList<>();
+//        ArrayList<String> duplicatedFile = new ArrayList<>();
         for (MultipartFile file : files) {
             StatusCode s = galleryService.checkFile(file, uploadCode);
             //非法文件，直接返回错误
             if (s == StatusCode.ILLEGAL_DATA)
                 return new FileUploadResponse(s);
-                //重复文件
-            else if (s == StatusCode.DUPLICATED_FILENAME)
-                duplicatedFile.add(file.getOriginalFilename());
+//                //重复文件
+//            else if (s == StatusCode.DUPLICATED_FILENAME)
+//                duplicatedFile.add(file.getOriginalFilename());
         }
-        /*
-            根据是否有重复文件判断结果
-         */
-        if (duplicatedFile.isEmpty())
-            return new FileUploadResponse(StatusCode.OJBK, uploadCode);
-        else {
-            String[] dFile = new String[duplicatedFile.size()];
-            duplicatedFile.toArray(dFile);
-            return new FileUploadResponse(StatusCode.DUPLICATED_FILENAME, dFile);
-        }
+
+        return new FileUploadResponse(StatusCode.OJBK, uploadCode);
     }
 
     @PostMapping(value = "/uploadInfo")
@@ -125,6 +120,6 @@ public class GalleryController {
     public BaseResponse deletePicture(@Valid @RequestBody DeletePicture deletePicture) {
         return new BaseResponse(
                 galleryService.deletePicture(
-                        deletePicture.getPictureName()));
+                        deletePicture.getPictureSequence()));
     }
 }

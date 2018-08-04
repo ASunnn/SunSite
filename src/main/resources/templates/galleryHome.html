@@ -59,30 +59,31 @@
     <script>
         window.onload = function () {
             getPictureList(0);
-        }
+        };
         function getPictureList(page) {
             $.get("/gallery/list?p=" + page + "&s=10", function (data) {
                 if (data.code == 0) {
                     var pictureList = document.getElementById("pictureList");
 
                     for (i = 0; i < data.fileList.length; ++i) {
-                        var pictureName = data.fileList[i];
+                        var sequence = data.fileList[i];
+                        // var sequence = data.sequence;
 
                         var divElement = document.createElement("div");
                         divElement.setAttribute("class", "pictureList");
-                        divElement.setAttribute("id", pictureName);
+                        divElement.setAttribute("id", sequence);
                         pictureList.appendChild(divElement);
 
                         var image = document.createElement("img");
-                        image.src = "/gallery/m?thumbnail=" + pictureName;
+                        image.src = "/gallery/m?thumbnail=" + sequence;
                         image.setAttribute("style", "display: block; margin: auto");
                         
                         var imageLink = document.createElement("a");
-                        imageLink.setAttribute("href", "/gallery/show/" + pictureName);
+                        imageLink.setAttribute("href", "/gallery/show/" + sequence);
                         imageLink.appendChild(image);
                         divElement.appendChild(imageLink);
 
-                        getPictureInfo(pictureName);
+                        getPictureInfo(sequence);
                     }
 
                     page = page + 1;
@@ -106,21 +107,21 @@
                         nextButton.setAttribute("onclick", "getPictureList(" + nextButton.innerHTML + ")");
                     }
                 }
-                else if (data.code == 8)
+                else if (data.code == 4)
                     alert(data.msg);
                 else
                     window.location.href = "/error";
             });
         }
 
-        function getPictureInfo(pictureName) {
-            $.get("/gallery/pictureInfo?p=" + pictureName + "&e=false", function (data) {
+        function getPictureInfo(sequence) {
+            $.get("/gallery/pictureInfo?p=" + sequence + "&e=false", function (data) {
                 if (data.code != 0)
                     return;
                 var illustrator = data.illustrator;
                 var collection = data.collection;
 
-                var divElement = document.getElementById(pictureName);
+                var divElement = document.getElementById(sequence);
 
                 var illustratorElement = document.createElement("a");
                 illustratorElement.setAttribute("href", "/hello");
@@ -167,7 +168,7 @@
                     data: formData,
                     cache: false,   //上传文件无需缓存
                     processData: false, //用于对data参数进行序列化处理 这里必须false
-                    contentType: false, //必须
+                    contentType: false //必须
                 }).done(function (data) {
                     alert(data.msg);
                     if (data.code == 0) {
@@ -202,7 +203,7 @@
                     url: "/gallery/uploadInfo",
                     data: JSON.stringify(data),
                     dataType: "JSON",
-                    contentType: "application/json",
+                    contentType: "application/json"
                 }).done(function (data) {
                     alert(data.msg);
                     if (data.code == 0) {

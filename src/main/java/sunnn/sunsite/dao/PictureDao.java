@@ -14,9 +14,9 @@ import java.util.List;
 @Repository
 public class PictureDao extends MongoBase<Picture> {
 
-    public Picture findOne(String fileName) {
+    public Picture findOne(int sequenceCode) {
         return findOne(
-                new Query().addCriteria(Criteria.where("name").is(fileName)),
+                new Query().addCriteria(Criteria.where("sequence").is(sequenceCode)),
                 Picture.class);
     }
 
@@ -39,7 +39,16 @@ public class PictureDao extends MongoBase<Picture> {
                 Picture.class);
     }
 
-    public List<Picture> getPicture(int page, int pageSize) {
+    public Picture getPicture(String illustrator, String collection, String pictureName) {
+        Query query = new Query();
+        query.addCriteria(Criteria
+                .where("illustrator.name").is(illustrator)
+                .and("collection.name").is(collection)
+                .and("name").is(pictureName));
+        return findOne(query, Picture.class);
+    }
+
+    public List<Picture> getPictureList(int page, int pageSize) {
         long skip = page * pageSize;
 
         Query query = new Query();
@@ -52,9 +61,9 @@ public class PictureDao extends MongoBase<Picture> {
         return count(new Query(), Picture.class);
     }
 
-    public boolean delete(String fileName) {
+    public boolean delete(int sequenceCode) {
         return remove(
-                new Query().addCriteria(Criteria.where("name").is(fileName)),
+                new Query().addCriteria(Criteria.where("sequence").is(sequenceCode)),
                 Picture.class);
     }
 

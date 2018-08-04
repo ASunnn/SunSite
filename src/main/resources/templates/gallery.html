@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title></title>
+    <title>Loading...</title>
     <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.9.0.min.js"></script>
     <style>
         /* 标题菜单 */
@@ -45,20 +45,22 @@
     <script>
         window.onload = function () {
             var r = window.location.href.split("/");
-            var pictureName = r[r.length-1];
-            document.title = pictureName;
-
-            $.get("/gallery/pictureInfo?p=" + pictureName + "&e=true", function (data) {
-                if (data.code == 4) {
+            var sequence = r[r.length-1];
+        
+            $.get("/gallery/pictureInfo?p=" + sequence + "&e=true", function (data) {
+                if (data.code == 2) {
                     alert(data.msg);
                     window.location.href = "/error";
                 }
                     
                 var name = data.name;
+                var sequenceCode = data.sequence;
                 var illustrator = data.illustrator;
                 var collection = data.collection;
                 var prev = data.prev;
                 var next = data.next;
+
+                document.title = name;
 
                 //生成info
                 var divElement = document.getElementById("info");
@@ -90,7 +92,7 @@
 
                 var prevElement = document.createElement("button");
                 prevElement.innerHTML = "← prev";
-                if (prev == null)
+                if (prev == -1)
                     prevElement.setAttribute("disable", "disable");
                 else
                     prevElement.setAttribute("onclick", "window.location.href='/gallery/show/" + prev + "'");
@@ -98,37 +100,35 @@
 
                 var nextElement = document.createElement("button");
                 nextElement.innerHTML = "next →";
-                if (next == null)
+                if (next == -1)
                     nextElement.setAttribute("disable", "disable");
                 else
                     nextElement.setAttribute("onclick", "window.location.href='/gallery/show/" + next + "'");
                 toolElement.appendChild(nextElement);
 
-                var deleteButton = document.getElementById("delete");
-                nextElement.setAttribute("onclick", "deletePicture()" + name + "'");
+                var image = document.createElement("img");
+                image.src = "/gallery/l/" + illustrator + "/" + collection + "/" + name;
+                // image.setAttribute("style", "display: block; margin: auto");
+                var divElement = document.getElementById("picture");
+                divElement.appendChild(image);
             });
-            
-            var image = document.createElement("img");
-            image.src = "/gallery/l/" + pictureName;
-            // image.setAttribute("style", "display: block; margin: auto");
-            var divElement = document.getElementById("picture");
-            divElement.appendChild(image);
-        }
+        };
     
         $(function () {
             $("#delete").click(function () {
-                var deltePicatureName = $("#pictureName").text();
-
+                var r = window.location.href.split("/");
+                var sequence = r[r.length-1];
+                alert(sequence);
                 var data = {
-                    "pictureName": deltePicatureName
-                }
+                    "pictureSequence": sequence
+                };
 
                 $.ajax({
                     method: 'post',
                     url: "/gallery/delete",
                     data: JSON.stringify(data),
                     dataType: "JSON",
-                    contentType: "application/json",
+                    contentType: "application/json"
                 }).done(function (data) {
                     alert(data.msg);
                     window.location.href = "/galleryHome";

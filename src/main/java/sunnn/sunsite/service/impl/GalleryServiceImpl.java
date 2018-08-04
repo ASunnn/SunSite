@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import sunnn.sunsite.dto.response.BaseResponse;
 import sunnn.sunsite.dto.response.PictureInfoResponse;
 import sunnn.sunsite.util.SunSiteConstant;
 import sunnn.sunsite.dao.CollectionDao;
@@ -63,7 +62,7 @@ public class GalleryServiceImpl implements GalleryService {
         /*
             查询
          */
-        List<Picture> pictureList = pictureDao.getPicture(page, pageSize);
+        List<Picture> pictureList = pictureDao.getPictureList(page, pageSize);
         if (pictureList.isEmpty())
             return new PictureListResponse(StatusCode.NO_DATA);
         long count = pictureDao.count();
@@ -81,21 +80,21 @@ public class GalleryServiceImpl implements GalleryService {
     }
 
     @Override
-    public File getThumbnail(String pictureName) {
-        Picture picture = pictureDao.findOne(pictureName);
+    public File getThumbnail(int sequenceCode) {
+        Picture picture = pictureDao.findOne(sequenceCode);
         String path = picture.getPath() + picture.getThumbnailName();
         return new File(path);
     }
 
     @Override
-    public PictureInfoResponse getPictureInfo(String pictureName, boolean extra) {
-        Picture p = pictureDao.findOne(pictureName);
+    public PictureInfoResponse getPictureInfo(int sequenceCode, boolean extra) {
+        Picture p = pictureDao.findOne(sequenceCode);
         if (p == null)
             return new PictureInfoResponse(StatusCode.ILLEGAL_DATA);
 
         PictureInfoResponse response = new PictureInfoResponse(StatusCode.OJBK);
         if (extra) {
-            String[] s = getClosePicture(p);
+            int[] s = getClosePicture(p);
             response.setPrev(s[0])
                     .setNext(s[1]);
         }
@@ -104,21 +103,21 @@ public class GalleryServiceImpl implements GalleryService {
                 .setCollection(p.getCollection().getName());
     }
 
-    private String[] getClosePicture(Picture p) {
+    private int[] getClosePicture(Picture p) {
         List<Picture> pictures = getPictureFromACollection(
                 p.getIllustrator().getName(), p.getCollection().getName());
 
         int index = pictures.indexOf(p);
 
-        String[] s = new String[2];
-        s[0] = index == 0 ? null : pictures.get(index - 1).getFileName();
-        s[1] = index + 1 == pictures.size() ? null : pictures.get(index + 1).getFileName();
+        int[] s = new int[2];
+        s[0] = index == 0 ? -1 : pictures.get(index - 1).getSequence();
+        s[1] = index + 1 == pictures.size() ? -1 : pictures.get(index + 1).getSequence();
         return s;
     }
 
     @Override
-    public File getPictureFile(String pictureName) {
-        Picture picture = pictureDao.findOne(pictureName);
+    public File getPictureFile(String illustrator, String collection, String fileName) {
+        Picture picture = pictureDao.getPicture(illustrator, collection, fileName);
         String path = picture.getPath() + picture.getFileName();
         return new File(path);
     }
@@ -137,11 +136,11 @@ public class GalleryServiceImpl implements GalleryService {
                 .matcher(file.getOriginalFilename());
         if (!fileNameMatcher.find())
             return StatusCode.ILLEGAL_DATA;
-        /*
-            查重处理
-         */
-        if (pictureDao.findOne(file.getOriginalFilename()) != null)
-            return StatusCode.DUPLICATED_FILENAME;
+//        /*
+//            查重处理
+//         */
+//        if (pictureDao.findOne(file.getOriginalFilename()) != null)
+//            return StatusCode.DUPLICATED_FILENAME;
         /*
             将图片放入缓存
          */
@@ -168,6 +167,8 @@ public class GalleryServiceImpl implements GalleryService {
          */
         //获取上传的文件
         List<File> files = fileCache.getFile(info.getUploadCode());
+        //把序列号提取出来重复利用，省去一次次查询数据库
+        int sequence = picture.getSequence();
         //对文件记录进行保存
         for (File file : files) {
             try {
@@ -176,6 +177,7 @@ public class GalleryServiceImpl implements GalleryService {
                  */
                 //生成图片系统信息
                 picture.setUploadTime(System.currentTimeMillis())
+                        .setSequence(sequence++)
                         .setFileName(file.getName())
                         .setPath(SunSiteConstant.picturePath
                                 + picture.getIllustrator().getName()
@@ -267,23 +269,25 @@ public class GalleryServiceImpl implements GalleryService {
         /*
             生成图片信息
          */
+        long count = pictureDao.count() + 1;
         return new Picture()
                 .setIllustrator(illustrator)
-                .setCollection(collection);
+                .setCollection(collection)
+                .setSequence((int) count);
     }
 
     @Override
-    public StatusCode deletePicture(String pictureName) {
+    public StatusCode deletePicture(int sequenceCode) {
         /*
             检查文件
          */
-        Picture p = pictureDao.findOne(pictureName);
+        Picture p = pictureDao.findOne(sequenceCode);
         if (p == null)
             return StatusCode.ILLEGAL_DATA;
         /*
             删除
          */
-        if (pictureDao.delete(pictureName)) {
+        if (pictureDao.delete(sequenceCode)) {
             delete(p.getPath() + p.getFileName());
             delete(p.getPath() + p.getThumbnailName());
 

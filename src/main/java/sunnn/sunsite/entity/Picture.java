@@ -59,6 +59,12 @@ public class Picture {
     @Field(value = "collection")
     private Collection collection;
 
+    /**
+     * 插画的序列号
+     */
+    @Field(value = "sequence")
+    private int sequence;
+
     public static final String THUMBNAIL_PREFIX = "m_";
 
     @Override
@@ -67,16 +73,14 @@ public class Picture {
         if (o == null || getClass() != o.getClass()) return false;
         Picture picture = (Picture) o;
         return uploadTime == picture.uploadTime &&
+                sequence == picture.sequence &&
                 Objects.equals(fileName, picture.fileName) &&
-                Objects.equals(path, picture.path) &&
-                Objects.equals(thumbnailName, picture.thumbnailName) &&
-                Objects.equals(illustrator, picture.illustrator) &&
-                Objects.equals(collection, picture.collection);
+                Objects.equals(path, picture.path);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(fileName, path, thumbnailName, illustrator, uploadTime, collection);
+        return Objects.hash(fileName, path, uploadTime, sequence);
     }
 }

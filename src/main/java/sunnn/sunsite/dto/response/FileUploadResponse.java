@@ -12,8 +12,6 @@ import sunnn.sunsite.util.StatusCode;
 @ToString
 public class FileUploadResponse extends BaseResponse {
 
-    private String[] duplicatedFile;
-
     private String uploadCode;
 
     public FileUploadResponse(StatusCode statusCode) {
@@ -23,10 +21,5 @@ public class FileUploadResponse extends BaseResponse {
     public FileUploadResponse(StatusCode statusCode, String uploadCode) {
         super(statusCode);
         this.uploadCode = uploadCode;
-    }
-
-    public FileUploadResponse(StatusCode statusCode, String[] duplicatedFile) {
-        super(statusCode);
-        this.duplicatedFile = duplicatedFile;
     }
 }
