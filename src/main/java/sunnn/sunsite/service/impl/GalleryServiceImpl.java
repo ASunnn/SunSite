@@ -6,7 +6,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import sun.security.provider.Sun;
+import sunnn.sunsite.dto.response.BaseResponse;
+import sunnn.sunsite.dto.response.PictureInfoResponse;
 import sunnn.sunsite.util.SunSiteConstant;
 import sunnn.sunsite.dao.CollectionDao;
 import sunnn.sunsite.dao.IllustratorDao;
@@ -15,7 +16,7 @@ import sunnn.sunsite.dao.TypeDao;
 import sunnn.sunsite.dto.response.PictureListResponse;
 import sunnn.sunsite.util.FileCache;
 import sunnn.sunsite.util.StatusCode;
-import sunnn.sunsite.dto.request.PictureInfo;
+import sunnn.sunsite.dto.request.UploadPictureInfo;
 import sunnn.sunsite.entity.Collection;
 import sunnn.sunsite.entity.Illustrator;
 import sunnn.sunsite.entity.Picture;
@@ -75,6 +76,10 @@ public class GalleryServiceImpl implements GalleryService {
                 .setPageCount(pageCount);
     }
 
+    public List<Picture> getPictureFromACollection(String illustrator, String collection) {
+        return pictureDao.findFromACollection(illustrator, collection);
+    }
+
     @Override
     public File getThumbnail(String pictureName) {
         Picture picture = pictureDao.findOne(pictureName);
@@ -83,8 +88,32 @@ public class GalleryServiceImpl implements GalleryService {
     }
 
     @Override
-    public Picture getPictureInfo(String pictureName) {
-        return pictureDao.findOne(pictureName);
+    public PictureInfoResponse getPictureInfo(String pictureName, boolean extra) {
+        Picture p = pictureDao.findOne(pictureName);
+        if (p == null)
+            return new PictureInfoResponse(StatusCode.ILLEGAL_DATA);
+
+        PictureInfoResponse response = new PictureInfoResponse(StatusCode.OJBK);
+        if (extra) {
+            String[] s = getClosePicture(p);
+            response.setPrev(s[0])
+                    .setNext(s[1]);
+        }
+        return response.setName(p.getFileName())
+                .setIllustrator(p.getIllustrator().getName())
+                .setCollection(p.getCollection().getName());
+    }
+
+    private String[] getClosePicture(Picture p) {
+        List<Picture> pictures = getPictureFromACollection(
+                p.getIllustrator().getName(), p.getCollection().getName());
+
+        int index = pictures.indexOf(p);
+
+        String[] s = new String[2];
+        s[0] = index == 0 ? null : pictures.get(index - 1).getFileName();
+        s[1] = index + 1 == pictures.size() ? null : pictures.get(index + 1).getFileName();
+        return s;
     }
 
     @Override
@@ -127,11 +156,13 @@ public class GalleryServiceImpl implements GalleryService {
     }
 
     @Override
-    public boolean saveUpload(PictureInfo info) {
+    public StatusCode saveUpload(UploadPictureInfo info) {
         /*
             图片信息处理
          */
         Picture picture = checkInfo(info);
+        if (picture == null)
+            return StatusCode.ILLEGAL_DATA;
         /*
             进行文件的保存
          */
@@ -188,19 +219,20 @@ public class GalleryServiceImpl implements GalleryService {
             } catch (IOException e) {
                 //若中间出错，
                 log.error("Error At SaveUpload : ", e);
-                return false;
+                return StatusCode.ERROR;
             }
         }
-        return true;
+        return StatusCode.OJBK;
     }
 
     /**
      * 检查文件信息
      *
      * @param info 图片信息
-     * @return 生成的图片实体
+     * @return 生成的图片实体，
+     * 当返回null时，表示文件信息错误
      */
-    private Picture checkInfo(PictureInfo info) {
+    private Picture checkInfo(UploadPictureInfo info) {
         /*
             检查是否为新画师
          */
@@ -210,20 +242,27 @@ public class GalleryServiceImpl implements GalleryService {
             illustratorDao.insert(illustrator);
         }
         /*
-            检查是否为新的图片类型
-         */
-        Type type = typeDao.findOne(info.getType());
-        if (type == null) {
-            type = new Type(info.getType());
-            typeDao.insert(type);
-        }
-        /*
             检查是否为新的画册
          */
         Collection collection = collectionDao.findOne(info.getCollection());
         if (collection == null) {
+            /*
+                检查是否为新的图片类型
+             */
+            Type type = typeDao.findOne(info.getType());
+            if (type == null) {
+                type = new Type(info.getType());
+                typeDao.insert(type);
+            }
             collection = new Collection(info.getCollection(), type);
             collectionDao.insert(collection);
+        } else {
+            /*
+                非新画册则对图片类型进行校验
+             */
+            String typeName = collection.getType().getName();
+            if (!typeName.equals(info.getType()))
+                return null;
         }
         /*
             生成图片信息

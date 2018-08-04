@@ -11,7 +11,7 @@ import javax.validation.constraints.NotBlank;
 @Setter
 @NoArgsConstructor
 @ToString
-public class PictureInfo {
+public class UploadPictureInfo {
 
     @NotBlank
     private String illustrator;

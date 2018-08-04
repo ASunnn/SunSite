@@ -18,6 +18,10 @@ public class PictureInfoResponse extends BaseResponse {
 
     private String collection;
 
+    private String prev;
+
+    private String next;
+
     public PictureInfoResponse(StatusCode statusCode) {
         super(statusCode);
     }
@@ -28,4 +32,15 @@ public class PictureInfoResponse extends BaseResponse {
         this.illustrator = illustrator;
         this.collection = collection;
     }
+
+    public PictureInfoResponse(StatusCode statusCode, String name, String illustrator, String collection, String prev, String next) {
+        super(statusCode);
+        this.name = name;
+        this.illustrator = illustrator;
+        this.collection = collection;
+        this.prev = prev;
+        this.next = next;
+    }
 }
+
+

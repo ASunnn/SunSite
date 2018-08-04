@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import sunnn.sunsite.util.SunSiteConstant;
 
 import java.io.File;
+import java.util.Objects;
 
 /**
  * 画师
@@ -43,5 +44,18 @@ public class Illustrator {
                 + SunSiteConstant.pathSeparator;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Illustrator that = (Illustrator) o;
+        return Objects.equals(name, that.name) &&
+                Objects.equals(path, that.path);
+    }
 
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(name, path);
+    }
 }

@@ -15,7 +15,7 @@ import sunnn.sunsite.dto.response.PictureInfoResponse;
 import sunnn.sunsite.dto.response.PictureListResponse;
 import sunnn.sunsite.entity.Picture;
 import sunnn.sunsite.util.StatusCode;
-import sunnn.sunsite.dto.request.PictureInfo;
+import sunnn.sunsite.dto.request.UploadPictureInfo;
 import sunnn.sunsite.dto.response.BaseResponse;
 import sunnn.sunsite.dto.response.FileUploadResponse;
 import sunnn.sunsite.service.GalleryService;
@@ -58,16 +58,8 @@ public class GalleryController {
 
     @GetMapping(value = "/pictureInfo")
     @ResponseBody
-    public PictureInfoResponse getPictureInfo(@RequestParam("p") String pictureName) {
-        Picture picture = galleryService.getPictureInfo(pictureName);
-
-        if (picture == null)
-            return new PictureInfoResponse(StatusCode.ILLEGAL_DATA);
-
-        PictureInfoResponse response = new PictureInfoResponse(StatusCode.OJBK);
-        return response.setName(picture.getFileName())
-                .setIllustrator(picture.getIllustrator().getName())
-                .setCollection(picture.getCollection().getName());
+    public PictureInfoResponse getPictureInfo(@RequestParam("p") String pictureName, @RequestParam("e") boolean extra) {
+        return galleryService.getPictureInfo(pictureName, extra);
     }
 
     @GetMapping(value = "/l/{name}")
@@ -120,19 +112,19 @@ public class GalleryController {
 
     @PostMapping(value = "/uploadInfo")
     @ResponseBody
-    public BaseResponse upload(@Valid @RequestBody PictureInfo info) {
+    public BaseResponse upload(@Valid @RequestBody UploadPictureInfo info) {
         /*
             保存上传
          */
-        if (galleryService.saveUpload(info))
-            return new BaseResponse(StatusCode.OJBK);
-        else
-            return new BaseResponse(StatusCode.ERROR);
+        return new BaseResponse(
+                galleryService.saveUpload(info));
     }
 
     @PostMapping(value = "/delete")
     @ResponseBody
     public BaseResponse deletePicture(@Valid @RequestBody DeletePicture deletePicture) {
-        return null;
+        return new BaseResponse(
+                galleryService.deletePicture(
+                        deletePicture.getPictureName()));
     }
 }

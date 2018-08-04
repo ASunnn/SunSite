@@ -38,7 +38,7 @@ public class VerifyController {
         }
 
         Session session = subject.getSession();
-        session.setTimeout(120000);
+        session.setTimeout(1200000);
         return "redirect:/home";
     }
 

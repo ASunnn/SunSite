@@ -48,7 +48,7 @@
             var pictureName = r[r.length-1];
             document.title = pictureName;
 
-            $.get("/gallery/pictureInfo?p=" + pictureName, function (data) {
+            $.get("/gallery/pictureInfo?p=" + pictureName + "&e=true", function (data) {
                 if (data.code == 4) {
                     alert(data.msg);
                     window.location.href = "/error";
@@ -57,12 +57,16 @@
                 var name = data.name;
                 var illustrator = data.illustrator;
                 var collection = data.collection;
+                var prev = data.prev;
+                var next = data.next;
 
+                //生成info
                 var divElement = document.getElementById("info");
 
                 var nameElement = document.createElement("p");
                 nameElement.innerHTML = name;
                 nameElement.setAttribute("class", "infoElement");
+                nameElement.setAttribute("id", "pictureName");
                 divElement.appendChild(nameElement);
 
                 var illustratorElement = document.createElement("p");
@@ -80,6 +84,28 @@
                 collectionLink.setAttribute("class", "infoElement");
                 collectionLink.appendChild(collectionElement);
                 divElement.appendChild(collectionLink);
+
+                //生成tool
+                var toolElement = document.getElementById("tool");
+
+                var prevElement = document.createElement("button");
+                prevElement.innerHTML = "← prev";
+                if (prev == null)
+                    prevElement.setAttribute("disable", "disable");
+                else
+                    prevElement.setAttribute("onclick", "window.location.href='/gallery/show/" + prev + "'");
+                toolElement.appendChild(prevElement);
+
+                var nextElement = document.createElement("button");
+                nextElement.innerHTML = "next →";
+                if (next == null)
+                    nextElement.setAttribute("disable", "disable");
+                else
+                    nextElement.setAttribute("onclick", "window.location.href='/gallery/show/" + next + "'");
+                toolElement.appendChild(nextElement);
+
+                var deleteButton = document.getElementById("delete");
+                nextElement.setAttribute("onclick", "deletePicture()" + name + "'");
             });
             
             var image = document.createElement("img");
@@ -88,12 +114,36 @@
             var divElement = document.getElementById("picture");
             divElement.appendChild(image);
         }
+    
+        $(function () {
+            $("#delete").click(function () {
+                var deltePicatureName = $("#pictureName").text();
+
+                var data = {
+                    "pictureName": deltePicatureName
+                }
+
+                $.ajax({
+                    method: 'post',
+                    url: "/gallery/delete",
+                    data: JSON.stringify(data),
+                    dataType: "JSON",
+                    contentType: "application/json",
+                }).done(function (data) {
+                    alert(data.msg);
+                    window.location.href = "/galleryHome";
+                }).fail(function () {
+                    alert("error");
+                    window.location.href = "/error";
+                });
+            });
+        });
     </script>
 </head>
 
 <body>
     <div id="title">
-        <h1 id="titleText" onclick="upload()" style="text-align:center;font-size:50px">
+        <h1 id="titleText" style="text-align:center;font-size:50px">
             Gallery</h1>
     </div>
     <div class="menu">
@@ -108,7 +158,9 @@
     <div id="info" class="info">
 
     </div>
-    <div id="delete"></div>
+    <div id="tool">
+        <button id="delete">Delete</button>
+    </div>
 </body>
 
 </html>

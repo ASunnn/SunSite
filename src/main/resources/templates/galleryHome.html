@@ -7,7 +7,6 @@
     <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.9.0.min.js"></script>
     <style>
         /* 标题菜单 */
-
         .menu {
             margin-left: auto;
             margin-right: auto;
@@ -41,9 +40,14 @@
             /* 加上这个使得元素强行置顶，反而更难看 */
             /* vertical-align: top; */
             text-align: center;
-            width: 400px;
-            height: 360px;
-            margin: 20px;
+            width: 320px;
+            height: 340px;
+            margin: 15px;
+        }
+
+        a {
+            overflow: hidden;
+            white-space: nowrap;
         }
 
         .next {
@@ -99,6 +103,7 @@
                     } else {
                         var nextButton = document.getElementById("next");
                         nextButton.innerHTML = page;
+                        nextButton.setAttribute("onclick", "getPictureList(" + nextButton.innerHTML + ")");
                     }
                 }
                 else if (data.code == 8)
@@ -109,7 +114,7 @@
         }
 
         function getPictureInfo(pictureName) {
-            $.get("/gallery/pictureInfo?p=" + pictureName, function (data) {
+            $.get("/gallery/pictureInfo?p=" + pictureName + "&e=false", function (data) {
                 if (data.code != 0)
                     return;
                 var illustrator = data.illustrator;
@@ -247,7 +252,7 @@
             </form>
         </div>
     </div>
-    <div id="content">
+    <div id="content" style="margin:auto; width: 1750px;">
         <div id="pictureList">
         </div>
         <div id="page">

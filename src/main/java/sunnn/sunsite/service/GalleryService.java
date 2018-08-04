@@ -1,10 +1,10 @@
 package sunnn.sunsite.service;
 
 import org.springframework.web.multipart.MultipartFile;
+import sunnn.sunsite.dto.response.PictureInfoResponse;
 import sunnn.sunsite.dto.response.PictureListResponse;
-import sunnn.sunsite.entity.Picture;
 import sunnn.sunsite.util.StatusCode;
-import sunnn.sunsite.dto.request.PictureInfo;
+import sunnn.sunsite.dto.request.UploadPictureInfo;
 
 import java.io.File;
 
@@ -31,9 +31,10 @@ public interface GalleryService {
      * 获取图片信息
      *
      * @param pictureName 图片名
+     * @param extra       是否查询图片的前后信息
      * @return 图片信息
      */
-    Picture getPictureInfo(String pictureName);
+    PictureInfoResponse getPictureInfo(String pictureName, boolean extra);
 
     /**
      * 获取图片本体
@@ -56,7 +57,7 @@ public interface GalleryService {
      *
      * @return 保存结果
      */
-    boolean saveUpload(PictureInfo info);
+    StatusCode saveUpload(UploadPictureInfo info);
 
     /**
      * 删除图片

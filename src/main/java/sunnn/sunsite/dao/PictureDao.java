@@ -32,6 +32,13 @@ public class PictureDao extends MongoBase<Picture> {
                 Picture.class);
     }
 
+    public List<Picture> findFromACollection(String illustrator, String collection) {
+        return find(
+                new Query().addCriteria(Criteria.where("illustrator.name").is(illustrator)
+                        .and("collection.name").is(collection)),
+                Picture.class);
+    }
+
     public List<Picture> getPicture(int page, int pageSize) {
         long skip = page * pageSize;
 
