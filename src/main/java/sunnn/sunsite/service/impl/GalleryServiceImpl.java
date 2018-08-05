@@ -6,7 +6,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import sunnn.sunsite.dto.request.PictureListWithFilter;
 import sunnn.sunsite.dto.response.PictureInfoResponse;
+import sunnn.sunsite.util.BaseDataBoxing;
 import sunnn.sunsite.util.SunSiteConstant;
 import sunnn.sunsite.dao.CollectionDao;
 import sunnn.sunsite.dao.IllustratorDao;
@@ -57,7 +59,7 @@ public class GalleryServiceImpl implements GalleryService {
         /*
             参数检查
          */
-        if (page < 0 || pageSize < 1)
+        if (!checkPageParam(page, pageSize))
             return new PictureListResponse(StatusCode.ILLEGAL_DATA);
         /*
             查询
@@ -73,6 +75,34 @@ public class GalleryServiceImpl implements GalleryService {
         PictureListResponse response = new PictureListResponse(StatusCode.OJBK);
         return response.convertTo(pictureList)
                 .setPageCount(pageCount);
+    }
+
+    @Override
+    public PictureListResponse getPictureListWithFilter(PictureListWithFilter filter) {
+        /*
+            参数检查
+         */
+        if (!checkPageParam(filter.getPage(), filter.getSize()))
+            return new PictureListResponse(StatusCode.ILLEGAL_DATA);
+        /*
+            查询
+         */
+        BaseDataBoxing<Long> dataCount = new BaseDataBoxing<>(0L);
+        List<Picture> pictureList = pictureDao.getPictureList(filter, dataCount);
+        System.out.println(dataCount.number);
+        if (dataCount.number == 0)
+            return new PictureListResponse(StatusCode.NO_DATA);
+        int pageCount = (int) Math.ceil(dataCount.number / (double) filter.getSize());
+        /*
+            转换结果
+         */
+        PictureListResponse response = new PictureListResponse(StatusCode.OJBK);
+        return response.convertTo(pictureList)
+                .setPageCount(pageCount);
+    }
+
+    private boolean checkPageParam(int page, int size) {
+        return !(page < 0 || size < 1);
     }
 
     public List<Picture> getPictureFromACollection(String illustrator, String collection) {
@@ -154,6 +184,9 @@ public class GalleryServiceImpl implements GalleryService {
         return StatusCode.OJBK;
     }
 
+    /**
+     * 此方法不支持多线程环境！！！！！！！
+     */
     @Override
     public StatusCode saveUpload(UploadPictureInfo info) {
         /*
@@ -236,22 +269,14 @@ public class GalleryServiceImpl implements GalleryService {
      */
     private Picture checkInfo(UploadPictureInfo info) {
         /*
-            检查是否为新画师
-         */
-        Illustrator illustrator = illustratorDao.findOne(info.getIllustrator());
-        if (illustrator == null) {
-            illustrator = new Illustrator(info.getIllustrator());
-            illustratorDao.insert(illustrator);
-        }
-        /*
             检查是否为新的画册
          */
         Collection collection = collectionDao.findOne(info.getCollection());
+        Type type = typeDao.findOne(info.getType());
         if (collection == null) {
             /*
                 检查是否为新的图片类型
              */
-            Type type = typeDao.findOne(info.getType());
             if (type == null) {
                 type = new Type(info.getType());
                 typeDao.insert(type);
@@ -267,12 +292,21 @@ public class GalleryServiceImpl implements GalleryService {
                 return null;
         }
         /*
+            检查是否为新画师
+         */
+        Illustrator illustrator = illustratorDao.findOne(info.getIllustrator());
+        if (illustrator == null) {
+            illustrator = new Illustrator(info.getIllustrator());
+            illustratorDao.insert(illustrator);
+        }
+        /*
             生成图片信息
          */
         long count = pictureDao.count() + 1;
         return new Picture()
                 .setIllustrator(illustrator)
                 .setCollection(collection)
+                .setType(type)
                 .setSequence((int) count);
     }
 

@@ -9,7 +9,6 @@ import javax.validation.constraints.NotBlank;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @ToString
 public class UploadPictureInfo {
 
@@ -22,5 +21,6 @@ public class UploadPictureInfo {
     @NotBlank
     private String type;
 
+    @NotBlank
     private String uploadCode;
 }

@@ -1,6 +1,7 @@
 package sunnn.sunsite.service;
 
 import org.springframework.web.multipart.MultipartFile;
+import sunnn.sunsite.dto.request.PictureListWithFilter;
 import sunnn.sunsite.dto.response.PictureInfoResponse;
 import sunnn.sunsite.dto.response.PictureListResponse;
 import sunnn.sunsite.util.StatusCode;
@@ -18,6 +19,9 @@ public interface GalleryService {
      * @return 图片文件列表
      */
     PictureListResponse getPictureList(int page, int pageSize);
+
+
+    PictureListResponse getPictureListWithFilter(PictureListWithFilter filter);
 
     /**
      * 获取图片缩略图

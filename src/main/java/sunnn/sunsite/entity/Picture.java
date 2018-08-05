@@ -3,6 +3,7 @@ package sunnn.sunsite.entity;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.Value;
 import lombok.experimental.Accessors;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -58,6 +59,12 @@ public class Picture {
      */
     @Field(value = "collection")
     private Collection collection;
+
+    /**
+     * 插画类型
+     */
+    @Field(value = "type")
+    private Type type;
 
     /**
      * 插画的序列号

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import sunnn.sunsite.dto.request.DeletePicture;
+import sunnn.sunsite.dto.request.PictureListWithFilter;
 import sunnn.sunsite.dto.response.PictureInfoResponse;
 import sunnn.sunsite.dto.response.PictureListResponse;
 import sunnn.sunsite.entity.Picture;
@@ -41,6 +42,12 @@ public class GalleryController {
     public PictureListResponse getPictureList(@RequestParam("p") int page,
                                               @RequestParam("s") int pageSize) {
         return galleryService.getPictureList(page, pageSize);
+    }
+
+    @PostMapping(value = "/filter")
+    @ResponseBody
+    public PictureListResponse getPictureListWithFilter(@RequestBody PictureListWithFilter filter) {
+        return galleryService.getPictureListWithFilter(filter);
     }
 
     @GetMapping(value = "/m")
@@ -95,7 +102,7 @@ public class GalleryController {
         for (MultipartFile file : files) {
             StatusCode s = galleryService.checkFile(file, uploadCode);
             //非法文件，直接返回错误
-            if (s == StatusCode.ILLEGAL_DATA)
+            if (s != StatusCode.OJBK)
                 return new FileUploadResponse(s);
 //                //重复文件
 //            else if (s == StatusCode.DUPLICATED_FILENAME)
@@ -117,7 +124,7 @@ public class GalleryController {
 
     @PostMapping(value = "/delete")
     @ResponseBody
-    public BaseResponse deletePicture(@Valid @RequestBody DeletePicture deletePicture) {
+    public BaseResponse deletePicture(@RequestBody DeletePicture deletePicture) {
         return new BaseResponse(
                 galleryService.deletePicture(
                         deletePicture.getPictureSequence()));

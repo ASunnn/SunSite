@@ -6,6 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -20,7 +21,6 @@ public class FileCache {
 
     /**
      * 缓存过期时间
-     * <p>
      * 为了防止数据库业务发生事务性问题，建议缓存过期时间大于session的超时时间
      */
     private long expiration;
@@ -92,6 +92,10 @@ public class FileCache {
     }
 
     private File storeFile(MultipartFile file) throws IOException {
+        File path = new File(SunSiteConstant.pictureTempPath);
+        if (!path.exists())
+            if (!path.mkdirs())
+                throw new IOException("Can not Create TempPath");
         File f = new File(SunSiteConstant.pictureTempPath + file.getOriginalFilename());
         file.transferTo(f);
         return f;

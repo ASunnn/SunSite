@@ -27,10 +27,84 @@
             text-align: center;
         }
 
+        .uploadInput {
+            height: 20px
+        }
+
         label {
             display: inline-block;
             width: 100px;
+            height: 30px;
+            margin: auto;
             text-align: right;
+        }
+
+        /* 过滤器 */
+        .filters {
+            width: 1600px;
+            height: 30px;
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        .filter {
+            width:320px; 
+            height:30px; 
+            float:left;
+        }
+
+        .labelElement {
+            width: 100px;
+            height: 30px; 
+            float:  left;
+        }
+
+        .selectBox {
+            width:200px;
+            position:relative;
+            padding:0;
+            font-size:12px;
+            float: right;
+        }
+        ul, li {
+            list-style-type:none;
+            padding:0;
+            margin:0
+        }
+        .selectBox input {
+            cursor:pointer;
+            /* display:block;
+            line-height:25px; */
+            width:200px;
+            height:25px;
+            overflow:hidden;
+            border:1px solid #ccc;
+        }
+        .selectBox ul {
+            width:200px;
+            /* position:absolute;
+            left:0;
+            top:27px; */
+            border:1px solid #ccc;
+            /* background:#fff; */
+            overflow: hidden;
+            display:none;
+            background:#ebebeb;
+            z-index:99999;
+        }
+        .selectBox ul li {
+            display:block;
+            height:30px;
+            overflow:hidden;
+            line-height:30px;
+            padding-left:5px;
+            width:100%;
+            cursor:pointer;
+        }
+        .hover {
+            background:#ccc;
         }
 
         /* 图片列表 */
@@ -58,84 +132,9 @@
     <!-- 初始化 -->
     <script>
         window.onload = function () {
+            deleteAllPicture();
             getPictureList(0);
         };
-        function getPictureList(page) {
-            $.get("/gallery/list?p=" + page + "&s=10", function (data) {
-                if (data.code == 0) {
-                    var pictureList = document.getElementById("pictureList");
-
-                    for (i = 0; i < data.fileList.length; ++i) {
-                        var sequence = data.fileList[i];
-                        // var sequence = data.sequence;
-
-                        var divElement = document.createElement("div");
-                        divElement.setAttribute("class", "pictureList");
-                        divElement.setAttribute("id", sequence);
-                        pictureList.appendChild(divElement);
-
-                        var image = document.createElement("img");
-                        image.src = "/gallery/m?thumbnail=" + sequence;
-                        image.setAttribute("style", "display: block; margin: auto");
-                        
-                        var imageLink = document.createElement("a");
-                        imageLink.setAttribute("href", "/gallery/show/" + sequence);
-                        imageLink.appendChild(image);
-                        divElement.appendChild(imageLink);
-
-                        getPictureInfo(sequence);
-                    }
-
-                    page = page + 1;
-                    if (page >= data.pageCount) {
-                        if(page > 1) {
-                            var nextButton = document.getElementById("next");
-                            nextButton.remove();
-                        }
-                    } else if(page == 1) {
-                        var nextButton = document.createElement("h3");
-                        nextButton.setAttribute("id", "next");
-                        nextButton.setAttribute("class", "next");
-                        nextButton.innerHTML = page;
-                        nextButton.setAttribute("onclick", "getPictureList(" + nextButton.innerHTML + ")");
-
-                        var pageElement = document.getElementById("page");
-                        pageElement.appendChild(nextButton);
-                    } else {
-                        var nextButton = document.getElementById("next");
-                        nextButton.innerHTML = page;
-                        nextButton.setAttribute("onclick", "getPictureList(" + nextButton.innerHTML + ")");
-                    }
-                }
-                else if (data.code == 4)
-                    alert(data.msg);
-                else
-                    window.location.href = "/error";
-            });
-        }
-
-        function getPictureInfo(sequence) {
-            $.get("/gallery/pictureInfo?p=" + sequence + "&e=false", function (data) {
-                if (data.code != 0)
-                    return;
-                var illustrator = data.illustrator;
-                var collection = data.collection;
-
-                var divElement = document.getElementById(sequence);
-
-                var illustratorElement = document.createElement("a");
-                illustratorElement.setAttribute("href", "/hello");
-                illustratorElement.innerHTML = illustrator;
-                illustratorElement.setAttribute("style", "display: block");
-                divElement.appendChild(illustratorElement);
-
-                var collectionElement = document.createElement("a");
-                collectionElement.setAttribute("href", "/hello");
-                collectionElement.innerHTML = collection;
-                collectionElement.setAttribute("style", "display: block");
-                divElement.appendChild(collectionElement);
-            });
-        }
     </script>
     <!-- 页面变换 -->
     <script>
@@ -156,6 +155,29 @@
             var uploadInfo = document.getElementById("uploadInfo");
             uploadInfo.style.display = "block";
         }
+
+        $(document).ready(function () {
+            $(".selectBox input").click(function () {
+                var thisinput = $(this);
+                var thisul = $(this).parent().find("ul");
+                if (thisul.css("display") == "none") {
+                    //显示出来滚动条 
+                    if (thisul.height() > 200) {
+                        thisul.css({ height: "200" + "px", "overflow-y": "scroll" })
+                    };
+                    thisul.fadeIn("100");
+                    thisul.hover(function () { }, function () { thisul.fadeOut("100"); });
+                    //连续多个事件 
+                    thisul.find("li").click(function () {
+                        thisinput.val($(this).text());
+                        thisul.fadeOut("100");
+                    }).hover(function () { $(this).addClass("hover"); }, function () { $(this).removeClass("hover"); });
+                }
+                else {
+                    thisul.fadeOut("fast");
+                }
+            })
+        }); 
     </script>
     <!-- 上传 -->
     <script>
@@ -175,8 +197,8 @@
                         var uploadCode = document.getElementById("uploadCode");
                         uploadCode.value = data.uploadCode;
                         uploadInfo();
-                    } else if (data.code == 2) {
-                        alert(data.duplicatedFile);
+                    } else {
+                        window.location.reload();
                     }
                 }).fail(function () {
                     alert("error");
@@ -216,7 +238,145 @@
             });
         });
     </script>
+    <!-- 图片列表 -->
+    <script>
+        $(function () {
+            $("#page").click(function () {
+                var page = document.getElementById("next");
+                if (page.getAttribute("isFilter") == 0)
+                    getPictureList(page.innerHTML);
+                else
+                    getPictureListWithFilter(page.innerHTML);
+            });
+        });
 
+        $(function () {
+            $("#getFilter").click(function () {
+                deleteAllPicture();
+                getPictureListWithFilter(0);
+            });
+        });
+
+        function getPictureListWithFilter(page) {
+                var illustrator = $('#illustrators').val();
+                var collection = $('#collections').val();
+                var type = $('#types').val();
+                var name = $('#name').val();
+
+                var data = {
+                    "illustrator": illustrator,
+                    "collection": collection,
+                    "type": type,
+                    "name": name,
+                    "page": page,
+                    "size": 20
+                };
+
+                $.ajax({
+                    method: 'post',
+                    url: "/gallery/filter",
+                    data: JSON.stringify(data),
+                    dataType: "JSON",
+                    contentType: "application/json"
+                }).done(function (data) {
+                    pictureListHandler(data, page, 1);
+                }).fail(function () {
+                    alert("error");
+                    window.location.href = "/error";
+                });
+        }
+
+        function getPictureList(page) {
+            $.get("/gallery/list?p=" + page + "&s=20", function (data) {
+                pictureListHandler(data, page, 0);
+            });
+        }
+
+        function pictureListHandler(data, page, isFilter) {
+            if (data.code == 0) {
+                var pictureList = document.getElementById("pictureList");
+
+                for (i = 0; i < data.fileList.length; ++i) {
+                    var sequence = data.fileList[i];
+                    setPicture(sequence);
+                }
+
+                page = page - 0 + 1;
+                if (page >= data.pageCount) {
+                    if (page > 1) {
+                        var nextButton = document.getElementById("next");
+                        nextButton.remove();
+                    }
+                } else if (page == 1) {
+                    var nextButton = document.createElement("h3");
+                    nextButton.setAttribute("id", "next");
+                    nextButton.setAttribute("class", "next");
+                    nextButton.innerHTML = page;
+                    nextButton.setAttribute("isFilter", isFilter);
+
+                    var pageElement = document.getElementById("page");
+                    pageElement.appendChild(nextButton);
+                } else {
+                    var nextButton = document.getElementById("next");
+                    nextButton.innerHTML = page;
+                    // nextButton.setAttribute("onclick", "getPictureList(" + nextButton.innerHTML + ")");
+                }
+            } else if (data.code == 4) {
+                var nextButton = document.getElementById("next");
+                nextButton.remove();
+                alert(data.msg);
+            } else
+                window.location.href = "/error";
+        }
+
+        function setPicture(sequence) {
+            var pictureList = document.getElementById("pictureList");
+
+            var divElement = document.createElement("div");
+            divElement.setAttribute("class", "pictureList");
+            divElement.setAttribute("id", sequence);
+            pictureList.appendChild(divElement);
+
+            var image = document.createElement("img");
+            image.src = "/gallery/m?thumbnail=" + sequence;
+            image.setAttribute("style", "display: block; margin: auto");
+
+            var imageLink = document.createElement("a");
+            imageLink.setAttribute("href", "/gallery/show/" + sequence);
+            imageLink.appendChild(image);
+            divElement.appendChild(imageLink);
+
+            getPictureInfo(sequence);
+        }
+
+        function getPictureInfo(sequence) {
+            $.get("/gallery/pictureInfo?p=" + sequence + "&e=false", function (data) {
+                if (data.code != 0)
+                    return;
+                var illustrator = data.illustrator;
+                var collection = data.collection;
+
+                var divElement = document.getElementById(sequence);
+
+                var illustratorElement = document.createElement("a");
+                illustratorElement.setAttribute("href", "/hello");
+                illustratorElement.innerHTML = illustrator;
+                illustratorElement.setAttribute("style", "display: block");
+                divElement.appendChild(illustratorElement);
+
+                var collectionElement = document.createElement("a");
+                collectionElement.setAttribute("href", "/hello");
+                collectionElement.innerHTML = collection;
+                collectionElement.setAttribute("style", "display: block");
+                divElement.appendChild(collectionElement);
+            });
+        }
+
+        function deleteAllPicture() {
+            $(".pictureList").remove();
+            $(".next").remove();
+        }
+    </script>
 </head>
 
 <body>
@@ -240,25 +400,71 @@
         <div class="upload" id="uploadInfo" style="display: none">
             <form id="uploadInfoForm">
                 <input type="hidden" name="uploadCode" id="uploadCode" value="" />
-                <label for="illustrator">illustrator</label>
-                <input type="text" name="illustrator" id="illustrator" />
+                <label for="illustrator">Illustrator</label>
+                <input type="text" name="illustrator" id="illustrator" class="uploadInput"/>
                 <br />
-                <label for="collection">collection</label>
-                <input type="text" name="collection" id="collection" />
+                <label for="collection">Collection</label>
+                <input type="text" name="collection" id="collection" class="uploadInput"/>
                 <br />
-                <label for="type">type</label>
-                <input type="text" name="type" id="type" />
+                <label for="type">Type</label>
+                <input type="text" name="type" id="type" class="uploadInput"/>
                 <br />
                 <input id="submitInfo" type="button" value="sumbit!">
             </form>
         </div>
     </div>
     <div id="content" style="margin:auto; width: 1750px;">
+        <div class="filters">
+            <div class="filter">
+                <div class="labelElement">
+                    <label for="types">Type</label>
+                </div>
+                <div class="selectBox">
+                    <input id="types" type="text"> <!--  readonly="readonly" -->
+                    <ul class="selectUl">
+                        <li></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="filter">
+                <div class="labelElement">
+                    <label for="illustrators">Illustrator</label>
+                </div>
+                <div class="selectBox">
+                    <input id="illustrators" type="text">
+                    <ul class="selectUl">
+                        <li></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="filter">
+                <div class="labelElement">
+                    <label for="collections">Collection</label>
+                </div>
+                <div class="selectBox">
+                    <input id="collections" type="text">
+                    <ul class="selectUl">
+                        <li></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="filter">
+                <div class="labelElement">
+                    <label for="name">Picture</label>
+                </div>
+                <div class="selectBox">
+                    <input id="name" type="text">
+                </div>
+            </div>
+            <div class="filter">
+                <button id="getFilter" style="margin-left:50px;">GET!</button>
+            </div>
+            
+        </div>
         <div id="pictureList">
         </div>
         <div id="page">
         </div>
     </div>
 </body>
-
 </html>

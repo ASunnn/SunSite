@@ -1,13 +1,12 @@
 package sunnn.sunsite.dao;
 
-import com.mongodb.client.result.DeleteResult;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
-import sunnn.sunsite.entity.Collection;
-import sunnn.sunsite.entity.Illustrator;
+import sunnn.sunsite.dto.request.PictureListWithFilter;
 import sunnn.sunsite.entity.Picture;
+import sunnn.sunsite.util.BaseDataBoxing;
 
 import java.util.List;
 
@@ -57,8 +56,35 @@ public class PictureDao extends MongoBase<Picture> {
         return find(query, Picture.class);
     }
 
+    public List<Picture> getPictureList(PictureListWithFilter filter, BaseDataBoxing dataCount) {
+        int limit = filter.getSize();
+        long skip = limit * filter.getPage();
+
+        Criteria criteria = new Criteria();
+        if (!filter.getType().isEmpty())
+            criteria.and("type.name").is(filter.getType());
+
+        if (!filter.getCollection().isEmpty())
+            criteria.and("collection.name").is(filter.getCollection());
+
+        if (!filter.getIllustrator().isEmpty())
+            criteria.and("illustrator.name").is(filter.getIllustrator());
+
+        criteria.and("name").regex(".*" + filter.getName() + ".*");
+
+        Query query = new Query(criteria);
+        query.with(new Sort(Sort.Direction.ASC, "name"))
+                .skip(skip).limit(limit);
+        dataCount.number = count(query);
+        return find(query, Picture.class);
+    }
+
     public long count() {
-        return count(new Query(), Picture.class);
+        return count(new Query());
+    }
+
+    private long count(Query query) {
+        return count(query, Picture.class);
     }
 
     public boolean delete(int sequenceCode) {
