@@ -12,5 +12,6 @@ public class BeanConfiguration {
     @Scope("singleton")
     public FileCache fileCache() {
         return new FileCache();
+//        return new FileCache(16, 1200000);
     }
 }

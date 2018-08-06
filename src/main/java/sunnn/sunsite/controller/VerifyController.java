@@ -28,6 +28,8 @@ public class VerifyController {
     @RequestMapping(value = "/verify", method = RequestMethod.GET)
     public String login(@RequestParam(value = "code", defaultValue = "") String passCode) {
         String md5Code = MD5s.getMD5(passCode);
+        if (md5Code == null)    //注意MD5工具里的异常处理
+            return "redirect:/error";
 
         UsernamePasswordToken token = new UsernamePasswordToken("", md5Code);
         Subject subject = SecurityUtils.getSubject();

@@ -5,7 +5,8 @@ public enum StatusCode {
     ERROR(-1),
     EMPTY_UPLOAD(1 << 0),
     ILLEGAL_DATA(1 << 1),
-    NO_DATA(1 << 2);
+    NO_DATA(1 << 2),
+    UPLOAD_TIMEOUT(1 << 3);
 
     private int code;
 

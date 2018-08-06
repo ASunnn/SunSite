@@ -70,7 +70,7 @@ public class Picture {
      * 插画的序列号
      */
     @Field(value = "sequence")
-    private int sequence;
+    private long sequence;
 
     public static final String THUMBNAIL_PREFIX = "m_";
 
@@ -79,15 +79,12 @@ public class Picture {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Picture picture = (Picture) o;
-        return uploadTime == picture.uploadTime &&
-                sequence == picture.sequence &&
-                Objects.equals(fileName, picture.fileName) &&
-                Objects.equals(path, picture.path);
+        return sequence == picture.sequence;
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(fileName, path, uploadTime, sequence);
+        return Objects.hash(sequence);
     }
 }

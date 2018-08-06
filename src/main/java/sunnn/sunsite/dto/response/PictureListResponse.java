@@ -16,7 +16,7 @@ import java.util.List;
 @ToString
 public class PictureListResponse extends BaseResponse implements Convertible<PictureListResponse, Picture> {
 
-    private int[] fileList;
+    private String[] fileList;
 
     private int pageCount;
 
@@ -24,7 +24,7 @@ public class PictureListResponse extends BaseResponse implements Convertible<Pic
         super(statusCode);
     }
 
-    public PictureListResponse(StatusCode statusCode, int[] pictureList, int pageCount) {
+    public PictureListResponse(StatusCode statusCode, String[] pictureList, int pageCount) {
         super(statusCode);
         this.fileList = pictureList;
         this.pageCount = pageCount;
@@ -36,10 +36,11 @@ public class PictureListResponse extends BaseResponse implements Convertible<Pic
         if (pictures.isEmpty())
             return this;
 
-        int[] fileNameList = new int[pictures.size()];
+        String[] fileNameList = new String[pictures.size()];
         for (int i = 0; i < pictures.size(); ++i)
             fileNameList[i] =
-                    pictures.get(i).getSequence();
+                    String.valueOf(pictures.get(i).getSequence());
+
         return setFileList(fileNameList);
     }
 }

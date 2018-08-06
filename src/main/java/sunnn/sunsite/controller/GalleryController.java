@@ -52,7 +52,7 @@ public class GalleryController {
 
     @GetMapping(value = "/m")
     public ResponseEntity getThumbnail(@RequestParam("thumbnail") String sequenceCode) throws IOException {
-        File file = galleryService.getThumbnail(Integer.valueOf(sequenceCode));
+        File file = galleryService.getThumbnail(Long.valueOf(sequenceCode));
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.IMAGE_JPEG);
@@ -66,7 +66,7 @@ public class GalleryController {
     @GetMapping(value = "/pictureInfo")
     @ResponseBody
     public PictureInfoResponse getPictureInfo(@RequestParam("p") String sequenceCode, @RequestParam("e") boolean extra) {
-        return galleryService.getPictureInfo(Integer.valueOf(sequenceCode), extra);
+        return galleryService.getPictureInfo(Long.valueOf(sequenceCode), extra);
     }
 
     @GetMapping(value = "/l/{illustrator}/{collection}/{pictureName}")
@@ -79,6 +79,11 @@ public class GalleryController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.IMAGE_JPEG);
         return new ResponseEntity<>(FileUtils.readFileToByteArray(file), headers, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/test")
+    public void test() {
+        System.out.println("enter");
     }
 
     @PostMapping(value = "/upload")
@@ -98,15 +103,11 @@ public class GalleryController {
         /*
             对上传的文件进行逐个处理
          */
-//        ArrayList<String> duplicatedFile = new ArrayList<>();
         for (MultipartFile file : files) {
             StatusCode s = galleryService.checkFile(file, uploadCode);
             //非法文件，直接返回错误
             if (s != StatusCode.OJBK)
                 return new FileUploadResponse(s);
-//                //重复文件
-//            else if (s == StatusCode.DUPLICATED_FILENAME)
-//                duplicatedFile.add(file.getOriginalFilename());
         }
 
         return new FileUploadResponse(StatusCode.OJBK, uploadCode);

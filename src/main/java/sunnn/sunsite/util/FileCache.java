@@ -52,7 +52,7 @@ public class FileCache {
             保存文件
             已有缓存情况下新文件直接追加到里面
          */
-        File f = storeFile(file);
+        File f = storeFile(file, key);
         cache.get(key).setFiles(f);
     }
 
@@ -63,7 +63,8 @@ public class FileCache {
      * @return 缓存内对应的所有文件
      */
     public List<File> getFile(String key) {
-        return cache.get(key).getFiles();
+        TempFiles files = cache.get(key);
+        return files == null ? null : files.getFiles();
     }
 
     /**
@@ -77,7 +78,12 @@ public class FileCache {
 
             long saveTime = r.getValue().getReceiveTime();
             if (now() - saveTime > expiration) {
+                //删除缓存文件
                 deleteFile(r.getValue().getFiles());
+                //删除目录
+                String path = SunSiteConstant.pictureTempPath + r.getKey();
+                if (!new File(path).delete())
+                    log.warn("Can not Delete TempPath : " + path);
                 i.remove();
             }
         }
@@ -91,12 +97,15 @@ public class FileCache {
         return System.currentTimeMillis();
     }
 
-    private File storeFile(MultipartFile file) throws IOException {
-        File path = new File(SunSiteConstant.pictureTempPath);
-        if (!path.exists())
-            if (!path.mkdirs())
+    private File storeFile(MultipartFile file, String key) throws IOException {
+        String path = SunSiteConstant.pictureTempPath + key + SunSiteConstant.pathSeparator;
+
+        File pathFile = new File(path);
+        if (!pathFile.exists())
+            if (!pathFile.mkdirs())
                 throw new IOException("Can not Create TempPath");
-        File f = new File(SunSiteConstant.pictureTempPath + file.getOriginalFilename());
+
+        File f = new File(path + file.getOriginalFilename());
         file.transferTo(f);
         return f;
     }

@@ -8,15 +8,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import sunnn.sunsite.dto.request.PictureListWithFilter;
 import sunnn.sunsite.dto.response.PictureInfoResponse;
-import sunnn.sunsite.util.BaseDataBoxing;
-import sunnn.sunsite.util.SunSiteConstant;
+import sunnn.sunsite.util.*;
 import sunnn.sunsite.dao.CollectionDao;
 import sunnn.sunsite.dao.IllustratorDao;
 import sunnn.sunsite.dao.PictureDao;
 import sunnn.sunsite.dao.TypeDao;
 import sunnn.sunsite.dto.response.PictureListResponse;
-import sunnn.sunsite.util.FileCache;
-import sunnn.sunsite.util.StatusCode;
 import sunnn.sunsite.dto.request.UploadPictureInfo;
 import sunnn.sunsite.entity.Collection;
 import sunnn.sunsite.entity.Illustrator;
@@ -27,6 +24,7 @@ import sunnn.sunsite.service.GalleryService;
 import java.io.*;
 import java.nio.channels.FileChannel;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -89,7 +87,6 @@ public class GalleryServiceImpl implements GalleryService {
          */
         BaseDataBoxing<Long> dataCount = new BaseDataBoxing<>(0L);
         List<Picture> pictureList = pictureDao.getPictureList(filter, dataCount);
-        System.out.println(dataCount.number);
         if (dataCount.number == 0)
             return new PictureListResponse(StatusCode.NO_DATA);
         int pageCount = (int) Math.ceil(dataCount.number / (double) filter.getSize());
@@ -106,25 +103,25 @@ public class GalleryServiceImpl implements GalleryService {
     }
 
     public List<Picture> getPictureFromACollection(String illustrator, String collection) {
-        return pictureDao.findFromACollection(illustrator, collection);
+        return pictureDao.findFromOneCollection(illustrator, collection);
     }
 
     @Override
-    public File getThumbnail(int sequenceCode) {
+    public File getThumbnail(long sequenceCode) {
         Picture picture = pictureDao.findOne(sequenceCode);
         String path = picture.getPath() + picture.getThumbnailName();
         return new File(path);
     }
 
     @Override
-    public PictureInfoResponse getPictureInfo(int sequenceCode, boolean extra) {
+    public PictureInfoResponse getPictureInfo(long sequenceCode, boolean extra) {
         Picture p = pictureDao.findOne(sequenceCode);
         if (p == null)
             return new PictureInfoResponse(StatusCode.ILLEGAL_DATA);
 
         PictureInfoResponse response = new PictureInfoResponse(StatusCode.OJBK);
         if (extra) {
-            int[] s = getClosePicture(p);
+            long[] s = getClosePicture(p);
             response.setPrev(s[0])
                     .setNext(s[1]);
         }
@@ -133,13 +130,13 @@ public class GalleryServiceImpl implements GalleryService {
                 .setCollection(p.getCollection().getName());
     }
 
-    private int[] getClosePicture(Picture p) {
+    private long[] getClosePicture(Picture p) {
         List<Picture> pictures = getPictureFromACollection(
                 p.getIllustrator().getName(), p.getCollection().getName());
 
         int index = pictures.indexOf(p);
 
-        int[] s = new int[2];
+        long[] s = new long[2];
         s[0] = index == 0 ? -1 : pictures.get(index - 1).getSequence();
         s[1] = index + 1 == pictures.size() ? -1 : pictures.get(index + 1).getSequence();
         return s;
@@ -166,11 +163,6 @@ public class GalleryServiceImpl implements GalleryService {
                 .matcher(file.getOriginalFilename());
         if (!fileNameMatcher.find())
             return StatusCode.ILLEGAL_DATA;
-//        /*
-//            查重处理
-//         */
-//        if (pictureDao.findOne(file.getOriginalFilename()) != null)
-//            return StatusCode.DUPLICATED_FILENAME;
         /*
             将图片放入缓存
          */
@@ -190,6 +182,12 @@ public class GalleryServiceImpl implements GalleryService {
     @Override
     public StatusCode saveUpload(UploadPictureInfo info) {
         /*
+            获取上传的文件
+         */
+        List<File> files = fileCache.getFile(info.getUploadCode());
+        if (files == null)
+            return StatusCode.UPLOAD_TIMEOUT;
+        /*
             图片信息处理
          */
         Picture picture = checkInfo(info);
@@ -198,10 +196,6 @@ public class GalleryServiceImpl implements GalleryService {
         /*
             进行文件的保存
          */
-        //获取上传的文件
-        List<File> files = fileCache.getFile(info.getUploadCode());
-        //把序列号提取出来重复利用，省去一次次查询数据库
-        int sequence = picture.getSequence();
         //对文件记录进行保存
         for (File file : files) {
             try {
@@ -209,8 +203,19 @@ public class GalleryServiceImpl implements GalleryService {
                     存文件
                  */
                 //生成图片系统信息
+                long sequence = MD5s.getMD5Sequence(
+                        info.getIllustrator() + info.getCollection() + file.getName());
+                if (sequence == -1)
+                    continue;
+                if (pictureDao.findOne(sequence) != null) {
+                    log.warn("Duplicate Picture : "
+                            + info.getIllustrator() + info.getCollection() + file.getName());
+                    log.warn("Duplicate Sequence : " + sequence);
+                    continue;
+                }
+
                 picture.setUploadTime(System.currentTimeMillis())
-                        .setSequence(sequence++)
+                        .setSequence(sequence)
                         .setFileName(file.getName())
                         .setPath(SunSiteConstant.picturePath
                                 + picture.getIllustrator().getName()
@@ -252,7 +257,7 @@ public class GalleryServiceImpl implements GalleryService {
                  */
                 pictureDao.insert(picture);
             } catch (IOException e) {
-                //若中间出错，
+                //若中间出错直接返回
                 log.error("Error At SaveUpload : ", e);
                 return StatusCode.ERROR;
             }
@@ -302,16 +307,14 @@ public class GalleryServiceImpl implements GalleryService {
         /*
             生成图片信息
          */
-        long count = pictureDao.count() + 1;
         return new Picture()
                 .setIllustrator(illustrator)
                 .setCollection(collection)
-                .setType(type)
-                .setSequence((int) count);
+                .setType(type);
     }
 
     @Override
-    public StatusCode deletePicture(int sequenceCode) {
+    public StatusCode deletePicture(long sequenceCode) {
         /*
             检查文件
          */
@@ -324,6 +327,7 @@ public class GalleryServiceImpl implements GalleryService {
         if (pictureDao.delete(sequenceCode)) {
             delete(p.getPath() + p.getFileName());
             delete(p.getPath() + p.getThumbnailName());
+            delete(p.getPath());
 
             //检查collection是否为空
             String collection = p.getCollection().getName();
@@ -331,7 +335,6 @@ public class GalleryServiceImpl implements GalleryService {
                 //预先保存type
                 String type = collectionDao.findOne(collection).getType().getName();
                 collectionDao.delete(collection);
-                delete(p.getPath());
 
                 //检查type是否为空
                 if (collectionDao.findByType(type).isEmpty())
@@ -349,8 +352,21 @@ public class GalleryServiceImpl implements GalleryService {
     }
 
     private void delete(String path) {
-        if (!new File(path).delete())
-            log.warn("Delete Picture Failed : " + path);
+        File file = new File(path);
+        if (!file.isDirectory()) {
+            if (!file.delete())
+                log.warn("Delete Picture Failed : " + path);
+        } else {
+            try {
+                if (Objects.requireNonNull(file.listFiles()).length == 0)
+                    if (!file.delete())
+                        log.warn("Delete Picture Path Failed : " + path);
+            } catch (NullPointerException e) {
+                log.error("Delete Picture Path Error : " + path);
+                log.error("Error : " + e);
+            }
+
+        }
     }
 
 }

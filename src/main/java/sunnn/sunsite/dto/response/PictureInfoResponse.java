@@ -12,7 +12,7 @@ import sunnn.sunsite.util.StatusCode;
 @ToString
 public class PictureInfoResponse extends BaseResponse {
 
-    private int sequence;
+    private String sequence;
 
     private String name;
 
@@ -20,30 +20,45 @@ public class PictureInfoResponse extends BaseResponse {
 
     private String collection;
 
-    private int prev;
+    private String prev;
 
-    private int next;
+    private String next;
 
     public PictureInfoResponse(StatusCode statusCode) {
         super(statusCode);
     }
 
-    public PictureInfoResponse(StatusCode statusCode, int sequence, String name, String illustrator, String collection) {
+    public PictureInfoResponse(StatusCode statusCode, long sequence, String name, String illustrator, String collection) {
         super(statusCode);
-        this.sequence = sequence;
+        this.sequence = String.valueOf(sequence);
         this.name = name;
         this.illustrator = illustrator;
         this.collection = collection;
     }
 
-    public PictureInfoResponse(StatusCode statusCode, int sequence, String name, String illustrator, String collection, int prev, int next) {
+    public PictureInfoResponse(StatusCode statusCode, long sequence, String name, String illustrator, String collection, long prev, long next) {
         super(statusCode);
-        this.sequence = sequence;
+        this.sequence = String.valueOf(sequence);
         this.name = name;
         this.illustrator = illustrator;
         this.collection = collection;
-        this.prev = prev;
-        this.next = next;
+        this.prev = String.valueOf(prev);
+        this.next = String.valueOf(next);
+    }
+
+    public PictureInfoResponse setSequence(long sequence) {
+        this.sequence = String.valueOf(sequence);
+        return this;
+    }
+
+    public PictureInfoResponse setPrev(long prev) {
+        this.prev = String.valueOf(prev);
+        return this;
+    }
+
+    public PictureInfoResponse setNext(long next) {
+        this.next = String.valueOf(next);
+        return this;
     }
 }
 

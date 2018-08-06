@@ -1,6 +1,12 @@
 package sunnn.sunsite.dao;
 
+import com.mongodb.DBObject;
+import com.mongodb.client.DistinctIterable;
+import com.mongodb.client.MongoCursor;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
@@ -8,12 +14,13 @@ import sunnn.sunsite.dto.request.PictureListWithFilter;
 import sunnn.sunsite.entity.Picture;
 import sunnn.sunsite.util.BaseDataBoxing;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
 public class PictureDao extends MongoBase<Picture> {
 
-    public Picture findOne(int sequenceCode) {
+    public Picture findOne(long sequenceCode) {
         return findOne(
                 new Query().addCriteria(Criteria.where("sequence").is(sequenceCode)),
                 Picture.class);
@@ -31,7 +38,7 @@ public class PictureDao extends MongoBase<Picture> {
                 Picture.class);
     }
 
-    public List<Picture> findFromACollection(String illustrator, String collection) {
+    public List<Picture> findFromOneCollection(String illustrator, String collection) {
         return find(
                 new Query().addCriteria(Criteria.where("illustrator.name").is(illustrator)
                         .and("collection.name").is(collection)),
@@ -79,6 +86,26 @@ public class PictureDao extends MongoBase<Picture> {
         return find(query, Picture.class);
     }
 
+    public List<String> getGalleryInfo(String type, String illustrator, String collection, String field) {
+        Criteria criteria = new Criteria();
+        if (!type.isEmpty())
+            criteria.and("type.name").is(type);
+        if (!illustrator.isEmpty())
+            criteria.and("illustrator.name").is(illustrator);
+        if (!collection.isEmpty())
+            criteria.and("collection.name").is(collection);
+        Query query = new Query(criteria);
+
+        MongoCursor<String> result = mongoTemplate.getCollection("gallery")
+                .distinct(field, query.getQueryObject(), String.class)
+                .iterator();
+
+        List<String> r = new ArrayList<>();
+        while (result.hasNext())
+            r.add(result.next());
+        return r;
+    }
+
     public long count() {
         return count(new Query());
     }
@@ -87,10 +114,9 @@ public class PictureDao extends MongoBase<Picture> {
         return count(query, Picture.class);
     }
 
-    public boolean delete(int sequenceCode) {
+    public boolean delete(long sequenceCode) {
         return remove(
                 new Query().addCriteria(Criteria.where("sequence").is(sequenceCode)),
                 Picture.class);
     }
-
 }

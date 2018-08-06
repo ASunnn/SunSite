@@ -29,7 +29,7 @@ public interface GalleryService {
      * @param sequenceCode 图片序列号
      * @return 缩略图文件
      */
-    File getThumbnail(int sequenceCode);
+    File getThumbnail(long sequenceCode);
 
     /**
      * 获取图片信息
@@ -38,7 +38,7 @@ public interface GalleryService {
      * @param extra        是否查询图片的前后信息
      * @return 图片信息
      */
-    PictureInfoResponse getPictureInfo(int sequenceCode, boolean extra);
+    PictureInfoResponse getPictureInfo(long sequenceCode, boolean extra);
 
     /**
      * 获取图片本体
@@ -70,6 +70,6 @@ public interface GalleryService {
      *
      * @param sequenceCode 图片序列号
      */
-    StatusCode deletePicture(int sequenceCode);
+    StatusCode deletePicture(long sequenceCode);
 
 }

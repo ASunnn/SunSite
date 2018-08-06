@@ -11,6 +11,6 @@ import javax.validation.constraints.NotBlank;
 @ToString
 public class DeletePicture {
 
-    private int pictureSequence;
+    private long pictureSequence;
 
 }
