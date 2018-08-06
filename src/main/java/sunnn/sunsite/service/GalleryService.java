@@ -8,6 +8,7 @@ import sunnn.sunsite.util.StatusCode;
 import sunnn.sunsite.dto.request.UploadPictureInfo;
 
 import java.io.File;
+import java.util.List;
 
 public interface GalleryService {
 
@@ -49,6 +50,15 @@ public interface GalleryService {
      * @return 图片文件
      */
     File getPictureFile(String illustrator, String collection, String fileName);
+
+    /**
+     * 根据过滤条件获取图库信息（类型、画师、画集
+     *
+     * @param type        类型
+     * @param illustrator 画师
+     * @param collection  画集
+     */
+    void getGalleryInfo(List<String> illustrator, List<String> collection, List<String> type);
 
     /**
      * 检查文件合法性

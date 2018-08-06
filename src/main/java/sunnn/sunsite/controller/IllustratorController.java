@@ -24,17 +24,17 @@ public class IllustratorController {
         this.illustratorService = illustratorService;
     }
 
-    @GetMapping(value = "/list")
-    @ResponseBody
-    public GalleryInfoResponse getIllustratorList() {
-        @SuppressWarnings("unchecked")
-        List<Illustrator> illustrators = illustratorService.getList();
-
-        if (illustrators.isEmpty())
-            return new GalleryInfoResponse(StatusCode.NO_DATA);
-
-        GalleryInfoResponse<Illustrator> response = new GalleryInfoResponse<>(StatusCode.OJBK);
-        return response.convertTo(illustrators);
-    }
+//    @GetMapping(value = "/list")
+//    @ResponseBody
+//    public GalleryInfoResponse getIllustratorList() {
+//        @SuppressWarnings("unchecked")
+//        List<Illustrator> illustrators = illustratorService.getList();
+//
+//        if (illustrators.isEmpty())
+//            return new GalleryInfoResponse(StatusCode.NO_DATA);
+//
+//        GalleryInfoResponse<Illustrator> response = new GalleryInfoResponse<>(StatusCode.OJBK);
+//        return response.convertTo(illustrators);
+//    }
 
 }

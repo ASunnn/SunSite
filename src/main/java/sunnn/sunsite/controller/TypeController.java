@@ -24,16 +24,16 @@ public class TypeController {
         this.typeService = typeService;
     }
 
-    @GetMapping(value = "/list")
-    @ResponseBody
-    public GalleryInfoResponse getIllustratorList() {
-        @SuppressWarnings("unchecked")
-        List<Type> types = typeService.getList();
-
-        if (types.isEmpty())
-            return new GalleryInfoResponse(StatusCode.NO_DATA);
-
-        GalleryInfoResponse<Type> response = new GalleryInfoResponse<>(StatusCode.OJBK);
-        return response.convertTo(types);
-    }
+//    @GetMapping(value = "/list")
+//    @ResponseBody
+//    public GalleryInfoResponse getIllustratorList() {
+//        @SuppressWarnings("unchecked")
+//        List<Type> types = typeService.getList();
+//
+//        if (types.isEmpty())
+//            return new GalleryInfoResponse(StatusCode.NO_DATA);
+//
+//        GalleryInfoResponse<Type> response = new GalleryInfoResponse<>(StatusCode.OJBK);
+//        return response.convertTo(types);
+//    }
 }

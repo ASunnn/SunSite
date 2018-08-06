@@ -86,24 +86,40 @@ public class PictureDao extends MongoBase<Picture> {
         return find(query, Picture.class);
     }
 
-    public List<String> getGalleryInfo(String type, String illustrator, String collection, String field) {
+    public void getGalleryInfo(List<String> illustrator, List<String> collection, List<String> type) {
         Criteria criteria = new Criteria();
-        if (!type.isEmpty())
-            criteria.and("type.name").is(type);
-        if (!illustrator.isEmpty())
-            criteria.and("illustrator.name").is(illustrator);
-        if (!collection.isEmpty())
-            criteria.and("collection.name").is(collection);
+        if (!type.get(0).isEmpty())
+            criteria.and("type.name").is(type.get(0));
+        if (!illustrator.get(0).isEmpty())
+            criteria.and("illustrator.name").is(illustrator.get(0));
+        if (!collection.get(0).isEmpty())
+            criteria.and("collection.name").is(collection.get(0));
         Query query = new Query(criteria);
 
-        MongoCursor<String> result = mongoTemplate.getCollection("gallery")
-                .distinct(field, query.getQueryObject(), String.class)
-                .iterator();
-
-        List<String> r = new ArrayList<>();
-        while (result.hasNext())
-            r.add(result.next());
-        return r;
+        if (illustrator.get(0).isEmpty()) {
+            MongoCursor<String> result = mongoTemplate.getCollection("gallery")
+                    .distinct("illustrator.name", query.getQueryObject(), String.class)
+                    .iterator();
+            illustrator.clear();
+            while (result.hasNext())
+                illustrator.add(result.next());
+        }
+        if (collection.get(0).isEmpty()) {
+            MongoCursor<String> result = mongoTemplate.getCollection("gallery")
+                    .distinct("collection.name", query.getQueryObject(), String.class)
+                    .iterator();
+            collection.clear();
+            while (result.hasNext())
+                collection.add(result.next());
+        }
+        if (type.get(0).isEmpty()) {
+            MongoCursor<String> result = mongoTemplate.getCollection("gallery")
+                    .distinct("type.name", query.getQueryObject(), String.class)
+                    .iterator();
+            type.clear();
+            while (result.hasNext())
+                type.add(result.next());
+        }
     }
 
     public long count() {

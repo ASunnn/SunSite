@@ -150,6 +150,11 @@ public class GalleryServiceImpl implements GalleryService {
     }
 
     @Override
+    public void getGalleryInfo(List<String> illustrator, List<String> collection, List<String> type) {
+        pictureDao.getGalleryInfo(illustrator, collection, type);
+    }
+
+    @Override
     public StatusCode checkFile(MultipartFile file, String uploadCode) {
         /*
             检测文件是否为空

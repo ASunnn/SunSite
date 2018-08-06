@@ -134,6 +134,7 @@
         window.onload = function () {
             deleteAllPicture();
             getPictureList(0);
+            getGalleryInfo();
         };
     </script>
     <!-- 页面变换 -->
@@ -183,6 +184,9 @@
     <script>
         $(function () {
             $("#submitFile").click(function () {
+                var button = this;
+                $(button).attr('disabled', 'disabled');
+
                 var formData = new FormData($('#uploadFileForm')[0]);
                 $.ajax({
                     method: 'post',
@@ -208,6 +212,9 @@
         });
         $(function () {
             $("#submitInfo").click(function () {
+                var button = this;
+                $(button).attr('disabled', 'disabled');
+
                 var illustrator = $('#illustrator').val();
                 var collection = $('#collection').val();
                 var type = $('#type').val();
@@ -228,15 +235,72 @@
                     contentType: "application/json"
                 }).done(function (data) {
                     alert(data.msg);
-                    if (data.code == 0) {
-                        window.location.reload();
-                    }
+                    window.location.reload();
                 }).fail(function () {
                     alert("error");
                     window.location.href = "./error";
                 });
             });
         });
+    </script>
+    <!-- 图库信息 -->
+    <script>
+        function getGalleryInfo() {
+            var illustrator = $('#illustrators').val();
+            var collection = $('#collections').val();
+            var type = $('#types').val();
+
+            var data = {
+                "illustrator": illustrator,
+                "collection": collection,
+                "type": type
+            };
+
+            $.ajax({
+                method: 'post',
+                url: "/gallery/galleryInfo",
+                data: JSON.stringify(data),
+                dataType: "JSON",
+                contentType: "application/json"
+            }).done(function (data) {
+                setGalleryInfo(data);
+            }).fail(function () {
+                alert("error");
+                window.location.href = "/error";
+            });
+        }
+        
+        function setGalleryInfo(data) {
+            var illustratorUl = document.getElementById("illustratorList");
+
+            var emptyIllustratorLi = document.createElement("li");
+            illustratorUl.appendChild(emptyIllustratorLi);
+            for (i = 0; i < data.illustrators.length; ++i) {
+                let illustrator = document.createElement("li");
+                illustrator.innerHTML = data.illustrators[i];
+                illustratorUl.appendChild(illustrator);
+            }
+
+            var collectionUl = document.getElementById("collectionList");
+
+            var emptyCollectionLi = document.createElement("li");
+            collectionUl.appendChild(emptyCollectionLi);
+            for (i = 0; i < data.collections.length; ++i) {
+                let collection = document.createElement("li");
+                collection.innerHTML = data.collections[i];
+                collectionUl.appendChild(collection);
+            }
+
+            var typeUl = document.getElementById("typeList");
+
+            var emptyTypeLi = document.createElement("li");
+            typeUl.appendChild(emptyTypeLi);
+            for (i = 0; i < data.types.length; ++i) {
+                let type = document.createElement("li");
+                type.innerHTML = data.types[i];
+                typeUl.appendChild(type);
+            }
+        }
     </script>
     <!-- 图片列表 -->
     <script>
@@ -258,32 +322,32 @@
         });
 
         function getPictureListWithFilter(page) {
-                var illustrator = $('#illustrators').val();
-                var collection = $('#collections').val();
-                var type = $('#types').val();
-                var name = $('#name').val();
+            var illustrator = $('#illustrators').val();
+            var collection = $('#collections').val();
+            var type = $('#types').val();
+            var name = $('#name').val();
 
-                var data = {
-                    "illustrator": illustrator,
-                    "collection": collection,
-                    "type": type,
-                    "name": name,
-                    "page": page,
-                    "size": 20
-                };
+            var data = {
+                "illustrator": illustrator,
+                "collection": collection,
+                "type": type,
+                "name": name,
+                "page": page,
+                "size": 20
+            };
 
-                $.ajax({
-                    method: 'post',
-                    url: "/gallery/filter",
-                    data: JSON.stringify(data),
-                    dataType: "JSON",
-                    contentType: "application/json"
-                }).done(function (data) {
-                    pictureListHandler(data, page, 1);
-                }).fail(function () {
-                    alert("error");
-                    window.location.href = "/error";
-                });
+            $.ajax({
+                method: 'post',
+                url: "/gallery/filter",
+                data: JSON.stringify(data),
+                dataType: "JSON",
+                contentType: "application/json"
+            }).done(function (data) {
+                pictureListHandler(data, page, 1);
+            }).fail(function () {
+                alert("error");
+                window.location.href = "/error";
+            });
         }
 
         function getPictureList(page) {
@@ -323,7 +387,8 @@
                 }
             } else if (data.code == 4) {
                 var nextButton = document.getElementById("next");
-                nextButton.remove();
+                if (nextButton)
+                    nextButton.remove();
                 alert(data.msg);
             } else
                 window.location.href = "/error";
@@ -401,13 +466,13 @@
             <form id="uploadInfoForm">
                 <input type="hidden" name="uploadCode" id="uploadCode" value="" />
                 <label for="illustrator">Illustrator</label>
-                <input type="text" name="illustrator" id="illustrator" class="uploadInput"/>
+                <input type="text" name="illustrator" id="illustrator" class="uploadInput", autocomplete="off"/>
                 <br />
                 <label for="collection">Collection</label>
-                <input type="text" name="collection" id="collection" class="uploadInput"/>
+                <input type="text" name="collection" id="collection" class="uploadInput", autocomplete="off"/>
                 <br />
                 <label for="type">Type</label>
-                <input type="text" name="type" id="type" class="uploadInput"/>
+                <input type="text" name="type" id="type" class="uploadInput", autocomplete="off"/>
                 <br />
                 <input id="submitInfo" type="button" value="sumbit!">
             </form>
@@ -420,9 +485,8 @@
                     <label for="types">Type</label>
                 </div>
                 <div class="selectBox">
-                    <input id="types" type="text"> <!--  readonly="readonly" -->
-                    <ul class="selectUl">
-                        <li></li>
+                    <input id="types" type="text" readonly="readonly"> <!--  readonly="readonly" -->
+                    <ul id="typeList" class="selectUl">
                     </ul>
                 </div>
             </div>
@@ -431,9 +495,8 @@
                     <label for="illustrators">Illustrator</label>
                 </div>
                 <div class="selectBox">
-                    <input id="illustrators" type="text">
-                    <ul class="selectUl">
-                        <li></li>
+                    <input id="illustrators" type="text" readonly="readonly">
+                    <ul id="illustratorList" class="selectUl">
                     </ul>
                 </div>
             </div>
@@ -442,9 +505,8 @@
                     <label for="collections">Collection</label>
                 </div>
                 <div class="selectBox">
-                    <input id="collections" type="text">
-                    <ul class="selectUl">
-                        <li></li>
+                    <input id="collections" type="text" readonly="readonly">
+                    <ul id="collectionList" class="selectUl">
                     </ul>
                 </div>
             </div>
@@ -453,7 +515,7 @@
                     <label for="name">Picture</label>
                 </div>
                 <div class="selectBox">
-                    <input id="name" type="text">
+                    <input id="name" type="text", autocomplete="off">
                 </div>
             </div>
             <div class="filter">

@@ -11,20 +11,19 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import sunnn.sunsite.dto.request.DeletePicture;
+import sunnn.sunsite.dto.request.GalleryInfo;
 import sunnn.sunsite.dto.request.PictureListWithFilter;
-import sunnn.sunsite.dto.response.PictureInfoResponse;
-import sunnn.sunsite.dto.response.PictureListResponse;
+import sunnn.sunsite.dto.response.*;
 import sunnn.sunsite.entity.Picture;
 import sunnn.sunsite.util.StatusCode;
 import sunnn.sunsite.dto.request.UploadPictureInfo;
-import sunnn.sunsite.dto.response.BaseResponse;
-import sunnn.sunsite.dto.response.FileUploadResponse;
 import sunnn.sunsite.service.GalleryService;
 
 import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequestMapping("/gallery")
@@ -81,9 +80,29 @@ public class GalleryController {
         return new ResponseEntity<>(FileUtils.readFileToByteArray(file), headers, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/test")
-    public void test() {
-        System.out.println("enter");
+    @PostMapping(value = "/galleryInfo")
+    @ResponseBody
+    public GalleryInfoResponse getGalleryInfo(@RequestBody GalleryInfo galleryInfo) {
+        /*
+            生成查询
+         */
+        List<String> illustrators = new ArrayList<>();
+        illustrators.add(galleryInfo.getIllustrator());
+        List<String> collections = new ArrayList<>();
+        collections.add(galleryInfo.getCollection());
+        List<String> types = new ArrayList<>();
+        types.add(galleryInfo.getType());
+        /*
+            查询
+         */
+        galleryService.getGalleryInfo(illustrators, collections, types);
+        /*
+            转换、返回结果
+         */
+        return new GalleryInfoResponse(StatusCode.OJBK)
+                .setIllustrators(illustrators)
+                .setCollections(collections)
+                .setTypes(types);
     }
 
     @PostMapping(value = "/upload")
