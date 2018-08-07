@@ -17,19 +17,65 @@ public class SunSiteConstant {
 
     public static String pathSeparator;
 
-    public void setPictureTempPath(String pictureTempPath) {
+    public static long sessionTimeout;
+
+    public static int cacheTimeout;
+
+    public static int cacheInitCapacity;
+
+    public static String getPictureTempPath() {
+        return pictureTempPath;
+    }
+
+    public static void setPictureTempPath(String pictureTempPath) {
         SunSiteConstant.pictureTempPath = pictureTempPath;
     }
 
-    public void setPicturePath(String picturePath) {
+    public static String getPicturePath() {
+        return picturePath;
+    }
+
+    public static void setPicturePath(String picturePath) {
         SunSiteConstant.picturePath = picturePath;
+    }
+
+    public static int getThumbnailSize() {
+        return thumbnailSize;
     }
 
     public static void setThumbnailSize(int thumbnailSize) {
         SunSiteConstant.thumbnailSize = thumbnailSize;
     }
 
+    public static String getPathSeparator() {
+        return pathSeparator;
+    }
+
     public static void setPathSeparator(String pathSeparator) {
         SunSiteConstant.pathSeparator = pathSeparator;
+    }
+
+    public static long getSessionTimeout() {
+        return sessionTimeout;
+    }
+
+    public static void setSessionTimeout(long sessionTimeout) {
+        SunSiteConstant.sessionTimeout = sessionTimeout;
+    }
+
+    public static int getCacheTimeout() {
+        return cacheTimeout;
+    }
+
+    public static void setCacheTimeout(int cacheTimeout) {
+        SunSiteConstant.cacheTimeout = cacheTimeout;
+    }
+
+    public static int getCacheInitCapacity() {
+        return cacheInitCapacity;
+    }
+
+    public static void setCacheInitCapacity(int cacheInitCapacity) {
+        SunSiteConstant.cacheInitCapacity = cacheInitCapacity;
     }
 }

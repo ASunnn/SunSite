@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Gallery</title>
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
     <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.9.0.min.js"></script>
     <style>
         /* 标题菜单 */
@@ -172,7 +173,15 @@
                     thisul.find("li").click(function () {
                         thisinput.val($(this).text());
                         thisul.fadeOut("100");
-                    }).hover(function () { $(this).addClass("hover"); }, function () { $(this).removeClass("hover"); });
+                        getGalleryInfo();
+                    }).hover(
+                        function () {
+                             $(this).addClass("hover"); 
+                        }, 
+                        function () { 
+                            $(this).removeClass("hover"); 
+                        }
+                    );
                 }
                 else {
                     thisul.fadeOut("fast");
@@ -272,6 +281,7 @@
         
         function setGalleryInfo(data) {
             var illustratorUl = document.getElementById("illustratorList");
+            deleteGalleryInfo(illustratorUl);
 
             var emptyIllustratorLi = document.createElement("li");
             illustratorUl.appendChild(emptyIllustratorLi);
@@ -282,6 +292,7 @@
             }
 
             var collectionUl = document.getElementById("collectionList");
+            deleteGalleryInfo(collectionUl);
 
             var emptyCollectionLi = document.createElement("li");
             collectionUl.appendChild(emptyCollectionLi);
@@ -292,6 +303,7 @@
             }
 
             var typeUl = document.getElementById("typeList");
+            deleteGalleryInfo(typeUl);
 
             var emptyTypeLi = document.createElement("li");
             typeUl.appendChild(emptyTypeLi);
@@ -300,6 +312,11 @@
                 type.innerHTML = data.types[i];
                 typeUl.appendChild(type);
             }
+        }
+
+        function deleteGalleryInfo(div) {
+            while(div.hasChildNodes()) 
+                div.removeChild(div.firstChild);
         }
     </script>
     <!-- 图片列表 -->
