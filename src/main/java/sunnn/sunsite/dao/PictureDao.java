@@ -1,12 +1,7 @@
 package sunnn.sunsite.dao;
 
-import com.mongodb.DBObject;
-import com.mongodb.client.DistinctIterable;
 import com.mongodb.client.MongoCursor;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.mongodb.core.aggregation.Aggregation;
-import org.springframework.data.mongodb.core.aggregation.AggregationResults;
-import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
@@ -14,7 +9,6 @@ import sunnn.sunsite.dto.request.PictureListWithFilter;
 import sunnn.sunsite.entity.Picture;
 import sunnn.sunsite.util.BaseDataBoxing;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Repository

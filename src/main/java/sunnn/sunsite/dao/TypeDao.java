@@ -3,7 +3,6 @@ package sunnn.sunsite.dao;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
-import sunnn.sunsite.entity.Collection;
 import sunnn.sunsite.entity.Type;
 
 import java.util.List;

@@ -1,7 +1,6 @@
 package sunnn.sunsite.dto.request;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 

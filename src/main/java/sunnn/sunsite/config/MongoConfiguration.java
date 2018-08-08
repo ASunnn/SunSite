@@ -49,5 +49,4 @@ public class MongoConfiguration {
         return new MongoTemplate(factory);
     }
 
-
 }

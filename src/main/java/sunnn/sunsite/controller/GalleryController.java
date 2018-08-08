@@ -14,7 +14,6 @@ import sunnn.sunsite.dto.request.DeletePicture;
 import sunnn.sunsite.dto.request.GalleryInfo;
 import sunnn.sunsite.dto.request.PictureListWithFilter;
 import sunnn.sunsite.dto.response.*;
-import sunnn.sunsite.entity.Picture;
 import sunnn.sunsite.util.StatusCode;
 import sunnn.sunsite.dto.request.UploadPictureInfo;
 import sunnn.sunsite.service.GalleryService;
