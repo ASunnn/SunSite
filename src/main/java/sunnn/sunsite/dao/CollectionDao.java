@@ -14,13 +14,13 @@ public class CollectionDao extends MongoBase<Collection> {
 
     public Collection findOne(String collectionName) {
         return findOne(
-                new Query().addCriteria(Criteria.where("name").is(collectionName)),
+                Query.query(Criteria.where("name").is(collectionName)),
                 Collection.class);
     }
 
     public List<Collection> findByType(String type) {
         return find(
-                new Query().addCriteria(Criteria.where("type.name").is(type)),
+                Query.query(Criteria.where("type.name").is(type)),
                 Collection.class);
     }
 
@@ -30,7 +30,7 @@ public class CollectionDao extends MongoBase<Collection> {
 
     public boolean delete(String name) {
         return remove(
-                new Query().addCriteria(Criteria.where("name").is(name)),
+                Query.query(Criteria.where("name").is(name)),
                 Collection.class);
     }
 }

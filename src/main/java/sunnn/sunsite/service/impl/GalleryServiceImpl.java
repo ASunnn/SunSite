@@ -203,32 +203,32 @@ public class GalleryServiceImpl implements GalleryService {
          */
         //对文件记录进行保存
         for (File file : files) {
+            /*
+                生成图片系统信息
+             */
+            long sequence = MD5s.getMD5Sequence(
+                    info.getIllustrator() + info.getCollection() + file.getName());
+            if (sequence == -1)
+                continue;
+            if (pictureDao.findOne(sequence) != null) {
+                log.warn("Duplicate Picture : "
+                        + info.getIllustrator() + info.getCollection() + file.getName());
+                log.warn("Duplicate Sequence : " + sequence);
+                continue;
+            }
+            picture.setUploadTime(System.currentTimeMillis())
+                    .setSequence(sequence)
+                    .setFileName(file.getName())
+                    .setPath(SunSiteConstant.picturePath
+                            + picture.getIllustrator().getName()
+                            + SunSiteConstant.pathSeparator
+                            + picture.getCollection().getName()
+                            + SunSiteConstant.pathSeparator)
+                    .setId(null);   //不想一次次构建pic实体类的话就每次插入前先把id置为null
+            /*
+                存文件
+             */
             try {
-                /*
-                    存文件
-                 */
-                //生成图片系统信息
-                long sequence = MD5s.getMD5Sequence(
-                        info.getIllustrator() + info.getCollection() + file.getName());
-                if (sequence == -1)
-                    continue;
-                if (pictureDao.findOne(sequence) != null) {
-                    log.warn("Duplicate Picture : "
-                            + info.getIllustrator() + info.getCollection() + file.getName());
-                    log.warn("Duplicate Sequence : " + sequence);
-                    continue;
-                }
-
-                picture.setUploadTime(System.currentTimeMillis())
-                        .setSequence(sequence)
-                        .setFileName(file.getName())
-                        .setPath(SunSiteConstant.picturePath
-                                + picture.getIllustrator().getName()
-                                + SunSiteConstant.pathSeparator
-                                + picture.getCollection().getName()
-                                + SunSiteConstant.pathSeparator)
-                        .setId(null);   //不想一次次构建pic实体类的话就每次插入前先把id置为null
-
                 //判断保存路径是否存在
                 File path = new File(picture.getPath());
                 if (!path.exists())
@@ -257,15 +257,16 @@ public class GalleryServiceImpl implements GalleryService {
                 outputChannel.transferFrom(inputChannel, 0, inputChannel.size());
                 inputChannel.close();
                 outputChannel.close();
-                /*
-                    存数据库
-                 */
-                pictureDao.insert(picture);
             } catch (IOException e) {
                 //若中间出错直接返回
                 log.error("Error At SaveUpload : ", e);
                 return StatusCode.ERROR;
             }
+
+            /*
+                存数据库
+             */
+            pictureDao.insert(picture);
         }
         return StatusCode.OJBK;
     }
@@ -327,32 +328,39 @@ public class GalleryServiceImpl implements GalleryService {
         if (p == null)
             return StatusCode.ILLEGAL_DATA;
         /*
-            删除
+            删除图片
          */
-        if (pictureDao.delete(sequenceCode)) {
-            delete(p.getPath() + p.getFileName());
-            delete(p.getPath() + p.getThumbnailName());
-            delete(p.getPath());
+        if (!pictureDao.delete(sequenceCode))
+            return StatusCode.DELETE_FAILED;
+        //删除文件本体
+        delete(p.getPath() + p.getFileName());
+        delete(p.getPath() + p.getThumbnailName());
+        delete(p.getPath());
+        /*
+            检查图片关联到的画集和类型
+         */
+        String collection = p.getCollection().getName();
+        if (pictureDao.findByCollection(collection).isEmpty()) {
+            //预先保存type
+            String type = collectionDao.findOne(collection).getType().getName();
+            if (!collectionDao.delete(collection))
+                return StatusCode.DELETE_FAILED;
 
-            //检查collection是否为空
-            String collection = p.getCollection().getName();
-            if (pictureDao.findByCollection(collection).isEmpty()) {
-                //预先保存type
-                String type = collectionDao.findOne(collection).getType().getName();
-                collectionDao.delete(collection);
-
-                //检查type是否为空
-                if (collectionDao.findByType(type).isEmpty())
-                    typeDao.delete(type);
-            }
-
-            //检查illustrator是否为空
-            String illustrator = p.getIllustrator().getName();
-            if (pictureDao.findByIllustrator(illustrator).isEmpty()) {
-                illustratorDao.delete(illustrator);
-                delete(p.getIllustrator().getPath());
-            }
+            //检查type是否为空
+            if (collectionDao.findByType(type).isEmpty())
+                if (!typeDao.delete(type))
+                    return StatusCode.DELETE_FAILED;
         }
+        /*
+            检查图片关联到的绘师
+         */
+        String illustrator = p.getIllustrator().getName();
+        if (pictureDao.findByIllustrator(illustrator).isEmpty()) {
+            if (!illustratorDao.delete(illustrator))
+                return StatusCode.DELETE_FAILED;
+            delete(p.getIllustrator().getPath());
+        }
+
         return StatusCode.OJBK;
     }
 

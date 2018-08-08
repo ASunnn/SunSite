@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import sunnn.sunsite.dao.TypeDao;
 import sunnn.sunsite.entity.Type;
 import sunnn.sunsite.service.PictureInfoService;
+import sunnn.sunsite.util.StatusCode;
 
 import java.util.List;
 
@@ -21,5 +22,15 @@ public class TypeServiceImpl implements PictureInfoService {
     @Override
     public List<Type> getList() {
         return typeDao.getAllType();
+    }
+
+    @Override
+    public List getRelatedList(String name) {
+        return null;
+    }
+
+    @Override
+    public StatusCode delete(String name) {
+        return null;
     }
 }

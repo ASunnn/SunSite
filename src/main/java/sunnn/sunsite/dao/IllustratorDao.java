@@ -2,6 +2,7 @@ package sunnn.sunsite.dao;
 
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 import sunnn.sunsite.entity.Illustrator;
 
@@ -12,7 +13,7 @@ public class IllustratorDao extends MongoBase<Illustrator> {
 
     public Illustrator findOne(String name) {
         return findOne(
-                new Query().addCriteria(Criteria.where("name").is(name)),
+                Query.query(Criteria.where("name").is(name)),
                 Illustrator.class);
     }
 
@@ -22,7 +23,14 @@ public class IllustratorDao extends MongoBase<Illustrator> {
 
     public boolean delete(String name) {
         return remove(
-                new Query().addCriteria(Criteria.where("name").is(name)),
+                Query.query(Criteria.where("name").is(name)),
+                Illustrator.class);
+    }
+
+    public boolean updateIllustrator(String oldName, String newName) {
+        return updateOne(
+                Query.query(Criteria.where("name").is(oldName)),
+                Update.update("name", newName),
                 Illustrator.class);
     }
 

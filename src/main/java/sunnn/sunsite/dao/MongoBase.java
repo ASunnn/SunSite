@@ -45,11 +45,21 @@ public abstract class MongoBase<T> {
         return result.wasAcknowledged() && result.getDeletedCount() == 1;
     }
 
-//    public UpdateResult updateFirst(Query query, Update update, Class<T> entityClass) {
-//        return mongoTemplate.updateFirst(query, update, entityClass);
-//    }
-//
-//    public UpdateResult updateMulti(Query query, Update update, Class<T> entityClass) {
-//        return mongoTemplate.updateMulti(query, update, entityClass);
-//    }
+    boolean removeAll(Query query, long expected, Class<T> entityClass) {
+        DeleteResult result = mongoTemplate.remove(query, entityClass);
+        return result.wasAcknowledged() && result.getDeletedCount() == expected;
+    }
+
+    boolean updateOne(Query query, Update update, Class<T> entityClass) {
+        UpdateResult result = mongoTemplate.updateFirst(query, update, entityClass);
+        return result.wasAcknowledged()
+                && result.getMatchedCount() == 1
+                && result.getModifiedCount() == 1;
+    }
+
+    boolean updateAll(Query query, Update update, Class<T> entityClass) {
+        UpdateResult result = mongoTemplate.updateMulti(query, update, entityClass);
+        return result.wasAcknowledged()
+                && result.getMatchedCount() == result.getModifiedCount();
+    }
 }

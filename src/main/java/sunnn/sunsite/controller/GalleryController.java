@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import sunnn.sunsite.dto.request.DeletePicture;
+import sunnn.sunsite.dto.request.DeleteRequest;
 import sunnn.sunsite.dto.request.GalleryInfo;
 import sunnn.sunsite.dto.request.PictureListWithFilter;
 import sunnn.sunsite.dto.response.*;
@@ -143,9 +143,9 @@ public class GalleryController {
 
     @PostMapping(value = "/delete")
     @ResponseBody
-    public BaseResponse deletePicture(@RequestBody DeletePicture deletePicture) {
+    public BaseResponse deletePicture(@RequestBody DeleteRequest deleteRequest) {
         return new BaseResponse(
                 galleryService.deletePicture(
-                        deletePicture.getPictureSequence()));
+                        Long.valueOf(deleteRequest.getDeleteInfo())));
     }
 }

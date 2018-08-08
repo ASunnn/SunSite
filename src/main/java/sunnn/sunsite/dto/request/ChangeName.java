@@ -7,8 +7,10 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class DeletePicture {
+public class ChangeName {
 
-    private long pictureSequence;
+    private String oldName;
+
+    private String newName;
 
 }

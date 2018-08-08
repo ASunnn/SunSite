@@ -12,7 +12,7 @@ public class TypeDao extends MongoBase<Type> {
 
     public Type findOne(String name) {
         return mongoTemplate.findOne(
-                new Query().addCriteria(Criteria.where("name").is(name)),
+                Query.query(Criteria.where("name").is(name)),
                 Type.class);
     }
 
@@ -22,7 +22,7 @@ public class TypeDao extends MongoBase<Type> {
 
     public boolean delete(String name) {
         return remove(
-                new Query().addCriteria(Criteria.where("name").is(name)),
+                Query.query(Criteria.where("name").is(name)),
                 Type.class);
     }
 }
