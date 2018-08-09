@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import sunnn.sunsite.dto.request.PictureListWithFilter;
 import sunnn.sunsite.dto.response.PictureInfoResponse;
+import sunnn.sunsite.exception.IllegalFileRequestException;
 import sunnn.sunsite.util.*;
 import sunnn.sunsite.dao.CollectionDao;
 import sunnn.sunsite.dao.IllustratorDao;
@@ -24,7 +25,6 @@ import sunnn.sunsite.service.GalleryService;
 import java.io.*;
 import java.nio.channels.FileChannel;
 import java.util.List;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -143,8 +143,17 @@ public class GalleryServiceImpl implements GalleryService {
     }
 
     @Override
-    public File getPictureFile(String illustrator, String collection, String fileName) {
+    public File getPictureFile(String illustrator, String collection, String fileName)
+            throws IllegalFileRequestException {
         Picture picture = pictureDao.getPicture(illustrator, collection, fileName);
+        if (picture == null)
+            throw new IllegalFileRequestException(
+                    SunSiteConstant.getPicturePath()
+                    + illustrator
+                    + SunSiteConstant.pathSeparator
+                    + collection
+                    + SunSiteConstant.pathSeparator
+                    + fileName);
         String path = picture.getPath() + picture.getFileName();
         return new File(path);
     }
@@ -230,10 +239,8 @@ public class GalleryServiceImpl implements GalleryService {
              */
             try {
                 //判断保存路径是否存在
-                File path = new File(picture.getPath());
-                if (!path.exists())
-                    if (!path.mkdirs())
-                        throw new IOException();
+                if (!FileUtils.createPath(picture.getPath()))
+                    throw new IOException("Cannot Create Picture Path");
 
                 //生成缩略图
                 String thumbnailName = Picture.THUMBNAIL_PREFIX + picture.getFileName();
@@ -262,7 +269,6 @@ public class GalleryServiceImpl implements GalleryService {
                 log.error("Error At SaveUpload : ", e);
                 return StatusCode.ERROR;
             }
-
             /*
                 存数据库
              */
@@ -333,9 +339,12 @@ public class GalleryServiceImpl implements GalleryService {
         if (!pictureDao.delete(sequenceCode))
             return StatusCode.DELETE_FAILED;
         //删除文件本体
-        delete(p.getPath() + p.getFileName());
-        delete(p.getPath() + p.getThumbnailName());
-        delete(p.getPath());
+        if (!FileUtils.deleteFile(p.getPath() + p.getFileName())
+                | !FileUtils.deleteFile(p.getPath() + p.getThumbnailName()))
+            log.warn("Delete Picture Failed : " + p.getPath() + p.getFileName());
+        if (!FileUtils.deletePath(p.getPath()))
+            log.warn("Delete Picture Path Failed : " + p.getPath());
+
         /*
             检查图片关联到的画集和类型
          */
@@ -358,28 +367,12 @@ public class GalleryServiceImpl implements GalleryService {
         if (pictureDao.findByIllustrator(illustrator).isEmpty()) {
             if (!illustratorDao.delete(illustrator))
                 return StatusCode.DELETE_FAILED;
-            delete(p.getIllustrator().getPath());
+            //删除画师文件夹本体
+            if (!FileUtils.deletePathForce(p.getIllustrator().getPath()))
+                log.warn("Delete Illustrator Path Failed : " + p.getIllustrator().getPath());
         }
 
         return StatusCode.OJBK;
-    }
-
-    private void delete(String path) {
-        File file = new File(path);
-        if (!file.isDirectory()) {
-            if (!file.delete())
-                log.warn("Delete Picture Failed : " + path);
-        } else {
-            try {
-                if (Objects.requireNonNull(file.listFiles()).length == 0)
-                    if (!file.delete())
-                        log.warn("Delete Picture Path Failed : " + path);
-            } catch (NullPointerException e) {
-                log.error("Delete Picture Path Error : " + path);
-                log.error("Error : " + e);
-            }
-
-        }
     }
 
 }

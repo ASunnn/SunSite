@@ -1,7 +1,9 @@
 package sunnn.sunsite.service;
 
+import sunnn.sunsite.exception.IllegalFileRequestException;
 import sunnn.sunsite.util.StatusCode;
 
+import java.io.File;
 import java.util.List;
 
 public interface PictureInfoService {
@@ -16,6 +18,14 @@ public interface PictureInfoService {
      * @return 结果
      */
     List getRelatedList(String name);
+
+    /**
+     * 下载该绘师的所有图片
+     *
+     * @param name 绘师名
+     * @return 文件表示
+     */
+    File download(String name) throws IllegalFileRequestException;
 
     /**
      * 改变属性名

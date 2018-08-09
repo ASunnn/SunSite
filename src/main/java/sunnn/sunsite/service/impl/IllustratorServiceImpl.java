@@ -9,14 +9,17 @@ import sunnn.sunsite.dao.IllustratorDao;
 import sunnn.sunsite.dao.PictureDao;
 import sunnn.sunsite.dao.TypeDao;
 import sunnn.sunsite.entity.Illustrator;
+import sunnn.sunsite.exception.IllegalFileRequestException;
 import sunnn.sunsite.service.PictureInfoService;
+import sunnn.sunsite.util.FileUtils;
 import sunnn.sunsite.util.StatusCode;
 import sunnn.sunsite.util.SunSiteConstant;
+import sunnn.sunsite.util.ZipCompress;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
 @Service
@@ -52,6 +55,23 @@ public class IllustratorServiceImpl implements PictureInfoService {
     }
 
     @Override
+    public File download(String name) throws IllegalFileRequestException {
+        Illustrator illustrator = illustratorDao.findOne(name);
+        if (illustrator == null)
+            throw new IllegalFileRequestException(
+                    SunSiteConstant.getPicturePath() + name);
+
+        String path = "E:\\" + illustrator.getName() + ".zip";
+        try {
+            ZipCompress.compress(illustrator.getPath(), path);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return new File(path);
+    }
+
+    @Override
     public StatusCode changeName(String oldName, String newName) {
         /*
             检查参数
@@ -65,16 +85,10 @@ public class IllustratorServiceImpl implements PictureInfoService {
             改文件本体
          */
         String newPath = SunSiteConstant.getPicturePath() + newName + SunSiteConstant.pathSeparator;
-        try {
-            File illustratorFile = new File(i.getPath());
-            if (!illustratorFile.renameTo(new File(newPath))) {
-                log.warn("Rename Picture Failed : " + i.getPath() + " To " + newPath);
-                return StatusCode.RENAME_FAILED;
-            }
-        } catch (Exception e) {
-            log.error("Rename Illustrator Path Error : " + i.getPath() + " To " + newPath);
-            log.error("Error : " + e);
-            return StatusCode.ERROR;
+        File illustratorFile = new File(i.getPath());
+        if (!FileUtils.rename(illustratorFile, newPath)) {
+            log.error("Rename Picture Failed : " + i.getPath() + " To " + newPath);
+            return StatusCode.RENAME_FAILED;
         }
         /*
             改绘师记录和涉及到的图片记录
@@ -101,7 +115,8 @@ public class IllustratorServiceImpl implements PictureInfoService {
         if (!pictureDao.deleteIllustrator(name) || !illustratorDao.delete(name))    //短路原则
             return StatusCode.DELETE_FAILED;
         //删除文件夹本体
-        deletePath(i.getPath());
+        if (!FileUtils.deletePathForce(i.getPath()))
+            log.error("Delete Illustrator Path Error : " + i.getPath());
         /*
             检查图片关联到的画集
          */
@@ -124,21 +139,5 @@ public class IllustratorServiceImpl implements PictureInfoService {
         }
 
         return StatusCode.OJBK;
-    }
-
-    private void deletePath(String path) {
-        File f = new File(path);
-        if (f.isDirectory()) {
-            File[] files = f.listFiles();
-            try {
-                for (File file : Objects.requireNonNull(files))
-                    deletePath(file.getPath());
-            } catch (NullPointerException e) {
-                log.error("Delete Illustrator Path Error : " + path);
-                log.error("Error : " + e);
-            }
-        }
-        if (!f.delete())
-            log.warn("Delete Picture Failed : " + path);
     }
 }

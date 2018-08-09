@@ -14,6 +14,7 @@ import sunnn.sunsite.dto.request.DeleteRequest;
 import sunnn.sunsite.dto.request.GalleryInfo;
 import sunnn.sunsite.dto.request.PictureListWithFilter;
 import sunnn.sunsite.dto.response.*;
+import sunnn.sunsite.exception.IllegalFileRequestException;
 import sunnn.sunsite.util.StatusCode;
 import sunnn.sunsite.dto.request.UploadPictureInfo;
 import sunnn.sunsite.service.GalleryService;
@@ -71,7 +72,8 @@ public class GalleryController {
     public ResponseEntity getPictureFile(@PathVariable("illustrator") String illustrator,
                                          @PathVariable("collection") String collection,
                                          @PathVariable("pictureName") String pictureName)
-            throws IOException {
+            throws IllegalFileRequestException, IOException {
+
         File file = galleryService.getPictureFile(illustrator, collection, pictureName);
 
         HttpHeaders headers = new HttpHeaders();

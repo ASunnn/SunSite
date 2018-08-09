@@ -7,6 +7,7 @@ import sunnn.sunsite.entity.Type;
 import sunnn.sunsite.service.PictureInfoService;
 import sunnn.sunsite.util.StatusCode;
 
+import java.io.File;
 import java.util.List;
 
 @Service
@@ -26,6 +27,16 @@ public class TypeServiceImpl implements PictureInfoService {
 
     @Override
     public List getRelatedList(String name) {
+        return null;
+    }
+
+    @Override
+    public File download(String name) {
+        return null;
+    }
+
+    @Override
+    public StatusCode changeName(String oldName, String newName) {
         return null;
     }
 

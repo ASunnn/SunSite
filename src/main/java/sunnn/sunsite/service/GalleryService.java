@@ -4,6 +4,7 @@ import org.springframework.web.multipart.MultipartFile;
 import sunnn.sunsite.dto.request.PictureListWithFilter;
 import sunnn.sunsite.dto.response.PictureInfoResponse;
 import sunnn.sunsite.dto.response.PictureListResponse;
+import sunnn.sunsite.exception.IllegalFileRequestException;
 import sunnn.sunsite.util.StatusCode;
 import sunnn.sunsite.dto.request.UploadPictureInfo;
 
@@ -49,7 +50,7 @@ public interface GalleryService {
      * @param fileName    图片名
      * @return 图片文件
      */
-    File getPictureFile(String illustrator, String collection, String fileName);
+    File getPictureFile(String illustrator, String collection, String fileName) throws IllegalFileRequestException;
 
     /**
      * 根据过滤条件获取图库信息（类型、画师、画集

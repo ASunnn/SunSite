@@ -7,106 +7,39 @@ import java.util.zip.CheckedInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-@Deprecated
-class SunZipDecompress {
+/**
+ * 压缩文件解压工具类
+ */
+public class ZipDecompress {
 
-    /**
-     * 解压Zip文件
-     *
-     * @param srcFile  zip文件
-     * @param destPath 目标文件夹，会将zip内的所有文件解压到该文件夹下（不包括路径）
-     * @return 解压出来的文件夹
-     * @throws IOException 出错了
-     */
-    public static File[] decompressFile(File srcFile, String destPath) throws IOException {
-        File destFile = new File(destPath);
-        if (!destFile.isDirectory())
-            throw new IOException("目标路径非文件夹");
-
-        CheckedInputStream checkInput = new CheckedInputStream(
-                new FileInputStream(srcFile),
-                new CRC32());
-
-        ZipInputStream zipInput = new ZipInputStream(checkInput);
-        File[] files = decompressFile(zipInput, destFile);
-        zipInput.close();
-        return files;
-    }
-
-    private static File[] decompressFile(ZipInputStream zipFile, File destFile) throws IOException {
-        ZipEntry entry;
-        ArrayList<File> files = new ArrayList<>();
-
-        while ((entry = zipFile.getNextEntry()) != null) {
-            File entryFile = new File(
-                    destFile.getPath() + File.separator + entry.getName());
-
-            checkFile(entryFile);
-
-            if (entryFile.isDirectory())
-                entryFile.mkdir();
-            else
-                decompress(zipFile, entryFile);
-
-            files.add(entryFile);
-        }
-
-        File[] res = new File[files.size()];
-        files.toArray(res);
-        return res;
-    }
-
-    private static void checkFile(File entryFile) {
-        File parentFile = new File(entryFile.getParent());
-        if (!parentFile.exists())
-            parentFile.mkdirs();
-    }
-
-    private static void decompress(ZipInputStream zipInput, File destFile) throws IOException {
-        BufferedOutputStream outputStream = new BufferedOutputStream(
-                new FileOutputStream(destFile));
-        int bufferSize = 1024;
-        int count;
-        byte[] data = new byte[bufferSize];
-        while ((count = zipInput.read(data, 0, bufferSize)) != -1) {
-            outputStream.write(data, 0, count);
-        }
-        outputStream.close();
-    }
-
-}
-
-@Deprecated
-class ZipDecompress {
+    private static final int buffer = 1024;
 
     /**
      * 解压Zip文件
      * 此方法会将zip文件内所有文件解压至给定的路径
      * 忽略zip文件内的文件目录结构
-     * 啊对了，虽然写着ZipDecompress，rar文件也能支持
      *
-     * @param srcFile  zip文件
-     * @param destPath 目标文件夹，会将zip内的所有文件解压到该文件夹下（不包括路径）
-     * @return 解压出来的文件夹
-     * @throws IOException 出错了
+     * @param srcFile  zip/rar文件
+     * @param destPath 目标文件夹，会将zip内的所有文件解压到该文件夹下
+     * @return 解压出来的文件
+     * @throws IOException 发生错误
      */
     public static File[] decompressFile(File srcFile, String destPath) throws IOException {
         /*
             检查目标路径
          */
         File destFile = new File(destPath);
-        if (!destFile.exists())
-            destFile.mkdirs();
-        else if (!destFile.isDirectory())
-            throw new IOException("目标路径非文件夹");
-
+        if (!destFile.exists()) {
+            if (!FileUtils.createPath(destFile))
+                throw new IOException("Can not Create TempPath");
+        } else if (!destFile.isDirectory())
+            throw new IOException("DestPath Cannot Be A File");
         /*
             CRC32冗余校验
          */
         CheckedInputStream checkInput = new CheckedInputStream(
                 new FileInputStream(srcFile),
                 new CRC32());
-
         /*
             解压
          */
@@ -150,10 +83,9 @@ class ZipDecompress {
     private static void decompress(ZipInputStream zipInput, File destFile) throws IOException {
         BufferedOutputStream outputStream = new BufferedOutputStream(
                 new FileOutputStream(destFile));
-        int bufferSize = 1024;
         int count;
-        byte[] data = new byte[bufferSize];
-        while ((count = zipInput.read(data, 0, bufferSize)) != -1) {
+        byte[] data = new byte[buffer];
+        while ((count = zipInput.read(data, 0, buffer)) != -1) {
             outputStream.write(data, 0, count);
         }
         outputStream.close();

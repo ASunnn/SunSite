@@ -6,12 +6,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 上传文件的缓存类
+ * 文件的缓存工具
+ * 此工具只负责保存文件信息，并不保证文件本体的修改
  */
 public class FileCache {
 
@@ -38,22 +38,26 @@ public class FileCache {
      * 设置缓存
      *
      * @param key  键
-     * @param file 文件
+     * @param file 服务器接收的临时文件
      * @throws IOException 文件保存失败
      */
     public void setFile(String key, MultipartFile file) throws IOException {
-        /*
-            检查是否已经有相同的键
-         */
-        if (!cache.containsKey(key))
-            cache.put(key,  //若是新缓存，则新建一个缓存
-                    new TempFiles(now()));
-        /*
-            保存文件
-            已有缓存情况下新文件直接追加到里面
-         */
-        File f = storeFile(file, key);
-        cache.get(key).setFiles(f);
+        //将MultipartFile转换为File
+        File f = FileUtils.storeFile(file,
+                SunSiteConstant.pictureTempPath + key + SunSiteConstant.pathSeparator);
+        setFile(key, f);
+    }
+
+    public void setFile(String key, File file) {
+        //检查是否已经有相同的键
+        checkAndPut(key);
+        cache.get(key).setFiles(file);
+    }
+
+    public void setFile(String key, List<File> files) {
+        //检查是否已经有相同的键
+        checkAndPut(key);
+        cache.get(key).setFiles(files);
     }
 
     /**
@@ -76,14 +80,15 @@ public class FileCache {
         while (i.hasNext()) {
             Map.Entry<String, TempFiles> r = i.next();
 
-            long saveTime = r.getValue().getReceiveTime();
+            long saveTime = r.getValue().getModifiedTime();
             if (now() - saveTime > expiration) {
                 //删除缓存文件
-                deleteFile(r.getValue().getFiles());
+                for (File file : r.getValue().getFiles())
+                    if (!FileUtils.deleteFile(file))
+                        log.warn("Delete Cache Failed : " + file.getName());
                 //删除目录
-                String path = SunSiteConstant.pictureTempPath + r.getKey();
-                if (!new File(path).delete())
-                    log.warn("Can not Delete TempPath : " + path);
+                if (!FileUtils.deletePath(SunSiteConstant.pictureTempPath + r.getKey()))
+                    log.warn("Can not Delete TempPath : " + SunSiteConstant.pictureTempPath + r.getKey());
                 i.remove();
             }
         }
@@ -93,38 +98,25 @@ public class FileCache {
         return cache.size();
     }
 
+    private void checkAndPut(String key) {
+        if (!cache.containsKey(key))
+            cache.put(key,  //若是新缓存，则新建一个缓存
+                    new TempFiles());
+    }
+
     private long now() {
         return System.currentTimeMillis();
-    }
-
-    private File storeFile(MultipartFile file, String key) throws IOException {
-        String path = SunSiteConstant.pictureTempPath + key + SunSiteConstant.pathSeparator;
-
-        File pathFile = new File(path);
-        if (!pathFile.exists())
-            if (!pathFile.mkdirs())
-                throw new IOException("Can not Create TempPath");
-
-        File f = new File(path + file.getOriginalFilename());
-        file.transferTo(f);
-        return f;
-    }
-
-    private void deleteFile(List<File> files) {
-        for (File file : files)
-            if (!file.delete())
-                log.warn("Delete Cache Failed : " + file.getName());
     }
 
     private class TempFiles {
 
         private List<File> files;
 
-        private long receiveTime;
+        private long modifiedTime;
 
-        TempFiles(long receiveTime) {
+        TempFiles() {
             this.files = new LinkedList<>();
-            this.receiveTime = receiveTime;
+            this.setModifiedTime();
         }
 
         List<File> getFiles() {
@@ -133,14 +125,20 @@ public class FileCache {
 
         void setFiles(File file) {
             this.files.add(file);
+            setModifiedTime();
         }
 
-        long getReceiveTime() {
-            return receiveTime;
+        void setFiles(List<File> files) {
+            this.files.addAll(files);
+            setModifiedTime();
         }
 
-        void setReceiveTime(long receiveTime) {
-            this.receiveTime = receiveTime;
+        long getModifiedTime() {
+            return modifiedTime;
+        }
+
+        void setModifiedTime() {
+            this.modifiedTime = System.currentTimeMillis();
         }
     }
 
