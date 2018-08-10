@@ -24,7 +24,7 @@ public class ZipDecompress {
      * @return 解压出来的文件
      * @throws IOException 发生错误
      */
-    public static File[] decompressFile(File srcFile, String destPath) throws IOException {
+    public static File[] decompress(File srcFile, String destPath) throws IOException {
         /*
             检查目标路径
          */
@@ -44,12 +44,12 @@ public class ZipDecompress {
             解压
          */
         ZipInputStream zipInput = new ZipInputStream(checkInput);
-        File[] files = decompressFile(zipInput, destFile);
+        File[] files = decompress(zipInput, destFile);
         zipInput.close();
         return files;
     }
 
-    private static File[] decompressFile(ZipInputStream zipFile, File destFile) throws IOException {
+    private static File[] decompress(ZipInputStream zipFile, File destFile) throws IOException {
         ZipEntry entry;
         ArrayList<File> files = new ArrayList<>();
         /*
@@ -69,7 +69,7 @@ public class ZipDecompress {
             /*
                 解压
              */
-            decompress(zipFile, entryFile);
+            doDecompress(zipFile, entryFile);
             /*
                 解压出来的文件增加到结果集中
              */
@@ -80,7 +80,7 @@ public class ZipDecompress {
         return res;
     }
 
-    private static void decompress(ZipInputStream zipInput, File destFile) throws IOException {
+    private static void doDecompress(ZipInputStream zipInput, File destFile) throws IOException {
         BufferedOutputStream outputStream = new BufferedOutputStream(
                 new FileOutputStream(destFile));
         int count;

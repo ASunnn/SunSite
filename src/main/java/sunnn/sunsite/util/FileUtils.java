@@ -2,8 +2,8 @@ package sunnn.sunsite.util;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.nio.channels.FileChannel;
 
 public class FileUtils {
 
@@ -74,21 +74,13 @@ public class FileUtils {
         return srcFile.renameTo(new File(newName));
     }
 
-//    public static String deletePath(File file) {
-//        if (!file.isDirectory()) {
-//            if (!file.delete())
-//                return file.getPath();
-//        } else {
-//            try {
-//                if (Objects.requireNonNull(file.listFiles()).length == 0)
-//                    if (!file.delete())
-//                        return file.getPath();
-//            } catch (NullPointerException e) {
-//                throw new NullPointerException(file.getPath());
-//            }
-//
-//        }
-//        return null;
-//    }
+    public static void copy(File srcFile, String destPath) throws IOException {
+        try (FileChannel inputChannel =
+                     new FileInputStream(srcFile).getChannel();
+             FileChannel outputChannel =
+                     new FileOutputStream(new File(destPath)).getChannel()) {
+            outputChannel.transferFrom(inputChannel, 0, inputChannel.size());
+        }
+    }
 
 }

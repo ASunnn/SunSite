@@ -1,5 +1,6 @@
 package sunnn.sunsite.service.impl;
 
+import org.apache.shiro.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,10 +12,7 @@ import sunnn.sunsite.dao.TypeDao;
 import sunnn.sunsite.entity.Illustrator;
 import sunnn.sunsite.exception.IllegalFileRequestException;
 import sunnn.sunsite.service.PictureInfoService;
-import sunnn.sunsite.util.FileUtils;
-import sunnn.sunsite.util.StatusCode;
-import sunnn.sunsite.util.SunSiteConstant;
-import sunnn.sunsite.util.ZipCompress;
+import sunnn.sunsite.util.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,12 +33,15 @@ public class IllustratorServiceImpl implements PictureInfoService {
 
     private final TypeDao typeDao;
 
+    private final FileCache fileCache;
+
     @Autowired
-    public IllustratorServiceImpl(IllustratorDao illustratorDao, PictureDao pictureDao, CollectionDao collectionDao, TypeDao typeDao) {
+    public IllustratorServiceImpl(IllustratorDao illustratorDao, PictureDao pictureDao, CollectionDao collectionDao, TypeDao typeDao, FileCache fileCache) {
         this.illustratorDao = illustratorDao;
         this.pictureDao = pictureDao;
         this.collectionDao = collectionDao;
         this.typeDao = typeDao;
+        this.fileCache = fileCache;
     }
 
     @Override
@@ -56,19 +57,44 @@ public class IllustratorServiceImpl implements PictureInfoService {
 
     @Override
     public File download(String name) throws IllegalFileRequestException {
+        /*
+            非法请求判断
+         */
         Illustrator illustrator = illustratorDao.findOne(name);
         if (illustrator == null)
             throw new IllegalFileRequestException(
                     SunSiteConstant.getPicturePath() + name);
-
-        String path = "E:\\" + illustrator.getName() + ".zip";
+        /*
+            以请求的内容作为缓存的key
+            若已有缓存，则直接返回文件
+         */
+        String tempCode = "download_" + name;
+        if (fileCache.isContains(tempCode)) {
+            System.out.println("get cache");
+            return fileCache.getFile(tempCode).get(0);
+        }
+        /*
+            新建缓存
+         */
+        String path = SunSiteConstant.pictureTempPath
+                + tempCode
+                + SunSiteConstant.pathSeparator
+                + illustrator.getName() + ".zip";
+        fileCache.setFile(tempCode, new File(path));
+        /*
+            压缩文件
+         */
         try {
             ZipCompress.compress(illustrator.getPath(), path);
+            System.out.println("Set cache");
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Compress File Error : ", e);
             return null;
         }
-        return new File(path);
+        /*
+            从缓存中获取压缩文件返回
+         */
+        return fileCache.getFile(tempCode).get(0);
     }
 
     @Override

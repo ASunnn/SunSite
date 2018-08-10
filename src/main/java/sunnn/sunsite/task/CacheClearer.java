@@ -25,7 +25,7 @@ public class CacheClearer {
     /**
      * 每小时执行一次缓存清理任务
      */
-    @Scheduled(cron = "0 0 * * * *")
+    @Scheduled(cron = "0 * * * * *")
     public void clearFileCache() {
         log.info("Run Scheduled Task : " +
                 DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(LocalDateTime.now()));

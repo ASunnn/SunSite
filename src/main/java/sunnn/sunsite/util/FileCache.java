@@ -99,9 +99,13 @@ public class FileCache {
     }
 
     private void checkAndPut(String key) {
-        if (!cache.containsKey(key))
+        if (!isContains(key))
             cache.put(key,  //若是新缓存，则新建一个缓存
                     new TempFiles());
+    }
+
+    public boolean isContains(String key) {
+        return cache.containsKey(key);
     }
 
     private long now() {

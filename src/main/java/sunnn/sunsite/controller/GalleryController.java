@@ -57,7 +57,7 @@ public class GalleryController {
         headers.setContentType(MediaType.IMAGE_JPEG);
 //        String destFileName = new String(
 //                file.getName().getBytes("utf-8"), "iso8859-1");
-        //这货是用来告诉浏览器：此资源是用来下载的
+//        //这货是用来告诉浏览器：此资源是用来下载的
 //        headers.setContentDispositionFormData("attachment", destFileName);
         return new ResponseEntity<>(FileUtils.readFileToByteArray(file), headers, HttpStatus.OK);
     }

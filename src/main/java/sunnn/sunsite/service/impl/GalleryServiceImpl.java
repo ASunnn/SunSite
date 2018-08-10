@@ -255,15 +255,8 @@ public class GalleryServiceImpl implements GalleryService {
                 Thumbnails.of(file.getPath())
                         .size(SunSiteConstant.thumbnailSize, SunSiteConstant.thumbnailSize)
                         .toFile(picture.getPath() + picture.getThumbnailName());
-
                 //保存原图
-                FileChannel inputChannel = new FileInputStream(file).getChannel();
-                FileChannel outputChannel = new FileOutputStream(
-                        new File(picture.getPath() + picture.getFileName()))
-                        .getChannel();
-                outputChannel.transferFrom(inputChannel, 0, inputChannel.size());
-                inputChannel.close();
-                outputChannel.close();
+                FileUtils.copy(file, picture.getPath() + picture.getFileName());
             } catch (IOException e) {
                 //若中间出错直接返回
                 log.error("Error At SaveUpload : ", e);

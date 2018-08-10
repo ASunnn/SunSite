@@ -14,7 +14,6 @@ import sunnn.sunsite.dto.request.DeleteRequest;
 import sunnn.sunsite.dto.response.BaseResponse;
 import sunnn.sunsite.exception.IllegalFileRequestException;
 import sunnn.sunsite.service.PictureInfoService;
-import sunnn.sunsite.util.StatusCode;
 
 import java.io.File;
 import java.io.IOException;
@@ -45,6 +44,7 @@ public class IllustratorController {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData("attachment", file.getName());
         return new ResponseEntity<>(FileUtils.readFileToByteArray(file), headers, HttpStatus.OK);
     }
 

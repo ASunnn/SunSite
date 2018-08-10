@@ -28,8 +28,13 @@ public class ZipCompress {
     }
 
     private static void compress(File srcFile, File destFile) throws IOException {
+        /*
+            检查目标路径
+         */
         if (destFile.isDirectory())
             throw new IOException("DestFile Cannot Be Directory");
+        if (!FileUtils.createPath(destFile.getParent()))
+            throw new IOException("Can not Create TempPath");
         /*
             对输出文件做CRC32校验
          */
