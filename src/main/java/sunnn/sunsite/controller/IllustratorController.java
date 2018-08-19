@@ -12,11 +12,14 @@ import org.springframework.web.bind.annotation.*;
 import sunnn.sunsite.dto.request.ChangeName;
 import sunnn.sunsite.dto.request.DeleteRequest;
 import sunnn.sunsite.dto.response.BaseResponse;
+import sunnn.sunsite.dto.response.CollectionListResponse;
 import sunnn.sunsite.exception.IllegalFileRequestException;
 import sunnn.sunsite.service.PictureInfoService;
+import sunnn.sunsite.util.StatusCode;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 @Controller
 @RequestMapping("/illustrator")
@@ -24,15 +27,33 @@ public class IllustratorController {
 
     private final PictureInfoService illustratorService;
 
+    private final PictureInfoService collectionService;
+
     @Autowired
-    public IllustratorController(@Qualifier("illustratorServiceImpl") PictureInfoService illustratorService) {
+    public IllustratorController(@Qualifier("illustratorServiceImpl") PictureInfoService illustratorService,
+                                 @Qualifier("collectionServiceImpl") PictureInfoService collectionService) {
         this.illustratorService = illustratorService;
+        this.collectionService = collectionService;
     }
 
     @GetMapping(value = "collections")
     @ResponseBody
-    public void getCollections(@RequestParam("i") String illustratorName) {
-        illustratorService.getRelatedList(illustratorName);
+    public CollectionListResponse getCollections(@RequestParam("i") String illustratorName) {
+        List<String> relatedList = illustratorService.getRelatedList(illustratorName);
+
+        if (relatedList.isEmpty())
+            return new CollectionListResponse(StatusCode.NO_DATA);
+
+        String[] collectionList = new String[relatedList.size()];
+        relatedList.toArray(collectionList);
+
+        String[] thumbnailSequenceList = new String[relatedList.size()];
+        for (int i = 0; i < collectionList.length; ++i)
+            thumbnailSequenceList[i] =
+                    String.valueOf(collectionService.getThumbnailSequence(collectionList[i]));
+
+        return new CollectionListResponse(
+                StatusCode.OJBK, collectionList, thumbnailSequenceList);
     }
 
     @GetMapping(value = "download")
@@ -56,6 +77,7 @@ public class IllustratorController {
     }
 
     @PostMapping(value = "delete")
+    @ResponseBody
     public BaseResponse deleteIllustrator(@RequestBody DeleteRequest deleteRequest) {
         return new BaseResponse(
                 illustratorService.delete(

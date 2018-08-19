@@ -1,6 +1,5 @@
 package sunnn.sunsite.service.impl;
 
-import org.apache.shiro.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -165,5 +164,10 @@ public class IllustratorServiceImpl implements PictureInfoService {
         }
 
         return StatusCode.OJBK;
+    }
+
+    @Override
+    public long getThumbnailSequence(String name) {
+        return 0;
     }
 }

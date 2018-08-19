@@ -57,4 +57,16 @@ public class View {
 //        return mv;
     }
 
+    /**
+     * 画师显示
+     */
+    @RequestMapping(value = "/illustrator/show/*")
+    public String illustrator() {
+        return "illustrator";
+//        ModelAndView mv = new ModelAndView();
+//        mv.setViewName("gallery");
+//        mv.addObject("p", pictureName);
+//        return mv;
+    }
+
 }

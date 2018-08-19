@@ -6,7 +6,6 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 import sunnn.sunsite.dto.request.PictureListWithFilter;
-import sunnn.sunsite.entity.Illustrator;
 import sunnn.sunsite.entity.Picture;
 import sunnn.sunsite.util.BaseDataBoxing;
 
@@ -98,11 +97,11 @@ public class PictureDao extends MongoBase<Picture> {
         }
         if (collection.get(0).isEmpty()) {
             collection.clear();
-            distinct(query, "collection.name", illustrator);
+            distinct(query, "collection.name", collection);
         }
         if (type.get(0).isEmpty()) {
             type.clear();
-            distinct(query, "type.name", illustrator);
+            distinct(query, "type.name", type);
         }
     }
 
@@ -117,6 +116,11 @@ public class PictureDao extends MongoBase<Picture> {
         for (String s : mongoTemplate.getCollection("gallery")
                 .distinct(field, query.getQueryObject(), String.class))
             result.add(s);
+    }
+
+    public Picture getFirst(String name, String type) {
+        Query query = new Query(Criteria.where(type).is(name));
+        return findOne(query, Picture.class);
     }
 
     public long count() {

@@ -12,15 +12,15 @@ public interface PictureInfoService {
 
     /**
      * 当传入绘师时，获取绘师关联的所有画集
-     * 传入画集时，获取画集关联的所有绘
+     * 传入画集时，获取画集关联的所有绘师
      *
-     * @param name 熟悉名
+     * @param name 属性名
      * @return 结果
      */
-    List getRelatedList(String name);
+    List<String> getRelatedList(String name);
 
     /**
-     * 下载该绘师的所有图片
+     * 下载该绘师/画集的所有图片
      *
      * @param name 绘师名
      * @return 文件表示
@@ -43,4 +43,12 @@ public interface PictureInfoService {
      * @return 删除结果
      */
     StatusCode delete(String name);
+
+    /**
+     * 获取该属性的封面图
+     *
+     * @param name 属性名
+     * @return 图片序列号
+     */
+    long getThumbnailSequence(String name);
 }

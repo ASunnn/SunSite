@@ -375,8 +375,6 @@
 
         function pictureListHandler(data, page, isFilter) {
             if (data.code == 0) {
-                var pictureList = document.getElementById("pictureList");
-
                 for (i = 0; i < data.fileList.length; ++i) {
                     var sequence = data.fileList[i];
                     setPicture(sequence);
@@ -441,7 +439,7 @@
                 var divElement = document.getElementById(sequence);
 
                 var illustratorElement = document.createElement("a");
-                illustratorElement.setAttribute("href", "/hello");
+                illustratorElement.setAttribute("href", "/illustrator/show/" + illustrator);
                 illustratorElement.innerHTML = illustrator;
                 illustratorElement.setAttribute("style", "display: block");
                 divElement.appendChild(illustratorElement);

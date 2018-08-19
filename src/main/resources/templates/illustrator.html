@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Gallery</title>
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.9.0.min.js"></script>
+
+    <style>
+        /* 标题菜单 */
+        .menu {
+            margin-left: auto;
+            margin-right: auto;
+            width: 150px;
+            height: 50px;
+        }
+
+        .menuContent {
+            text-align: center;
+            /* 导致图片列表第一个图片位置错误的万恶之源 */
+            /* float: left; */
+            width: 150px;
+        }
+
+        /* 头部 */
+        .header {
+            width: 1600px;
+            height: 70px;
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        .theme {
+            float: left;
+            width: 1300px;
+        }
+
+        .option {
+            float: left;
+            width: 150px;
+            margin-top: 26px;
+            text-align: right;
+        }
+
+        /* 图片列表 */
+        .collectionList {
+            display: inline-block;
+            /* 加上这个使得元素强行置顶，反而更难看 */
+            /* vertical-align: top; */
+            text-align: center;
+            width: 320px;
+            height: 340px;
+            margin: 15px;
+        }
+        a {
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        .next {
+            text-align: center;
+            margin: 30px;
+        }
+    </style>
+
+    <script>
+        window.onload = function () {
+            var r = window.location.href.split("/");
+            var illustrator = r[r.length-1];
+
+            var theme = document.getElementById("theme");
+            theme.innerHTML = illustrator;
+
+            var download = document.getElementById("download");
+            var downloadLink = document.createElement("a");
+            downloadLink.setAttribute("href", "/illustrator/download?n=" + illustrator);
+            downloadLink.innerHTML = "Get";
+            download.appendChild(downloadLink);
+
+            var del = document.getElementById("del");
+            var deleteLink = document.createElement("a");
+            // deleteLink.setAttribute("href", "/illustrator/download?n=" + illustrator);
+            deleteLink.innerHTML = "delete";
+            del.appendChild(deleteLink);
+            del.setAttribute("onclick", "deleteIt(" + illustrator + ")");
+            // del.onclick = deleteIt(illustrator);
+
+            getPictureList(illustrator);
+        };
+
+    </script>
+
+    <script>
+        function getPictureList(illustrator) {
+            $.get("/illustrator/collections?i=" + illustrator, function (data) {
+                pictureListHandler(data);
+            });
+        }
+
+        function pictureListHandler(data) {
+            if (data.code == 0) {
+
+                for (i = 0; i < data.collectionList.length; ++i) {
+                    var name = data.collectionList[i];
+                    var sequence = data.thumbnailSequenceList[i];
+                    setPicture(name, sequence);
+                }
+
+            } else if (data.code == 4) 
+                alert(data.msg);
+            else
+                window.location.href = "/error";
+        }
+
+        function setPicture(name, sequence) {
+            var collectionList = document.getElementById("collectionList");
+
+            var divElement = document.createElement("div");
+            divElement.setAttribute("class", "collectionList");
+            divElement.setAttribute("id", sequence);
+            collectionList.appendChild(divElement);
+
+            var image = document.createElement("img");
+            image.src = "/gallery/m?thumbnail=" + sequence;
+            image.setAttribute("style", "display: block; margin: auto");
+
+            var imageLink = document.createElement("a");
+            imageLink.setAttribute("href", "/hello");
+            imageLink.appendChild(image);
+            divElement.appendChild(imageLink);
+
+            var collectionElement = document.createElement("a");
+            collectionElement.setAttribute("href", "/hello");
+            collectionElement.innerHTML = name;
+            collectionElement.setAttribute("style", "display: block");
+            divElement.appendChild(collectionElement);
+        }
+
+        function deleteIt(name) {
+            var data = {
+                "deleteInfo": name
+            };
+
+            $.ajax({
+                method: 'post',
+                url: "/illustrator/delete",
+                data: JSON.stringify(data),
+                dataType: "JSON",
+                contentType: "application/json"
+            }).done(function (data) {
+                alert(data.msg);
+                window.location.href = "/galleryHome";
+            }).fail(function () {
+                alert("error");
+                window.location.href = "/error";
+            });
+        }
+    </script>
+</head>
+<body>
+    <div id="title">
+        <h1 id="titleText" onclick="upload()" style="text-align:center;font-size:50px">
+            Gallery</h1>
+    </div>
+    <div class="menu">
+        <h3 class="menuContent">
+            <a href="/galleryHome">
+                GALLERY</a>
+        </h3>
+    </div>
+    <div id="content" style="margin:auto; width:1750px;">
+        <div id="header" class="header">
+            <h2 id="theme" class="theme">GALLERY</h2>
+            <p id="download" class="option"></p>
+            <p id="del" class="option"></p>
+        </div>
+        <div id="collectionList">
+        </div>
+    </div>
+</body>
+</html>

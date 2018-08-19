@@ -26,7 +26,7 @@ public class TypeServiceImpl implements PictureInfoService {
     }
 
     @Override
-    public List getRelatedList(String name) {
+    public List<String> getRelatedList(String name) {
         return null;
     }
 
@@ -43,5 +43,10 @@ public class TypeServiceImpl implements PictureInfoService {
     @Override
     public StatusCode delete(String name) {
         return null;
+    }
+
+    @Override
+    public long getThumbnailSequence(String name) {
+        return 0;
     }
 }
