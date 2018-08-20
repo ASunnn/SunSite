@@ -44,7 +44,7 @@ public class FileCache {
     public void setFile(String key, MultipartFile file) throws IOException {
         //将MultipartFile转换为File
         File f = FileUtils.storeFile(file,
-                SunSiteConstant.pictureTempPath + key + SunSiteConstant.pathSeparator);
+                SunSiteConstant.tempPath + key + SunSiteConstant.pathSeparator);
         setFile(key, f);
     }
 
@@ -99,8 +99,8 @@ public class FileCache {
                     if (!FileUtils.deleteFile(file))
                         log.warn("Delete Cache Failed : " + file.getName());
                 //删除目录
-                if (!FileUtils.deletePath(SunSiteConstant.pictureTempPath + r.getKey()))
-                    log.warn("Can not Delete TempPath : " + SunSiteConstant.pictureTempPath + r.getKey());
+                if (!FileUtils.deletePath(SunSiteConstant.tempPath + r.getKey()))
+                    log.warn("Can not Delete TempPath : " + SunSiteConstant.tempPath + r.getKey());
                 i.remove();
             }
         }

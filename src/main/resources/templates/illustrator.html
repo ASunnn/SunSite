@@ -79,11 +79,13 @@
             download.appendChild(downloadLink);
 
             var del = document.getElementById("del");
-            var deleteLink = document.createElement("a");
+            // var deleteLink = document.createElement("a");
             // deleteLink.setAttribute("href", "/illustrator/download?n=" + illustrator);
-            deleteLink.innerHTML = "delete";
-            del.appendChild(deleteLink);
-            del.setAttribute("onclick", "deleteIt(" + illustrator + ")");
+            del.innerHTML = "delete";
+            // del.appendChild(deleteLink);
+            // let s = new Array(illustrator);
+            //  s = s.join("");
+            del.setAttribute("onclick", "deleteIt('" + illustrator + "')");
             // del.onclick = deleteIt(illustrator);
 
             getPictureList(illustrator);
@@ -101,8 +103,8 @@
         function pictureListHandler(data) {
             if (data.code == 0) {
 
-                for (i = 0; i < data.collectionList.length; ++i) {
-                    var name = data.collectionList[i];
+                for (i = 0; i < data.infoList.length; ++i) {
+                    var name = data.infoList[i];
                     var sequence = data.thumbnailSequenceList[i];
                     setPicture(name, sequence);
                 }
@@ -137,9 +139,9 @@
             divElement.appendChild(collectionElement);
         }
 
-        function deleteIt(name) {
+        function deleteIt(item) {
             var data = {
-                "deleteInfo": name
+                "deleteInfo": item
             };
 
             $.ajax({
@@ -156,6 +158,10 @@
                 window.location.href = "/error";
             });
         }
+
+        function modify() {
+
+        }
     </script>
 </head>
 <body>
@@ -171,7 +177,7 @@
     </div>
     <div id="content" style="margin:auto; width:1750px;">
         <div id="header" class="header">
-            <h2 id="theme" class="theme">GALLERY</h2>
+            <h2 id="theme" class="theme" onclick=""></h2>
             <p id="download" class="option"></p>
             <p id="del" class="option"></p>
         </div>

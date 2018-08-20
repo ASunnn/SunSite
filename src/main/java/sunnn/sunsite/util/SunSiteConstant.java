@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @PropertySource("file:${properties-file.path}")
 public class SunSiteConstant {
 
-    public static String pictureTempPath;
+    public static String tempPath;
 
     public static String picturePath;
 
@@ -23,12 +23,12 @@ public class SunSiteConstant {
 
     public static int cacheInitCapacity;
 
-    public static String getPictureTempPath() {
-        return pictureTempPath;
+    public static String getTempPath() {
+        return tempPath;
     }
 
-    public static void setPictureTempPath(String pictureTempPath) {
-        SunSiteConstant.pictureTempPath = pictureTempPath;
+    public static void setTempPath(String tempPath) {
+        SunSiteConstant.tempPath = tempPath;
     }
 
     public static String getPicturePath() {

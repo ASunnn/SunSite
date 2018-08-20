@@ -72,7 +72,7 @@ public class Picture {
     @Field(value = "sequence")
     private long sequence;
 
-    public static final String THUMBNAIL_PREFIX = "m_";
+    public static final String THUMBNAIL_PREFIX = "thumbnail_";
 
     @Override
     public boolean equals(Object o) {

@@ -9,6 +9,7 @@ import sunnn.sunsite.dao.IllustratorDao;
 import sunnn.sunsite.dao.PictureDao;
 import sunnn.sunsite.dao.TypeDao;
 import sunnn.sunsite.entity.Illustrator;
+import sunnn.sunsite.entity.Picture;
 import sunnn.sunsite.exception.IllegalFileRequestException;
 import sunnn.sunsite.service.PictureInfoService;
 import sunnn.sunsite.util.*;
@@ -67,14 +68,14 @@ public class IllustratorServiceImpl implements PictureInfoService {
             以请求的内容作为缓存的key
             若已有缓存，则直接返回文件
          */
-        String tempCode = "download_" + name;
+        String tempCode = "download_illustrator_" + name;
         List<File> files = fileCache.getFile(tempCode);
         if (files != null)     //若成功从缓存中获取到文件，缓存的生命周期会重置，因此不用担心文件被删除
             return files.get(0);
         /*
             新建缓存
          */
-        String path = SunSiteConstant.pictureTempPath
+        String path = SunSiteConstant.tempPath
                 + tempCode
                 + SunSiteConstant.pathSeparator
                 + illustrator.getName() + ".zip";
@@ -102,7 +103,7 @@ public class IllustratorServiceImpl implements PictureInfoService {
         Illustrator i = illustratorDao.findOne(oldName);
         if (i == null)
             return StatusCode.ILLEGAL_DATA;
-        if (illustratorDao.findOne(oldName) != null)
+        if (illustratorDao.findOne(newName) != null)
             return StatusCode.ILLEGAL_DATA;
         /*
             改文件本体
@@ -166,6 +167,11 @@ public class IllustratorServiceImpl implements PictureInfoService {
 
     @Override
     public long getThumbnailSequence(String name) {
-        return 0;
+        Picture p = pictureDao.getFirst(name, "illustrator.name");
+        if (p == null) {
+            log.warn("Cannot Find Any Picture In Illustrator : " + name);
+            return -1;
+        }
+        return p.getSequence();
     }
 }

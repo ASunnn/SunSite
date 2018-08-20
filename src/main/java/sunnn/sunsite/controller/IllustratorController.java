@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import sunnn.sunsite.dto.request.ChangeName;
 import sunnn.sunsite.dto.request.DeleteRequest;
 import sunnn.sunsite.dto.response.BaseResponse;
-import sunnn.sunsite.dto.response.CollectionListResponse;
+import sunnn.sunsite.dto.response.PictureInfoInfoListResponse;
 import sunnn.sunsite.exception.IllegalFileRequestException;
 import sunnn.sunsite.service.PictureInfoService;
 import sunnn.sunsite.util.StatusCode;
@@ -38,11 +38,11 @@ public class IllustratorController {
 
     @GetMapping(value = "collections")
     @ResponseBody
-    public CollectionListResponse getCollections(@RequestParam("i") String illustratorName) {
+    public PictureInfoInfoListResponse getCollections(@RequestParam("i") String illustratorName) {
         List<String> relatedList = illustratorService.getRelatedList(illustratorName);
 
         if (relatedList.isEmpty())
-            return new CollectionListResponse(StatusCode.NO_DATA);
+            return new PictureInfoInfoListResponse(StatusCode.NO_DATA);
 
         String[] collectionList = new String[relatedList.size()];
         relatedList.toArray(collectionList);
@@ -52,7 +52,7 @@ public class IllustratorController {
             thumbnailSequenceList[i] =
                     String.valueOf(collectionService.getThumbnailSequence(collectionList[i]));
 
-        return new CollectionListResponse(
+        return new PictureInfoInfoListResponse(
                 StatusCode.OJBK, collectionList, thumbnailSequenceList);
     }
 

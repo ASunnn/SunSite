@@ -64,8 +64,9 @@ public class FileUtils {
             return false;
 
         boolean flag = true;
-        for (File f : files)
-            flag = deletePathForce(f);
+        for (File f : files) {
+            flag = f.isDirectory() ? deletePathForce(f) : deleteFile(f);
+        }
 
         return file.delete() && flag;
     }

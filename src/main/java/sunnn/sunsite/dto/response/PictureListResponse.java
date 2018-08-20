@@ -30,7 +30,6 @@ public class PictureListResponse extends BaseResponse implements Convertible<Pic
         this.pageCount = pageCount;
     }
 
-
     @Override
     public PictureListResponse convertTo(List<Picture> pictures) {
         if (pictures.isEmpty())

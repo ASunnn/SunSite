@@ -10,20 +10,20 @@ import sunnn.sunsite.util.StatusCode;
 @Setter
 @Accessors(chain = true)
 @ToString
-public class CollectionListResponse extends BaseResponse {
+public class PictureInfoInfoListResponse extends BaseResponse {
 
-    private String[] collectionList;
+    private String[] infoList;
 
     private String[] thumbnailSequenceList;
 
-    public CollectionListResponse(StatusCode statusCode) {
+    public PictureInfoInfoListResponse(StatusCode statusCode) {
         super(statusCode);
     }
 
-    public CollectionListResponse(
-            StatusCode statusCode, String[] collectionList, String[] thumbnailSequenceList) {
+    public PictureInfoInfoListResponse(
+            StatusCode statusCode, String[] infoList, String[] thumbnailSequenceList) {
         super(statusCode);
-        this.collectionList = collectionList;
+        this.infoList = infoList;
         this.thumbnailSequenceList = thumbnailSequenceList;
     }
 }

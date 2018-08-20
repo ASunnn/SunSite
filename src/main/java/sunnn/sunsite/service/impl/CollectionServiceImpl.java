@@ -8,8 +8,11 @@ import sunnn.sunsite.dao.CollectionDao;
 import sunnn.sunsite.dao.PictureDao;
 import sunnn.sunsite.entity.Collection;
 import sunnn.sunsite.entity.Picture;
+import sunnn.sunsite.exception.IllegalFileRequestException;
 import sunnn.sunsite.service.PictureInfoService;
+import sunnn.sunsite.util.FileCache;
 import sunnn.sunsite.util.StatusCode;
+import sunnn.sunsite.util.SunSiteConstant;
 
 import java.io.File;
 import java.util.List;
@@ -23,10 +26,13 @@ public class CollectionServiceImpl implements PictureInfoService {
 
     private final PictureDao pictureDao;
 
+    private final FileCache fileCache;
+
     @Autowired
-    public CollectionServiceImpl(CollectionDao collectionDao, PictureDao pictureDao) {
+    public CollectionServiceImpl(CollectionDao collectionDao, PictureDao pictureDao, FileCache fileCache) {
         this.collectionDao = collectionDao;
         this.pictureDao = pictureDao;
+        this.fileCache = fileCache;
     }
 
     @Override
@@ -36,12 +42,52 @@ public class CollectionServiceImpl implements PictureInfoService {
 
     @Override
     public List<String> getRelatedList(String name) {
-        return null;
+        return pictureDao.getRelatedList(
+                name, "collection.name", "illustrator.name");
     }
 
     @Override
-    public File download(String name) {
-        return null;
+    public File download(String name) throws IllegalFileRequestException {
+//        /*
+//            非法请求判断
+//         */
+        Collection collection = collectionDao.findOne(name);
+        if (collection == null)
+            throw new IllegalFileRequestException("Collection : " + name);
+        /*
+            以请求的内容作为缓存的key
+            若已有缓存，则直接返回文件
+         */
+        String tempCode = "download_collection_" + name;
+        List<File> files = fileCache.getFile(tempCode);
+        if (files != null)     //若成功从缓存中获取到文件，缓存的生命周期会重置，因此不用担心文件被删除
+            return files.get(0);
+        /*
+            新建缓存
+         */
+        String filePath = SunSiteConstant.tempPath
+                + tempCode
+                + SunSiteConstant.pathSeparator
+                + collection.getName();
+        fileCache.setFile(tempCode, new File(filePath));
+        fileCache.setFile(tempCode, new File(filePath + ".zip"));
+        /*
+            收集文件
+         */
+
+//        /*
+//            压缩文件
+//         */
+//        try {
+//            ZipCompress.compress(illustrator.getPath(), path);
+//        } catch (IOException e) {
+//            log.error("Compress File Error : ", e);
+//            return null;
+//        }
+        /*
+            从缓存中获取压缩文件返回
+         */
+        return fileCache.getFile(tempCode).get(0);
     }
 
     @Override

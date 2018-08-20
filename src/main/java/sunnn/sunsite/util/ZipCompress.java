@@ -1,5 +1,7 @@
 package sunnn.sunsite.util;
 
+import sunnn.sunsite.entity.Picture;
+
 import java.io.*;
 import java.util.Objects;
 import java.util.zip.CRC32;
@@ -100,6 +102,9 @@ public class ZipCompress {
      */
     private static void compressFile(
             File file, ZipOutputStream zipOutputStream, String path) throws IOException {
+        if (checkThumbnail(file))
+            return;
+
         //据说用winrar打开会乱码
         ZipEntry entry = new ZipEntry(path + file.getName());
         zipOutputStream.putNextEntry(entry);
@@ -116,4 +121,15 @@ public class ZipCompress {
         zipOutputStream.closeEntry();
     }
 
+    /**
+     * 因为偷懒而在这里加的一个写死的判断
+     * 如果该文件为缩略图文件，则返回true让调用者过滤
+     *
+     * @param file 需要判断的文件
+     * @return 判断的结果
+     */
+    private static boolean checkThumbnail(File file) {
+        return file.getName()
+                .startsWith(Picture.THUMBNAIL_PREFIX);
+    }
 }
