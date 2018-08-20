@@ -75,7 +75,23 @@ public class FileUtils {
         return srcFile.renameTo(new File(newName));
     }
 
-    public static void copy(File srcFile, String destPath) throws IOException {
+    public static void copyPath(File srcFile, String destPath) throws IOException {
+        if (srcFile.isDirectory()) {
+            File destFile = new File(destPath);
+            createPath(destFile);
+
+            File[] files = srcFile.listFiles();
+            if (files == null)
+                throw new IOException("Cannot List Files");
+
+            for (File f : files) {
+                copyPath(f, destPath + f.getName());
+            }
+        } else
+            copyFile(srcFile, destPath);
+    }
+
+    public static void copyFile(File srcFile, String destPath) throws IOException {
         try (FileChannel inputChannel =
                      new FileInputStream(srcFile).getChannel();
              FileChannel outputChannel =

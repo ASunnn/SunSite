@@ -10,11 +10,10 @@ import sunnn.sunsite.entity.Collection;
 import sunnn.sunsite.entity.Picture;
 import sunnn.sunsite.exception.IllegalFileRequestException;
 import sunnn.sunsite.service.PictureInfoService;
-import sunnn.sunsite.util.FileCache;
-import sunnn.sunsite.util.StatusCode;
-import sunnn.sunsite.util.SunSiteConstant;
+import sunnn.sunsite.util.*;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -74,16 +73,21 @@ public class CollectionServiceImpl implements PictureInfoService {
         /*
             收集文件
          */
-
-//        /*
-//            压缩文件
-//         */
-//        try {
-//            ZipCompress.compress(illustrator.getPath(), path);
-//        } catch (IOException e) {
-//            log.error("Compress File Error : ", e);
-//            return null;
-//        }
+        List<String> illustratorList = getRelatedList(name);
+        for (String i : illustratorList) {
+            String srcPath = SunSiteConstant.picturePath + i + name;
+//            String destPath = filePath +
+//            FileUtils.createPath(new File(srcPath), )
+        }
+        /*
+            压缩文件
+         */
+        try {
+            ZipCompress.compress(filePath, filePath + ".zip");
+        } catch (IOException e) {
+            log.error("Compress File Error : ", e);
+            return null;
+        }
         /*
             从缓存中获取压缩文件返回
          */

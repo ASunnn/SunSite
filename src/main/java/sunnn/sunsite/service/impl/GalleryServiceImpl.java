@@ -23,7 +23,6 @@ import sunnn.sunsite.entity.Type;
 import sunnn.sunsite.service.GalleryService;
 
 import java.io.*;
-import java.nio.channels.FileChannel;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -256,7 +255,7 @@ public class GalleryServiceImpl implements GalleryService {
                         .size(SunSiteConstant.thumbnailSize, SunSiteConstant.thumbnailSize)
                         .toFile(picture.getPath() + picture.getThumbnailName());
                 //保存原图
-                FileUtils.copy(file, picture.getPath() + picture.getFileName());
+                FileUtils.copyFile(file, picture.getPath() + picture.getFileName());
             } catch (IOException e) {
                 //若中间出错直接返回
                 log.error("Error At SaveUpload : ", e);
