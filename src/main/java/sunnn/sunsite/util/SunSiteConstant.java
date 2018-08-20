@@ -19,7 +19,7 @@ public class SunSiteConstant {
 
     public static long sessionTimeout;
 
-    public static int cacheTimeout;
+    public static long cacheTimeout;
 
     public static int cacheInitCapacity;
 
@@ -63,11 +63,11 @@ public class SunSiteConstant {
         SunSiteConstant.sessionTimeout = sessionTimeout;
     }
 
-    public static int getCacheTimeout() {
+    public static long getCacheTimeout() {
         return cacheTimeout;
     }
 
-    public static void setCacheTimeout(int cacheTimeout) {
+    public static void setCacheTimeout(long cacheTimeout) {
         SunSiteConstant.cacheTimeout = cacheTimeout;
     }
 

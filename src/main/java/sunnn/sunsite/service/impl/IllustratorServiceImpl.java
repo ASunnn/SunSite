@@ -62,16 +62,15 @@ public class IllustratorServiceImpl implements PictureInfoService {
         Illustrator illustrator = illustratorDao.findOne(name);
         if (illustrator == null)
             throw new IllegalFileRequestException(
-                    SunSiteConstant.getPicturePath() + name);
+                    SunSiteConstant.picturePath + name);
         /*
             以请求的内容作为缓存的key
             若已有缓存，则直接返回文件
          */
         String tempCode = "download_" + name;
-        if (fileCache.isContains(tempCode)) {
-            System.out.println("get cache");
-            return fileCache.getFile(tempCode).get(0);
-        }
+        List<File> files = fileCache.getFile(tempCode);
+        if (files != null)     //若成功从缓存中获取到文件，缓存的生命周期会重置，因此不用担心文件被删除
+            return files.get(0);
         /*
             新建缓存
          */
@@ -85,7 +84,6 @@ public class IllustratorServiceImpl implements PictureInfoService {
          */
         try {
             ZipCompress.compress(illustrator.getPath(), path);
-            System.out.println("Set cache");
         } catch (IOException e) {
             log.error("Compress File Error : ", e);
             return null;
@@ -109,7 +107,7 @@ public class IllustratorServiceImpl implements PictureInfoService {
         /*
             改文件本体
          */
-        String newPath = SunSiteConstant.getPicturePath() + newName + SunSiteConstant.pathSeparator;
+        String newPath = SunSiteConstant.picturePath + newName + SunSiteConstant.pathSeparator;
         File illustratorFile = new File(i.getPath());
         if (!FileUtils.rename(illustratorFile, newPath)) {
             log.error("Rename Picture Failed : " + i.getPath() + " To " + newPath);

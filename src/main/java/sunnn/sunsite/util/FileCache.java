@@ -29,7 +29,7 @@ public class FileCache {
         this(16, 120000);
     }
 
-    public FileCache(int initCapacity, int expiration) {
+    public FileCache(int initCapacity, long expiration) {
         cache = new ConcurrentHashMap<>(initCapacity);
         this.expiration = expiration;
     }
@@ -48,13 +48,25 @@ public class FileCache {
         setFile(key, f);
     }
 
-    public void setFile(String key, File file) {
+    /**
+     * 设置缓存
+     *
+     * @param key  键
+     * @param file 缓存文件
+     */
+    public synchronized void setFile(String key, File file) {
         //检查是否已经有相同的键
         checkAndPut(key);
         cache.get(key).setFiles(file);
     }
 
-    public void setFile(String key, List<File> files) {
+    /**
+     * 设置缓存
+     *
+     * @param key  键
+     * @param files 缓存文件
+     */
+    public synchronized void setFile(String key, List<File> files) {
         //检查是否已经有相同的键
         checkAndPut(key);
         cache.get(key).setFiles(files);
@@ -66,7 +78,7 @@ public class FileCache {
      * @param key 键
      * @return 缓存内对应的所有文件
      */
-    public List<File> getFile(String key) {
+    public synchronized List<File> getFile(String key) {
         TempFiles files = cache.get(key);
         return files == null ? null : files.getFiles();
     }
@@ -75,7 +87,7 @@ public class FileCache {
      * 清除过期缓存
      * 此方法由定时任务调用
      */
-    public void clearCache() {
+    public synchronized void clearCache() {
         Iterator<Map.Entry<String, TempFiles>> i = cache.entrySet().iterator();
         while (i.hasNext()) {
             Map.Entry<String, TempFiles> r = i.next();
@@ -94,6 +106,10 @@ public class FileCache {
         }
     }
 
+    /**
+     * 获取缓存的数量
+     * @return  缓存数量
+     */
     public int getSize() {
         return cache.size();
     }
@@ -104,13 +120,14 @@ public class FileCache {
                     new TempFiles());
     }
 
-    public boolean isContains(String key) {
+    public synchronized boolean isContains(String key) {
         return cache.containsKey(key);
     }
 
     private long now() {
         return System.currentTimeMillis();
     }
+
 
     private class TempFiles {
 
@@ -124,17 +141,18 @@ public class FileCache {
         }
 
         List<File> getFiles() {
+            setModifiedTime();
             return files;
         }
 
         void setFiles(File file) {
-            this.files.add(file);
             setModifiedTime();
+            this.files.add(file);
         }
 
         void setFiles(List<File> files) {
-            this.files.addAll(files);
             setModifiedTime();
+            this.files.addAll(files);
         }
 
         long getModifiedTime() {

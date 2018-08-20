@@ -148,7 +148,7 @@ public class GalleryServiceImpl implements GalleryService {
         Picture picture = pictureDao.getPicture(illustrator, collection, fileName);
         if (picture == null)
             throw new IllegalFileRequestException(
-                    SunSiteConstant.getPicturePath()
+                    SunSiteConstant.picturePath
                     + illustrator
                     + SunSiteConstant.pathSeparator
                     + collection
