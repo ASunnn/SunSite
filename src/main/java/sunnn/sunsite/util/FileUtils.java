@@ -4,7 +4,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.nio.channels.FileChannel;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+/**
+ * 文件操作工具类
+ *
+ * @author ASun
+ */
 public class FileUtils {
 
     /**
@@ -17,7 +24,7 @@ public class FileUtils {
      */
     public static File storeFile(MultipartFile file, String path) throws IOException {
         if (!createPath(path))
-            throw new IOException("Cannot Create Path");
+            throw new IOException("Cannot Create Path :" + path);
 
         File f = new File(path + file.getOriginalFilename());
         file.transferTo(f);
@@ -28,7 +35,7 @@ public class FileUtils {
      * 创建一个文件夹
      *
      * @param path 文件夹路径
-     * @return 当且仅当创建了文件夹时返回true
+     * @return 创建了文件夹或者文件夹已存在时返回true
      */
     public static boolean createPath(String path) {
         return createPath(new File(path));
@@ -38,7 +45,7 @@ public class FileUtils {
      * 创建一个文件夹
      *
      * @param pathFile 文件夹表示
-     * @return 当且仅当创建了文件夹时返回true
+     * @return 创建了文件夹或者文件夹已存在时返回true
      */
     public static boolean createPath(File pathFile) {
         if (pathFile.isFile())
@@ -72,9 +79,9 @@ public class FileUtils {
      * 删除一个文件夹
      *
      * @param path 文件夹路径
-     * @return 当且仅当文件夹为空且被删除时返回true
+     * @return 当文件夹不为空，或者文件夹为空且被删除时返回true
      */
-    public static boolean deletePath(String path) throws IOException {
+    public static boolean deletePath(String path) {
         return deletePath(new File(path));
     }
 
@@ -82,14 +89,15 @@ public class FileUtils {
      * 删除一个文件夹
      *
      * @param file 文件夹路径表示
-     * @return 当且仅当文件夹为空且被删除时返回true
-     * @throws IOException 传入的为文件或者无法列出文件夹下的子文件
+     * @return 当文件夹不为空，或者文件夹为空且被删除时返回true
      */
-    public static boolean deletePath(File file) throws IOException {
-        File[] files = getListFiles(file);
+    public static boolean deletePath(File file) {
+        File[] files = file.listFiles();
+        if (files == null)
+            return false;
 
         if (files.length > 0)
-            return false;
+            return true;
 
         return file.delete();
     }
@@ -99,9 +107,8 @@ public class FileUtils {
      *
      * @param path 文件夹路径
      * @return 当且仅当文件夹全部被删除时返回true
-     * @throws IOException 传入的为文件或者无法列出文件夹下的子文件
      */
-    public static boolean deletePathForce(String path) throws IOException {
+    public static boolean deletePathForce(String path) {
         return deletePathForce(new File(path));
     }
 
@@ -110,16 +117,20 @@ public class FileUtils {
      *
      * @param file 文件夹路径表示
      * @return 当且仅当文件夹全部被删除时返回true
-     * @throws IOException 传入的为文件或者无法列出文件夹下的子文件
      */
-    public static boolean deletePathForce(File file) throws IOException {
+    public static boolean deletePathForce(File file) {
         boolean flag = true;
 
-        for (File f : getListFiles(file)) {
-            flag = f.isDirectory() ? deletePathForce(f) : deleteFile(f);
+        File[] files = file.listFiles();
+        if (files == null)
+            return false;
+
+        for (File f : files) {
+            if (!(f.isDirectory() ? deletePathForce(f) : deleteFile(f)))
+                flag = false;
         }
 
-        return file.delete() && flag;
+        return flag && file.delete();   //利用短路原则
     }
 
     /**
@@ -129,10 +140,10 @@ public class FileUtils {
      * @param newName 新的文件名
      * @return 当且仅当重命名成功时返回true
      */
-    public static boolean rename(File srcFile, String newName) throws IOException {
+    public static boolean rename(File srcFile, String newName) {
         File newFile = new File(newName);
         if (newFile.exists())
-            throw new IOException("NewFile Is Exists");
+            return false;
 
         return srcFile.renameTo(new File(newName));
     }
@@ -140,14 +151,42 @@ public class FileUtils {
     /**
      * 对一个文件夹进行复制
      *
-     * @param srcFile  源文件夹
-     * @param destPath 目标路径
-     * @throws IOException 源文件或目标路径不是文件夹，或者无法列出某个文件夹的子文件
+     * @param srcFile     源文件夹
+     * @param destPath    目标路径
+     * @param onlyContent 复制的时候是否只复制文件夹内的文件
+     * @throws IOException 发生了意外错误
      */
-    public static void copyPath(File srcFile, String destPath) throws IOException {
+    public static boolean copyPath(File srcFile, String destPath, boolean onlyContent) throws IOException {
         if (srcFile.isFile())
-            throw new IOException("SrcFile Cannot Be File");
-        doCopyPath(srcFile, destPath);
+            return false;
+
+        return onlyContent ?
+                doCopyPath(srcFile, destPath) :
+                doCopyPath(srcFile, destPath + SunSiteConstant.pathSeparator + srcFile.getName());
+    }
+
+    private static boolean doCopyPath(File srcFile, String destPath) throws IOException {
+        if (srcFile.isDirectory()) {
+            File destFile = new File(destPath);
+
+            if (destFile.isFile())
+                return false;
+            if (!createPath(destFile))
+                return false;
+
+            File[] files = srcFile.listFiles();
+            if (files == null)
+                return false;
+
+            boolean flag = true;
+            for (File f : files) {
+                if (!doCopyPath(f, destPath + "\\" + f.getName()))
+                    flag = false;
+            }
+
+            return flag;
+        } else
+            return copyFile(srcFile, destPath);
     }
 
     /**
@@ -157,13 +196,13 @@ public class FileUtils {
      * @param destPath 复制的目标路径
      * @throws IOException 发生了意外错误
      */
-    public static void copyFile(File srcFile, String destPath) throws IOException {
+    public static boolean copyFile(File srcFile, String destPath) throws IOException {
         if (srcFile.isDirectory())
-            throw new IOException("SrcFile Cannot Be Directory");
+            return false;
 
         File destFile = new File(destPath);
         if (destFile.exists())
-            throw new IOException("DestFile Is Exists");
+            return false;
 
         try (FileChannel inputChannel =
                      new FileInputStream(srcFile).getChannel();
@@ -171,36 +210,21 @@ public class FileUtils {
                      new FileOutputStream(destFile).getChannel()) {
             outputChannel.transferFrom(inputChannel, 0, inputChannel.size());
         }
+        return true;
     }
 
-
-    private static void doCopyPath(File srcFile, String destPath) throws IOException {
-        if (srcFile.isDirectory()) {
-            File destFile = new File(destPath);
-
-            if (destFile.isFile())
-                throw new IOException("DestFile Cannot Be File");
-            createPath(destFile);
-
-            File[] files = srcFile.listFiles();
-            if (files == null)
-                throw new IOException("Cannot List Files");
-
-            for (File f : files) {
-                doCopyPath(f, destPath + SunSiteConstant.pathSeparator + f.getName());
-            }
-        } else
-            copyFile(srcFile, destPath);
-    }
-
-    private static File[] getListFiles(File file) throws IOException {
-        if (file.isFile())
-            throw new IOException("It Must Be A Directory");
-
-        File[] files = file.listFiles();
-        if (files == null)
-            throw new IOException("Cannot List Files");
-        return files;
+    /**
+     * 检测文件名中是否含有操作系统不支持的非法字符
+     * 不支持匹配整个路径
+     *
+     * @return 当匹配到非法字符时，返回true
+     */
+    public static boolean fileNameMatcher(String key) {
+        /*
+            \/:*?"<>|
+            [\\/:*?"<>|]
+         */
+        return Pattern.compile("[\\\\/:*?\"<>|]").matcher(key).find();
     }
 
 }

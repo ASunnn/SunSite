@@ -36,9 +36,9 @@ public class CollectionController {
         this.illustratorService = illustratorService;
     }
 
-    @GetMapping(value = "collections")
+    @GetMapping(value = "illustrators")
     @ResponseBody
-    public PictureInfoInfoListResponse getCollections(@RequestParam("i") String collectionName) {
+    public PictureInfoInfoListResponse getCollections(@RequestParam("c") String collectionName) {
         List<String> relatedList = collectionService.getRelatedList(collectionName);
 
         if (relatedList.isEmpty())

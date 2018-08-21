@@ -137,14 +137,14 @@ public class PictureDao extends MongoBase<Picture> {
                 Picture.class);
     }
 
-    public boolean deleteIllustrator(String illustratorName) {
-        Query query = new Query(Criteria.where("illustrator.name").is(illustratorName));
+    public boolean deletePictures(String fields, String key) {
+        Query query = new Query(Criteria.where(fields).is(key));
         return removeAll(query, count(query), Picture.class);
     }
 
-    public boolean updateIllustrator(String oldName, String newName) {
-        return updateAll(Query.query(Criteria.where("illustrator.name").is(oldName)),
-                Update.update("illustrator.name", newName),
+    public boolean updateInfo(String field, String oldName, String newName) {
+        return updateAll(Query.query(Criteria.where(field).is(oldName)),
+                Update.update(field, newName),
                 Picture.class);
     }
 }

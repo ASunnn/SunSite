@@ -148,11 +148,11 @@ public class GalleryServiceImpl implements GalleryService {
         if (picture == null)
             throw new IllegalFileRequestException(
                     SunSiteConstant.picturePath
-                    + illustrator
-                    + SunSiteConstant.pathSeparator
-                    + collection
-                    + SunSiteConstant.pathSeparator
-                    + fileName);
+                            + illustrator
+                            + SunSiteConstant.pathSeparator
+                            + collection
+                            + SunSiteConstant.pathSeparator
+                            + fileName);
         String path = picture.getPath() + picture.getFileName();
         return new File(path);
     }
@@ -277,6 +277,12 @@ public class GalleryServiceImpl implements GalleryService {
      * 当返回null时，表示文件信息错误
      */
     private Picture checkInfo(UploadPictureInfo info) {
+        /*
+            文件名检查
+         */
+        if (FileUtils.fileNameMatcher(info.getIllustrator())
+                || FileUtils.fileNameMatcher(info.getCollection()))
+            return null;
         /*
             检查是否为新的画册
          */

@@ -51,10 +51,6 @@ public class View {
     @RequestMapping(value = "/gallery/show/*")
     public String gallery() {
         return "gallery";
-//        ModelAndView mv = new ModelAndView();
-//        mv.setViewName("gallery");
-//        mv.addObject("p", pictureName);
-//        return mv;
     }
 
     /**
@@ -63,10 +59,15 @@ public class View {
     @RequestMapping(value = "/illustrator/show/*")
     public String illustrator() {
         return "illustrator";
-//        ModelAndView mv = new ModelAndView();
-//        mv.setViewName("gallery");
-//        mv.addObject("p", pictureName);
-//        return mv;
     }
+
+    /**
+     * 画册显示
+     */
+    @RequestMapping(value = "/collection/show/*")
+    public String collection() {
+        return "collection";
+    }
+
 
 }

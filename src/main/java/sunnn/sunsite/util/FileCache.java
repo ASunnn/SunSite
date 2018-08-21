@@ -12,6 +12,8 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * 文件的缓存工具
  * 此工具只负责保存文件信息，并不保证文件本体的修改
+ *
+ * @author ASun
  */
 public class FileCache {
 
@@ -63,7 +65,7 @@ public class FileCache {
     /**
      * 设置缓存
      *
-     * @param key  键
+     * @param key   键
      * @param files 缓存文件
      */
     public synchronized void setFile(String key, List<File> files) {
@@ -108,7 +110,8 @@ public class FileCache {
 
     /**
      * 获取缓存的数量
-     * @return  缓存数量
+     *
+     * @return 缓存数量
      */
     public int getSize() {
         return cache.size();

@@ -398,7 +398,6 @@
                 } else {
                     var nextButton = document.getElementById("next");
                     nextButton.innerHTML = page;
-                    // nextButton.setAttribute("onclick", "getPictureList(" + nextButton.innerHTML + ")");
                 }
             } else if (data.code == 4) {
                 var nextButton = document.getElementById("next");
@@ -445,7 +444,7 @@
                 divElement.appendChild(illustratorElement);
 
                 var collectionElement = document.createElement("a");
-                collectionElement.setAttribute("href", "/hello");
+                collectionElement.setAttribute("href", "/collection/show/" + collection);
                 collectionElement.innerHTML = collection;
                 collectionElement.setAttribute("style", "display: block");
                 divElement.appendChild(collectionElement);

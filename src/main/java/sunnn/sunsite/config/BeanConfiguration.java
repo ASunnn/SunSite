@@ -16,6 +16,5 @@ public class BeanConfiguration {
     public FileCache fileCache() {
         return new FileCache(
                 SunSiteConstant.cacheInitCapacity, SunSiteConstant.cacheTimeout);
-//        return new FileCache(16, 1200000);
     }
 }

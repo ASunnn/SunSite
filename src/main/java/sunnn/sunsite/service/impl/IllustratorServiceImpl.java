@@ -73,22 +73,22 @@ public class IllustratorServiceImpl implements PictureInfoService {
         if (files != null)     //若成功从缓存中获取到文件，缓存的生命周期会重置，因此不用担心文件被删除
             return files.get(0);
         /*
-            新建缓存
+            压缩文件
          */
         String path = SunSiteConstant.tempPath
                 + tempCode
                 + SunSiteConstant.pathSeparator
                 + illustrator.getName() + ".zip";
-        fileCache.setFile(tempCode, new File(path));
-        /*
-            压缩文件
-         */
         try {
             ZipCompress.compress(illustrator.getPath(), path);
         } catch (IOException e) {
             log.error("Compress File Error : ", e);
             return null;
         }
+        /*
+            新建缓存
+         */
+        fileCache.setFile(tempCode, new File(path));
         /*
             从缓存中获取压缩文件返回
          */
@@ -110,7 +110,7 @@ public class IllustratorServiceImpl implements PictureInfoService {
          */
         String newPath = SunSiteConstant.picturePath + newName + SunSiteConstant.pathSeparator;
         File illustratorFile = new File(i.getPath());
-        if (!FileUtils.rename(illustratorFile, newPath)) {
+        if (!FileUtils.rename(illustratorFile, newPath)) {  //若中途发生错误必须停止流程
             log.error("Rename Picture Failed : " + i.getPath() + " To " + newPath);
             return StatusCode.RENAME_FAILED;
         }
@@ -118,7 +118,7 @@ public class IllustratorServiceImpl implements PictureInfoService {
             改绘师记录和涉及到的图片记录
          */
         if (!illustratorDao.updateIllustrator(oldName, newName)     //短路原则
-                || !pictureDao.updateIllustrator(oldName, newName))
+                || !pictureDao.updateInfo("illustrator.name", oldName, newName))
             return StatusCode.RENAME_FAILED;
 
         return StatusCode.OJBK;
@@ -132,17 +132,18 @@ public class IllustratorServiceImpl implements PictureInfoService {
         Illustrator i = illustratorDao.findOne(name);
         if (i == null)
             return StatusCode.ILLEGAL_DATA;
+        List<String> collections = getRelatedList(name);
         /*
             删除对应的画师内容
          */
-        List<String> collections = getRelatedList(name);
-        if (!pictureDao.deleteIllustrator(name) || !illustratorDao.delete(name))    //短路原则
+        if (!pictureDao.deletePictures("illustrator.name", name)
+                || !illustratorDao.delete(name))    //短路原则
             return StatusCode.DELETE_FAILED;
         //删除文件夹本体
-        if (!FileUtils.deletePathForce(i.getPath()))
+        if (!FileUtils.deletePathForce(i.getPath()))    //中途发生错误可以继续流程
             log.error("Delete Illustrator Path Error : " + i.getPath());
         /*
-            检查图片关联到的画集
+            检查绘师图片关联到的画集
          */
         Set<String> types = new HashSet<>();
         for (String collectionName : collections) {
