@@ -77,7 +77,6 @@ public class CollectionServiceImpl implements PictureInfoService {
                 + tempCode
                 + SunSiteConstant.pathSeparator
                 + collection.getName();
-
         List<String> illustratorList = getRelatedList(name);
         try {
             for (String i : illustratorList) {
@@ -102,7 +101,6 @@ public class CollectionServiceImpl implements PictureInfoService {
             log.error("Compress File Error : ", e);
             return null;
         }
-
         /*
             新建缓存
          */
