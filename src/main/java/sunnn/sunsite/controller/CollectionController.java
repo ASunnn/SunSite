@@ -65,7 +65,8 @@ public class CollectionController {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-        headers.setContentDispositionFormData("attachment", file.getName());
+        headers.setContentDispositionFormData("attachment",
+                new String(file.getName().getBytes(), "ISO-8859-1"));
         return new ResponseEntity<>(FileUtils.readFileToByteArray(file), headers, HttpStatus.OK);
     }
 
@@ -79,6 +80,7 @@ public class CollectionController {
     @PostMapping(value = "delete")
     @ResponseBody
     public BaseResponse deleteIllustrator(@RequestBody DeleteRequest deleteRequest) {
+        System.out.println(deleteRequest.getDeleteInfo());
         return new BaseResponse(
                 collectionService.delete(
                         deleteRequest.getDeleteInfo()));

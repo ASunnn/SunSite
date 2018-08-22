@@ -68,9 +68,10 @@
         window.onload = function () {
             var r = window.location.href.split("/");
             var collection = r[r.length-1];
+            var decodeCollection = decodeURIComponent(collection);
 
             var theme = document.getElementById("theme");
-            theme.innerHTML = collection;
+            theme.innerHTML = decodeCollection;
 
             var download = document.getElementById("download");
             var downloadLink = document.createElement("a");
@@ -80,7 +81,7 @@
 
             var del = document.getElementById("del");
             del.innerHTML = "delete";
-            del.setAttribute("onclick", "deleteIt('" + collection + "')");
+            del.setAttribute("onclick", "deleteIt('" + decodeCollection + "')");
 
             getPictureList(collection);
         };

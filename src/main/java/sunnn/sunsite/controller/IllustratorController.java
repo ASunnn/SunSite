@@ -65,7 +65,8 @@ public class IllustratorController {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-        headers.setContentDispositionFormData("attachment", file.getName());
+        headers.setContentDispositionFormData("attachment",
+                new String(file.getName().getBytes(), "ISO-8859-1"));
         return new ResponseEntity<>(FileUtils.readFileToByteArray(file), headers, HttpStatus.OK);
     }
 

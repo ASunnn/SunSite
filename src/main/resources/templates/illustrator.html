@@ -68,9 +68,10 @@
         window.onload = function () {
             var r = window.location.href.split("/");
             var illustrator = r[r.length-1];
+            var decodeIllustrator = decodeURIComponent(illustrator);
 
             var theme = document.getElementById("theme");
-            theme.innerHTML = illustrator;
+            theme.innerHTML = decodeIllustrator;
 
             var download = document.getElementById("download");
             var downloadLink = document.createElement("a");
@@ -79,15 +80,9 @@
             download.appendChild(downloadLink);
 
             var del = document.getElementById("del");
-            // var deleteLink = document.createElement("a");
-            // deleteLink.setAttribute("href", "/illustrator/download?n=" + illustrator);
             del.innerHTML = "delete";
-            // del.appendChild(deleteLink);
-            // let s = new Array(illustrator);
-            //  s = s.join("");
-            del.setAttribute("onclick", "deleteIt('" + illustrator + "')");
-            // del.onclick = deleteIt(illustrator);
-
+            del.setAttribute("onclick", "deleteIt('" + decodeIllustrator + "')");
+            
             getPictureList(illustrator);
         };
 
