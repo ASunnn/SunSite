@@ -38,19 +38,19 @@ public class GalleryController {
 
     @GetMapping(value = "/list")
     @ResponseBody
-    public PictureListResponse getPictureList(@RequestParam("p") int page,
-                                              @RequestParam("s") int pageSize) {
+    public PictureListResponse pictureList(@RequestParam("p") int page,
+                                           @RequestParam("s") int pageSize) {
         return galleryService.getPictureList(page, pageSize);
     }
 
     @PostMapping(value = "/filter")
     @ResponseBody
-    public PictureListResponse getPictureListWithFilter(@RequestBody PictureListWithFilter filter) {
+    public PictureListResponse pictureListWithFilter(@Valid @RequestBody PictureListWithFilter filter) {
         return galleryService.getPictureListWithFilter(filter);
     }
 
     @GetMapping(value = "/m")
-    public ResponseEntity getThumbnail(@RequestParam("thumbnail") String sequenceCode) throws IOException {
+    public ResponseEntity thumbnailFile(@RequestParam("thumbnail") String sequenceCode) throws IOException {
         File file = galleryService.getThumbnail(Long.valueOf(sequenceCode));
 
         HttpHeaders headers = new HttpHeaders();
@@ -62,16 +62,10 @@ public class GalleryController {
         return new ResponseEntity<>(FileUtils.readFileToByteArray(file), headers, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/pictureInfo")
-    @ResponseBody
-    public PictureInfoResponse getPictureInfo(@RequestParam("p") String sequenceCode, @RequestParam("e") boolean extra) {
-        return galleryService.getPictureInfo(Long.valueOf(sequenceCode), extra);
-    }
-
     @GetMapping(value = "/l/{illustrator}/{collection}/{pictureName}")
-    public ResponseEntity getPictureFile(@PathVariable("illustrator") String illustrator,
-                                         @PathVariable("collection") String collection,
-                                         @PathVariable("pictureName") String pictureName)
+    public ResponseEntity pictureFile(@PathVariable("illustrator") String illustrator,
+                                      @PathVariable("collection") String collection,
+                                      @PathVariable("pictureName") String pictureName)
             throws IllegalFileRequestException, IOException {
 
         File file = galleryService.getPictureFile(illustrator, collection, pictureName);
@@ -81,9 +75,15 @@ public class GalleryController {
         return new ResponseEntity<>(FileUtils.readFileToByteArray(file), headers, HttpStatus.OK);
     }
 
+    @GetMapping(value = "/pictureInfo")
+    @ResponseBody
+    public PictureInfoResponse pictureInfo(@RequestParam("p") String sequenceCode, @RequestParam("e") boolean extra) {
+        return galleryService.getPictureInfo(Long.valueOf(sequenceCode), extra);
+    }
+
     @PostMapping(value = "/galleryInfo")
     @ResponseBody
-    public GalleryInfoResponse getGalleryInfo(@RequestBody GalleryInfo galleryInfo) {
+    public GalleryInfoResponse galleryInfo(@Valid @RequestBody GalleryInfo galleryInfo) {
         /*
             生成查询
          */
@@ -145,9 +145,13 @@ public class GalleryController {
 
     @PostMapping(value = "/delete")
     @ResponseBody
-    public BaseResponse deletePicture(@RequestBody DeleteRequest deleteRequest) {
-        return new BaseResponse(
-                galleryService.deletePicture(
-                        Long.valueOf(deleteRequest.getDeleteInfo())));
+    public BaseResponse deletePicture(@Valid @RequestBody DeleteRequest deleteRequest) {
+        long sequence;
+        try {
+            sequence = Long.valueOf(deleteRequest.getDeleteInfo());
+        } catch (NumberFormatException e) {
+            return new BaseResponse(StatusCode.ILLEGAL_DATA);
+        }
+        return new BaseResponse(galleryService.deletePicture(sequence));
     }
 }

@@ -17,6 +17,7 @@ import sunnn.sunsite.exception.IllegalFileRequestException;
 import sunnn.sunsite.service.PictureInfoService;
 import sunnn.sunsite.util.StatusCode;
 
+import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -36,7 +37,7 @@ public class CollectionController {
         this.illustratorService = illustratorService;
     }
 
-    @GetMapping(value = "illustrators")
+    @GetMapping(value = "/illustrators")
     @ResponseBody
     public PictureInfoInfoListResponse getCollections(@RequestParam("c") String collectionName) {
         List<String> relatedList = collectionService.getRelatedList(collectionName);
@@ -56,7 +57,7 @@ public class CollectionController {
                 StatusCode.OJBK, illustratorList, thumbnailSequenceList);
     }
 
-    @GetMapping(value = "download")
+    @GetMapping(value = "/download")
     public ResponseEntity downloadAll(@RequestParam("n") String collectionName)
             throws IllegalFileRequestException, IOException {
         File file = collectionService.download(collectionName);
@@ -70,17 +71,16 @@ public class CollectionController {
         return new ResponseEntity<>(FileUtils.readFileToByteArray(file), headers, HttpStatus.OK);
     }
 
-    @PostMapping(value = "modify")
-    public BaseResponse changeName(@RequestBody ChangeName nameInfo) {
+    @PostMapping(value = "/modify")
+    public BaseResponse changeName(@Valid @RequestBody ChangeName nameInfo) {
         return new BaseResponse(
                 collectionService.changeName(
                         nameInfo.getOldName(), nameInfo.getNewName()));
     }
 
-    @PostMapping(value = "delete")
+    @PostMapping(value = "/delete")
     @ResponseBody
-    public BaseResponse deleteIllustrator(@RequestBody DeleteRequest deleteRequest) {
-        System.out.println(deleteRequest.getDeleteInfo());
+    public BaseResponse deleteIllustrator(@Valid @RequestBody DeleteRequest deleteRequest) {
         return new BaseResponse(
                 collectionService.delete(
                         deleteRequest.getDeleteInfo()));

@@ -9,6 +9,7 @@ import sunnn.sunsite.dto.request.PictureListWithFilter;
 import sunnn.sunsite.entity.Picture;
 import sunnn.sunsite.util.BaseDataBoxing;
 
+import javax.smartcardio.CardTerminal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,11 +34,23 @@ public class PictureDao extends MongoBase<Picture> {
                 Picture.class);
     }
 
-    public List<Picture> findFromOneCollection(String illustrator, String collection) {
-        return find(
-                Query.query(Criteria.where("illustrator.name").is(illustrator)
+    public List<Picture> findByPool(String illustrator, String collection) {
+        return find(Query.query(Criteria.where("illustrator.name").is(illustrator)
                         .and("collection.name").is(collection)),
                 Picture.class);
+    }
+
+    public List<Picture> findByPool(
+            String illustrator, String collection, int page, int size, BaseDataBoxing count) {
+        long skip = page * size;
+
+        Query query = new Query();
+        query.addCriteria(Criteria.where("illustrator.name").is(illustrator)
+                .and("collection.name").is(collection));
+        query.skip(skip).limit(size);
+
+        count.number = count(query);
+        return find(query, Picture.class);
     }
 
     public Picture getPicture(String illustrator, String collection, String pictureName) {
@@ -49,16 +62,16 @@ public class PictureDao extends MongoBase<Picture> {
         return findOne(query, Picture.class);
     }
 
-    public List<Picture> getPictureList(int page, int pageSize) {
-        long skip = page * pageSize;
+    public List<Picture> getPictureList(int page, int size) {
+        long skip = page * size;
 
         Query query = new Query();
         query.with(new Sort(Sort.Direction.ASC, "name"))
-                .skip(skip).limit(pageSize);
+                .skip(skip).limit(size);
         return find(query, Picture.class);
     }
 
-    public List<Picture> getPictureList(PictureListWithFilter filter, BaseDataBoxing dataCount) {
+    public List<Picture> getPictureList(PictureListWithFilter filter, BaseDataBoxing count) {
         int limit = filter.getSize();
         long skip = limit * filter.getPage();
 
@@ -77,7 +90,7 @@ public class PictureDao extends MongoBase<Picture> {
         Query query = new Query(criteria);
         query.with(new Sort(Sort.Direction.ASC, "name"))
                 .skip(skip).limit(limit);
-        dataCount.number = count(query);
+        count.number = count(query);
         return find(query, Picture.class);
     }
 
@@ -139,6 +152,13 @@ public class PictureDao extends MongoBase<Picture> {
 
     public boolean deletePictures(String fields, String key) {
         Query query = new Query(Criteria.where(fields).is(key));
+        return removeAll(query, count(query), Picture.class);
+    }
+
+    public boolean deletePool(String illustrator, String collection) {
+        Query query = new Query(
+                Criteria.where("illustrator.name").is(illustrator)
+                        .and("collection.name").is(collection));
         return removeAll(query, count(query), Picture.class);
     }
 

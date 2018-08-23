@@ -54,6 +54,12 @@ public class Picture {
     private long uploadTime;
 
     /**
+     * 文件大小
+     */
+    @Field(value = "size")
+    private long size;
+
+    /**
      * 插画所属
      * 散图/本子/画集
      */

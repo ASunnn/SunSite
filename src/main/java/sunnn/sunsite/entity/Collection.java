@@ -32,7 +32,7 @@ public class Collection {
     /**
      * 图片类型
      */
-    @Field(value = "typex")
+    @Field(value = "type")
     private Type type;
 
     public Collection(String name, Type type) {

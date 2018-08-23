@@ -69,5 +69,12 @@ public class View {
         return "collection";
     }
 
+    /**
+     * Pool显示
+     */
+    @RequestMapping(value = "/pool/show/**")
+    public String pool() {
+        return "pool";
+    }
 
 }

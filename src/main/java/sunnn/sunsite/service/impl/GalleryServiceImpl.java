@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import sunnn.sunsite.dto.request.PictureListWithFilter;
 import sunnn.sunsite.dto.response.PictureInfoResponse;
 import sunnn.sunsite.exception.IllegalFileRequestException;
+import sunnn.sunsite.service.PoolService;
 import sunnn.sunsite.util.*;
 import sunnn.sunsite.dao.CollectionDao;
 import sunnn.sunsite.dao.IllustratorDao;
@@ -42,13 +43,16 @@ public class GalleryServiceImpl implements GalleryService {
 
     private final FileCache fileCache;
 
+    private final PoolService poolService;
+
     @Autowired
-    public GalleryServiceImpl(PictureDao pictureDao, IllustratorDao illustratorDao, CollectionDao collectionDao, TypeDao typeDao, FileCache fileCache) {
+    public GalleryServiceImpl(PictureDao pictureDao, IllustratorDao illustratorDao, CollectionDao collectionDao, TypeDao typeDao, FileCache fileCache, PoolService poolService) {
         this.pictureDao = pictureDao;
         this.illustratorDao = illustratorDao;
         this.collectionDao = collectionDao;
         this.typeDao = typeDao;
         this.fileCache = fileCache;
+        this.poolService = poolService;
     }
 
     @Override
@@ -56,7 +60,7 @@ public class GalleryServiceImpl implements GalleryService {
         /*
             参数检查
          */
-        if (!checkPageParam(page, pageSize))
+        if (Utils.isIllegalPageParam(page, pageSize))
             return new PictureListResponse(StatusCode.ILLEGAL_DATA);
         /*
             查询
@@ -79,16 +83,16 @@ public class GalleryServiceImpl implements GalleryService {
         /*
             参数检查
          */
-        if (!checkPageParam(filter.getPage(), filter.getSize()))
+        if (Utils.isIllegalPageParam(filter.getPage(), filter.getSize()))
             return new PictureListResponse(StatusCode.ILLEGAL_DATA);
         /*
             查询
          */
-        BaseDataBoxing<Long> dataCount = new BaseDataBoxing<>(0L);
-        List<Picture> pictureList = pictureDao.getPictureList(filter, dataCount);
-        if (dataCount.number == 0)
+        BaseDataBoxing<Long> count = new BaseDataBoxing<>(0L);
+        List<Picture> pictureList = pictureDao.getPictureList(filter, count);
+        if (count.number == 0)
             return new PictureListResponse(StatusCode.NO_DATA);
-        int pageCount = (int) Math.ceil(dataCount.number / (double) filter.getSize());
+        int pageCount = (int) Math.ceil(count.number / (double) filter.getSize());
         /*
             转换结果
          */
@@ -97,18 +101,26 @@ public class GalleryServiceImpl implements GalleryService {
                 .setPageCount(pageCount);
     }
 
-    private boolean checkPageParam(int page, int size) {
-        return !(page < 0 || size < 1);
-    }
-
-    public List<Picture> getPictureFromACollection(String illustrator, String collection) {
-        return pictureDao.findFromOneCollection(illustrator, collection);
-    }
-
     @Override
     public File getThumbnail(long sequenceCode) {
         Picture picture = pictureDao.findOne(sequenceCode);
         String path = picture.getPath() + picture.getThumbnailName();
+        return new File(path);
+    }
+
+    @Override
+    public File getPictureFile(String illustrator, String collection, String fileName)
+            throws IllegalFileRequestException {
+        Picture picture = pictureDao.getPicture(illustrator, collection, fileName);
+        if (picture == null)
+            throw new IllegalFileRequestException(
+                    SunSiteConstant.picturePath
+                            + illustrator
+                            + SunSiteConstant.pathSeparator
+                            + collection
+                            + SunSiteConstant.pathSeparator
+                            + fileName);
+        String path = picture.getPath() + picture.getFileName();
         return new File(path);
     }
 
@@ -130,7 +142,7 @@ public class GalleryServiceImpl implements GalleryService {
     }
 
     private long[] getClosePicture(Picture p) {
-        List<Picture> pictures = getPictureFromACollection(
+        List<Picture> pictures = poolService.getPictureFromPool(
                 p.getIllustrator().getName(), p.getCollection().getName());
 
         int index = pictures.indexOf(p);
@@ -139,22 +151,6 @@ public class GalleryServiceImpl implements GalleryService {
         s[0] = index == 0 ? -1 : pictures.get(index - 1).getSequence();
         s[1] = index + 1 == pictures.size() ? -1 : pictures.get(index + 1).getSequence();
         return s;
-    }
-
-    @Override
-    public File getPictureFile(String illustrator, String collection, String fileName)
-            throws IllegalFileRequestException {
-        Picture picture = pictureDao.getPicture(illustrator, collection, fileName);
-        if (picture == null)
-            throw new IllegalFileRequestException(
-                    SunSiteConstant.picturePath
-                            + illustrator
-                            + SunSiteConstant.pathSeparator
-                            + collection
-                            + SunSiteConstant.pathSeparator
-                            + fileName);
-        String path = picture.getPath() + picture.getFileName();
-        return new File(path);
     }
 
     @Override
@@ -227,6 +223,7 @@ public class GalleryServiceImpl implements GalleryService {
             picture.setUploadTime(System.currentTimeMillis())
                     .setSequence(sequence)
                     .setFileName(file.getName())
+                    .setSize(file.length())
                     .setPath(SunSiteConstant.picturePath
                             + picture.getIllustrator().getName()
                             + SunSiteConstant.pathSeparator

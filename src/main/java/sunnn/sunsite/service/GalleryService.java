@@ -34,15 +34,6 @@ public interface GalleryService {
     File getThumbnail(long sequenceCode);
 
     /**
-     * 获取图片信息
-     *
-     * @param sequenceCode 图片序列号
-     * @param extra        是否查询图片的前后信息
-     * @return 图片信息
-     */
-    PictureInfoResponse getPictureInfo(long sequenceCode, boolean extra);
-
-    /**
      * 获取图片本体
      *
      * @param illustrator 绘师
@@ -51,6 +42,16 @@ public interface GalleryService {
      * @return 图片文件
      */
     File getPictureFile(String illustrator, String collection, String fileName) throws IllegalFileRequestException;
+
+
+    /**
+     * 获取图片信息
+     *
+     * @param sequenceCode 图片序列号
+     * @param extra        是否查询图片的前后信息
+     * @return 图片信息
+     */
+    PictureInfoResponse getPictureInfo(long sequenceCode, boolean extra);
 
     /**
      * 根据过滤条件获取图库信息（类型、画师、画集

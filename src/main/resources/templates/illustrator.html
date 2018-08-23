@@ -14,14 +14,12 @@
             width: 150px;
             height: 50px;
         }
-
         .menuContent {
             text-align: center;
             /* 导致图片列表第一个图片位置错误的万恶之源 */
             /* float: left; */
             width: 150px;
         }
-
         /* 头部 */
         .header {
             width: 1600px;
@@ -31,19 +29,16 @@
             margin-top: 10px;
             margin-bottom: 10px;
         }
-
         .theme {
             float: left;
             width: 1300px;
         }
-
         .option {
             float: left;
             width: 150px;
             margin-top: 26px;
             text-align: right;
         }
-
         /* 图片列表 */
         .collectionList {
             display: inline-block;
@@ -85,7 +80,6 @@
             
             getPictureList(illustrator);
         };
-
     </script>
 
     <script>
@@ -118,17 +112,19 @@
             divElement.setAttribute("id", sequence);
             collectionList.appendChild(divElement);
 
+            var illustratorName = document.getElementById("theme").innerHTML;
+
             var image = document.createElement("img");
             image.src = "/gallery/m?thumbnail=" + sequence;
             image.setAttribute("style", "display: block; margin: auto");
 
             var imageLink = document.createElement("a");
-            imageLink.setAttribute("href", "/hello");
+            imageLink.setAttribute("href", "/pool/show/" + illustratorName + "/" + name);
             imageLink.appendChild(image);
             divElement.appendChild(imageLink);
 
             var collectionElement = document.createElement("a");
-            collectionElement.setAttribute("href", "/hello");
+            collectionElement.setAttribute("href", "/pool/show/" + illustratorName + "/" + name);
             collectionElement.innerHTML = name;
             collectionElement.setAttribute("style", "display: block");
             divElement.appendChild(collectionElement);
@@ -172,7 +168,7 @@
     </div>
     <div id="content" style="margin:auto; width:1750px;">
         <div id="header" class="header">
-            <h2 id="theme" class="theme" onclick=""></h2>
+            <h2 id="theme" class="theme"></h2>
             <p id="download" class="option"></p>
             <p id="del" class="option"></p>
         </div>

@@ -16,6 +16,6 @@ public class InitRunner implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) {
         if (!FileUtils.deletePathForce(SunSiteConstant.tempPath))
-            log.warn("Clean TempPath Fail In InitializeRunner");
+            log.warn("Clean TempPath Fail In InitializeRunner. Maybe TempPath Not Exists");
     }
 }

@@ -17,6 +17,7 @@ import sunnn.sunsite.exception.IllegalFileRequestException;
 import sunnn.sunsite.service.PictureInfoService;
 import sunnn.sunsite.util.StatusCode;
 
+import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -36,7 +37,7 @@ public class IllustratorController {
         this.collectionService = collectionService;
     }
 
-    @GetMapping(value = "collections")
+    @GetMapping(value = "/collections")
     @ResponseBody
     public PictureInfoInfoListResponse getCollections(@RequestParam("i") String illustratorName) {
         List<String> relatedList = illustratorService.getRelatedList(illustratorName);
@@ -56,7 +57,7 @@ public class IllustratorController {
                 StatusCode.OJBK, collectionList, thumbnailSequenceList);
     }
 
-    @GetMapping(value = "download")
+    @GetMapping(value = "/download")
     public ResponseEntity downloadAll(@RequestParam("n") String illustratorName)
             throws IllegalFileRequestException, IOException {
         File file = illustratorService.download(illustratorName);
@@ -70,16 +71,16 @@ public class IllustratorController {
         return new ResponseEntity<>(FileUtils.readFileToByteArray(file), headers, HttpStatus.OK);
     }
 
-    @PostMapping(value = "modify")
-    public BaseResponse changeName(@RequestBody ChangeName nameInfo) {
+    @PostMapping(value = "/modify")
+    public BaseResponse changeName(@Valid @RequestBody ChangeName nameInfo) {
         return new BaseResponse(
                 illustratorService.changeName(
                         nameInfo.getOldName(), nameInfo.getNewName()));
     }
 
-    @PostMapping(value = "delete")
+    @PostMapping(value = "/delete")
     @ResponseBody
-    public BaseResponse deleteIllustrator(@RequestBody DeleteRequest deleteRequest) {
+    public BaseResponse deleteIllustrator(@Valid @RequestBody DeleteRequest deleteRequest) {
         return new BaseResponse(
                 illustratorService.delete(
                         deleteRequest.getDeleteInfo()));
