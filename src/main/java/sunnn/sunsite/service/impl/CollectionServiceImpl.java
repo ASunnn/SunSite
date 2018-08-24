@@ -140,7 +140,7 @@ public class CollectionServiceImpl implements PictureInfoService {
         /*
             改画集记录和涉及到的图片记录
          */
-        if (!collectionDao.updateCollection(oldName, newName)     //短路原则
+        if (!collectionDao.updateCollection(oldName, newName)
                 || !pictureDao.updateInfo("collection.name", oldName, newName))
             return StatusCode.RENAME_FAILED;
 
@@ -160,7 +160,7 @@ public class CollectionServiceImpl implements PictureInfoService {
             删除对应的画册内容
          */
         if (!pictureDao.deletePictures("collection.name", name)
-                || !collectionDao.delete(name))    //短路原则
+                || !collectionDao.delete(name))
             return StatusCode.DELETE_FAILED;
         /*
             检查画集关联到的类型

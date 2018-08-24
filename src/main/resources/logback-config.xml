@@ -12,7 +12,6 @@
     </appender>
 
     <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
-
         <!--日志名称，如果没有File 属性，那么只会使用FileNamePattern的文件路径规则
             如果同时有<File>和<FileNamePattern>，那么当天日志是<File>，明天会自动把今天
             的日志改名为今天的日期。即，<File> 的日志都是当天的。
@@ -21,7 +20,7 @@
         <!--滚动策略，按照时间滚动 TimeBasedRollingPolicy-->
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!--文件路径,定义了日志的切分方式——把每一天的日志归档到一个文件中,以防止日志填满整个磁盘空间-->
-            <fileNamePattern>/var/log/tomcat8/SunSite-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>/home/sun/log/SunSite-%d{yyyy-MM-dd}.log</fileNamePattern>
             <!--只保留最近90天的日志-->
             <maxHistory>90</maxHistory>
         </rollingPolicy>
@@ -33,8 +32,8 @@
     </appender>
 
     <root level="info">
-        <appender-ref ref="console" />
-        <appender-ref ref="file" />
+        <appender-ref ref="console"/>
+        <appender-ref ref="file"/>
     </root>
 
 </configuration>

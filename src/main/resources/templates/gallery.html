@@ -24,7 +24,7 @@
             height: 800px;
             text-align: center;
             margin: 50px;
-            background-color: #fbfbfb;
+            background-color: #fafafa;
         }
         img {
             width: 800px;
@@ -33,15 +33,23 @@
             margin: auto;
         }
         .info {
+            float: left;
+            width: 750px;
             margin: 50px;
         }
         .infoElement {
             font-size: 20px;
             display: block;
         }
-        .infoElement > p {
-            font-weight: bold;
+        .tool {
+            float: left;
+            width: 750px;
+            margin-left: 50px;
+            margin-right: 50px;
+            margin-top: 545px;
+            margin-bottom: 50px;
         }
+
     </style>
     <script>
         window.onload = function () {
@@ -53,8 +61,15 @@
                     alert(data.msg);
                     window.location.href = "/error";
                 }
+
+                setPage(data);
                     
-                var name = data.name;
+                keyEvent(data.prev, data.next);
+            });
+        };
+
+        function setPage(data) {
+            var name = data.name;
                 var sequenceCode = data.sequence;
                 var illustrator = data.illustrator;
                 var collection = data.collection;
@@ -70,12 +85,13 @@
                 nameElement.innerHTML = name;
                 nameElement.setAttribute("class", "infoElement");
                 nameElement.setAttribute("id", "pictureName");
+                nameElement.setAttribute("style", "overflow:hidden; white-space:nowrap;")
                 divElement.appendChild(nameElement);
 
                 var illustratorElement = document.createElement("p");
                 illustratorElement.innerHTML = illustrator;
                 var illustratorLink = document.createElement("a");
-                illustratorLink.setAttribute("href", "/hello");
+                illustratorLink.setAttribute("href", "/illustrator/show/" + illustrator);
                 illustratorLink.setAttribute("class", "infoElement");
                 illustratorLink.appendChild(illustratorElement);
                 divElement.appendChild(illustratorLink);
@@ -83,37 +99,54 @@
                 var collectionElement = document.createElement("p");
                 collectionElement.innerHTML = collection;
                 var collectionLink = document.createElement("a");
-                collectionLink.setAttribute("href", "/hello");
+                collectionLink.setAttribute("href", "/collection/show/" + collection);
                 collectionLink.setAttribute("class", "infoElement");
                 collectionLink.appendChild(collectionElement);
                 divElement.appendChild(collectionLink);
 
-                //生成tool
-                var toolElement = document.getElementById("tool");
-
-                var prevElement = document.createElement("button");
-                prevElement.innerHTML = "← prev";
+                var prevElement = document.getElementById("prev");
                 if (prev == -1)
                     prevElement.setAttribute("disable", "disable");
                 else
                     prevElement.setAttribute("onclick", "window.location.href='/gallery/show/" + prev + "'");
-                toolElement.appendChild(prevElement);
 
-                var nextElement = document.createElement("button");
-                nextElement.innerHTML = "next →";
+                var nextElement = document.getElementById("next");
                 if (next == -1)
                     nextElement.setAttribute("disable", "disable");
                 else
                     nextElement.setAttribute("onclick", "window.location.href='/gallery/show/" + next + "'");
-                toolElement.appendChild(nextElement);
 
                 var image = document.createElement("img");
                 image.src = "/gallery/l/" + illustrator + "/" + collection + "/" + name;
-                // image.setAttribute("style", "display: block; margin: auto");
                 var divElement = document.getElementById("picture");
                 divElement.appendChild(image);
-            });
-        };
+        }
+
+        function keyEvent(prev, next) {
+            document.onkeydown=function(e){
+                // var isie = (document.all) ? true : false;
+                var key = e.which;
+                // if(isie) {
+                //     key = window.event.keyCode;
+                // } else {
+                //     key = e.which;
+                // }
+
+                if(key==37) { 
+                    if (prev == -1)
+                        alert("No More");
+                    else
+                        window.location.href = "/gallery/show/" + prev;
+                    
+                }
+                if(key==39) {
+                    if (next == -1)
+                        alert("No More");
+                    else
+                        window.location.href = "/gallery/show/" + next;
+                }
+            };
+        }
     
         $(function () {
             $("#delete").click(function () {
@@ -153,14 +186,18 @@
                 GALLERY</a>
         </h3>
     </div>
-    <div id="picture" class="picture">
+    <div id="content" style="margin:auto; width:1750px; height:900px;">
+        <div id="picture" class="picture">
 
-    </div>
-    <div id="info" class="info">
-
-    </div>
-    <div id="tool">
-        <button id="delete">Delete</button>
+        </div>
+        <div id="info" class="info">
+    
+        </div>
+        <div id="tool" class="tool">
+            <button id="prev" style="float:left; margin-right:20px; margin-bottom:20px;">← prev</button>
+            <button id="next" style="float:left; margin-left:20px; margin-bottom:20px;">next →</button>
+            <button id="delete" style="float:right; margin-bottom:20px;">Delete</button>
+        </div>
     </div>
 </body>
 

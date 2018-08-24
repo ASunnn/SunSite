@@ -16,9 +16,8 @@ import sunnn.sunsite.util.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class IllustratorServiceImpl implements PictureInfoService {
@@ -117,7 +116,7 @@ public class IllustratorServiceImpl implements PictureInfoService {
         /*
             改绘师记录和涉及到的图片记录
          */
-        if (!illustratorDao.updateIllustrator(oldName, newName)     //短路原则
+        if (!illustratorDao.updateIllustrator(oldName, newName)
                 || !pictureDao.updateInfo("illustrator.name", oldName, newName))
             return StatusCode.RENAME_FAILED;
 
@@ -137,7 +136,7 @@ public class IllustratorServiceImpl implements PictureInfoService {
             删除对应的画师内容
          */
         if (!pictureDao.deletePictures("illustrator.name", name)
-                || !illustratorDao.delete(name))    //短路原则
+                || !illustratorDao.delete(name))
             return StatusCode.DELETE_FAILED;
         //删除文件夹本体
         if (!FileUtils.deletePathForce(i.getPath()))    //中途发生错误可以继续流程
@@ -145,7 +144,7 @@ public class IllustratorServiceImpl implements PictureInfoService {
         /*
             检查绘师图片关联到的画集
          */
-        Set<String> types = new HashSet<>();
+        List<String> types = new ArrayList<>();
         for (String collectionName : collections) {
             if (pictureDao.findByCollection(collectionName).isEmpty()) {
                 //预先保存type

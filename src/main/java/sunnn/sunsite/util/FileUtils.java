@@ -4,7 +4,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.nio.channels.FileChannel;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -130,7 +129,7 @@ public class FileUtils {
                 flag = false;
         }
 
-        return flag && file.delete();   //利用短路原则
+        return flag && file.delete();
     }
 
     /**

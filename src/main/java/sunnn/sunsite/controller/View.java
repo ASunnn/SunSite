@@ -1,14 +1,10 @@
 package sunnn.sunsite.controller;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.ModelAndView;
 
 /**
  * 视图映射
- *
- * @author ASun
  */
 @Controller
 public class View {

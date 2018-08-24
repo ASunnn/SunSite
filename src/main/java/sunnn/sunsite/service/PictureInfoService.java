@@ -24,6 +24,7 @@ public interface PictureInfoService {
      *
      * @param name 绘师名
      * @return 文件表示
+     * @throws IllegalFileRequestException  请求了非法的文件
      */
     File download(String name) throws IllegalFileRequestException;
 

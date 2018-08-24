@@ -22,7 +22,12 @@ public interface GalleryService {
      */
     PictureListResponse getPictureList(int page, int pageSize);
 
-
+    /**
+     * 根据过滤请求获取图片文件列表
+     *
+     * @param filter 过滤请求
+     * @return 查询结果
+     */
     PictureListResponse getPictureListWithFilter(PictureListWithFilter filter);
 
     /**
@@ -40,6 +45,7 @@ public interface GalleryService {
      * @param collection  画集
      * @param fileName    图片名
      * @return 图片文件
+     * @throws IllegalFileRequestException 请求了非法的文件
      */
     File getPictureFile(String illustrator, String collection, String fileName) throws IllegalFileRequestException;
 
