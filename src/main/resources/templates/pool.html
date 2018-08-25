@@ -64,9 +64,11 @@
             
         var illustrator = r[r.length - 2];
         var decodeIllustrator = decodeURIComponent(illustrator);
+        var encodeIllustrator = encodeURIComponent(decodeIllustrator);
 
         var collection = r[r.length - 1];
         var decodeCollection = decodeURIComponent(collection);
+        var encodeCollection = encodeURIComponent(decodeCollection);
 
         window.onload = function () {
             var theme = document.getElementById("theme");
@@ -74,7 +76,7 @@
 
             var download = document.getElementById("download");
             var downloadLink = document.createElement("a");
-            downloadLink.setAttribute("href", "/pool/download?i=" + illustrator + "&c=" + collection);
+            downloadLink.setAttribute("href", "/pool/download?i=" + encodeIllustrator + "&c=" + encodeCollection);
             downloadLink.innerHTML = "Get";
             download.appendChild(downloadLink);
 
@@ -94,7 +96,7 @@
         });
 
         function getPictureList(page) {
-            $.get("/pool/list?illustrator=" + illustrator + "&collection=" + collection + "&p=" + page + "&s=20", function (data) {
+            $.get("/pool/list?illustrator=" + encodeIllustrator + "&collection=" + encodeCollection + "&p=" + page + "&s=20", function (data) {
                 pictureListHandler(data, page);
             });
         }
@@ -163,13 +165,13 @@
                 var divElement = document.getElementById(sequence);
 
                 var illustratorElement = document.createElement("a");
-                illustratorElement.setAttribute("href", "/illustrator/show/" + illustrator);
+                illustratorElement.setAttribute("href", "/illustrator/show/" + decodeIllustrator);
                 illustratorElement.innerHTML = illustrator;
                 illustratorElement.setAttribute("style", "display: block");
                 divElement.appendChild(illustratorElement);
 
                 var collectionElement = document.createElement("a");
-                collectionElement.setAttribute("href", "/collection/show/" + collection);
+                collectionElement.setAttribute("href", "/collection/show/" + decodeCollection);
                 collectionElement.innerHTML = collection;
                 collectionElement.setAttribute("style", "display: block");
                 divElement.appendChild(collectionElement);

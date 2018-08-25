@@ -60,17 +60,19 @@
     </style>
 
     <script>
-        window.onload = function () {
-            var r = window.location.href.split("/");
-            var illustrator = r[r.length-1];
-            var decodeIllustrator = decodeURIComponent(illustrator);
+        var r = window.location.href.split("/");
 
+        var illustrator = r[r.length-1];
+        var decodeIllustrator = decodeURIComponent(illustrator);
+        var encodeIllustrator = encodeURIComponent(decodeIllustrator);
+
+        window.onload = function () {
             var theme = document.getElementById("theme");
             theme.innerHTML = decodeIllustrator;
 
             var download = document.getElementById("download");
             var downloadLink = document.createElement("a");
-            downloadLink.setAttribute("href", "/illustrator/download?n=" + illustrator);
+            downloadLink.setAttribute("href", "/illustrator/download?n=" + encodeIllustrator);
             downloadLink.innerHTML = "Get";
             download.appendChild(downloadLink);
 
@@ -84,7 +86,7 @@
 
     <script>
         function getPictureList(illustrator) {
-            $.get("/illustrator/collections?i=" + illustrator, function (data) {
+            $.get("/illustrator/collections?i=" + encodeIllustrator, function (data) {
                 pictureListHandler(data);
             });
         }
@@ -112,7 +114,7 @@
             divElement.setAttribute("id", sequence);
             collectionList.appendChild(divElement);
 
-            var illustratorName = document.getElementById("theme").innerHTML;
+            var illustratorName = document.getElementById("theme").innerText;
 
             var image = document.createElement("img");
             image.src = "/gallery/m?thumbnail=" + sequence;

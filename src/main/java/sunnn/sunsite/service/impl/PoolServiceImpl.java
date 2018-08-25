@@ -92,7 +92,7 @@ public class PoolServiceImpl implements PoolService {
         String filePath = SunSiteConstant.tempPath
                 + tempCode
                 + SunSiteConstant.pathSeparator
-                + illustrator.getName() + "-" + collection.getName();
+                + illustrator.getName() + " - " + collection.getName();
         String srcPath = SunSiteConstant.picturePath
                 + illustrator.getName()
                 + SunSiteConstant.pathSeparator
