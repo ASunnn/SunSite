@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Gallery</title>
-    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="../static/favicon.ico">
     <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.9.0.min.js"></script>
 
     <style>
@@ -42,12 +42,20 @@
         /* 图片列表 */
         .pictureList {
             display: inline-block;
-            /* 加上这个使得元素强行置顶，反而更难看 */
-            /* vertical-align: top; */
             text-align: center;
             width: 320px;
-            height: 340px;
+            height: 360px;
             margin: 15px;
+            background-color: #f4f4f4;
+        }
+        .imageDiv {
+            width: 300px; 
+            height: 300px; 
+            margin: auto; 
+        }
+        img {
+            display: block;
+            margin: auto;
         }
         a {
             overflow: hidden;
@@ -143,14 +151,18 @@
             divElement.setAttribute("id", sequence);
             pictureList.appendChild(divElement);
 
+            var imageDiv = document.createElement("div");
+            imageDiv.setAttribute("class", "imageDiv");
+
             var image = document.createElement("img");
             image.src = "/gallery/m?thumbnail=" + sequence;
-            image.setAttribute("style", "display: block; margin: auto");
 
             var imageLink = document.createElement("a");
             imageLink.setAttribute("href", "/gallery/show/" + sequence);
             imageLink.appendChild(image);
-            divElement.appendChild(imageLink);
+            imageDiv.appendChild(imageLink);
+
+            divElement.appendChild(imageDiv);
 
             getPictureInfo(sequence);
         }

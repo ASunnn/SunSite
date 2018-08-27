@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Gallery</title>
-    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="../static/favicon.ico">
     <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.9.0.min.js"></script>
     <style>
         /* 标题菜单 */
@@ -40,8 +40,8 @@
             height: 30px;
             margin-left: auto;
             margin-right: auto;
-            margin-top: 10px;
-            margin-bottom: 10px;
+            margin-top: 30px;
+            margin-bottom: 30px;
         }
         .filter {
             width:320px; 
@@ -101,16 +101,25 @@
         /* 图片列表 */
         .pictureList {
             display: inline-block;
-            /* 加上这个使得元素强行置顶，反而更难看 */
-            /* vertical-align: top; */
             text-align: center;
             width: 320px;
-            height: 340px;
+            height: 360px;
             margin: 15px;
+            background-color: #f4f4f4;
+        }
+        .imageDiv {
+            width: 300px; 
+            height: 300px; 
+            margin: auto; 
+        }
+        img {
+            display: block;
+            margin: auto;
         }
         a {
             overflow: hidden;
             white-space: nowrap;
+            margin-bottom: 5px;
         }
         .next {
             text-align: center;
@@ -120,10 +129,30 @@
     <!-- 初始化 -->
     <script>
         window.onload = function () {
-            deleteAllPicture();
-            getPictureList(0);
+            var cookie = decodeURIComponent(getCookie("filter"));
+            if (cookie != "") {
+                var val = cookie.split("/");
+
+                var type = document.getElementById("types");
+                type.value = val[0];
+                var illustrator = document.getElementById("illustrators");
+                illustrator.value = val[1];
+                var collection = document.getElementById("collections");
+                collection.value = val[2];
+            }
             getGalleryInfo();
+            // deleteAllPicture();
+            getPictureListWithFilter(0);
         };
+
+        function getCookie(name) {
+            var reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+            var cookie = document.cookie.match(reg);
+            if (cookie)
+                return cookie[2];
+            else
+                return "";
+        }
     </script>
     <!-- 页面变换 -->
     <script>
@@ -354,6 +383,7 @@
             });
         }
 
+        // @Deprecated
         function getPictureList(page) {
             $.get("/gallery/list?p=" + page + "&s=20", function (data) {
                 pictureListHandler(data, page, 0);
@@ -403,14 +433,18 @@
             divElement.setAttribute("id", sequence);
             pictureList.appendChild(divElement);
 
+            var imageDiv = document.createElement("div");
+            imageDiv.setAttribute("class", "imageDiv");
+
             var image = document.createElement("img");
             image.src = "/gallery/m?thumbnail=" + sequence;
-            image.setAttribute("style", "display: block; margin: auto");
 
             var imageLink = document.createElement("a");
             imageLink.setAttribute("href", "/gallery/show/" + sequence);
             imageLink.appendChild(image);
-            divElement.appendChild(imageLink);
+            imageDiv.appendChild(imageLink);
+
+            divElement.appendChild(imageDiv);
 
             getPictureInfo(sequence);
         }

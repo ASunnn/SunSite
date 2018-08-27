@@ -1,15 +1,17 @@
 package sunnn.sunsite.dao;
 
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
+import sunnn.sunsite.dto.AggregationRes;
 import sunnn.sunsite.dto.request.PictureListWithFilter;
 import sunnn.sunsite.entity.Picture;
 import sunnn.sunsite.util.BaseDataBoxing;
 
-import javax.smartcardio.CardTerminal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -102,19 +104,18 @@ public class PictureDao extends MongoBase<Picture> {
             criteria.and("illustrator.name").is(illustrator.get(0));
         if (!collection.get(0).isEmpty())
             criteria.and("collection.name").is(collection.get(0));
-        Query query = new Query(criteria);
 
         if (illustrator.get(0).isEmpty()) {
             illustrator.clear();
-            distinct(query, "illustrator.name", illustrator);
+            aggregation(criteria, "illustrator.name", illustrator);
         }
         if (collection.get(0).isEmpty()) {
             collection.clear();
-            distinct(query, "collection.name", collection);
+            aggregation(criteria, "collection.name", collection);
         }
         if (type.get(0).isEmpty()) {
             type.clear();
-            distinct(query, "type.name", type);
+            aggregation(criteria, "type.name", type);
         }
     }
 
@@ -125,12 +126,6 @@ public class PictureDao extends MongoBase<Picture> {
         return r;
     }
 
-    private void distinct(Query query, String field, List<String> result) {
-        for (String s : mongoTemplate.getCollection("gallery")
-                .distinct(field, query.getQueryObject(), String.class))
-            result.add(s);
-    }
-
     public Picture getFirst(String name, String type) {
         Query query = new Query(Criteria.where(type).is(name));
         return findOne(query, Picture.class);
@@ -138,10 +133,6 @@ public class PictureDao extends MongoBase<Picture> {
 
     public long count() {
         return count(new Query());
-    }
-
-    private long count(Query query) {
-        return count(query, Picture.class);
     }
 
     public boolean delete(long sequenceCode) {
@@ -166,5 +157,31 @@ public class PictureDao extends MongoBase<Picture> {
         return updateAll(Query.query(Criteria.where(field).is(oldName)),
                 Update.update(field, newName),
                 Picture.class);
+    }
+
+    private long count(Query query) {
+        return count(query, Picture.class);
+    }
+
+    private void distinct(Query query, String field, List<String> target) {
+        for (String s : mongoTemplate.getCollection("gallery")
+                .distinct(field, query.getQueryObject(), String.class))
+            target.add(s);
+    }
+
+    private void aggregation(Criteria criteria, String field, List<String> target) {
+        Aggregation agg = Aggregation.newAggregation(
+                Aggregation.match(criteria),
+                Aggregation.project().and(field).as("fieldName"),
+                Aggregation.group("fieldName")
+                        .first("fieldName").as("field")
+                        .count().as("count"),
+                Aggregation.sort(Sort.Direction.DESC, "count")
+        );
+
+        AggregationResults<AggregationRes> results = mongoTemplate.aggregate(agg, "gallery", AggregationRes.class);
+        List<AggregationRes> resList = results.getMappedResults();
+        for (AggregationRes res : resList)
+            target.add(res.getField());
     }
 }

@@ -19,9 +19,14 @@ import sunnn.sunsite.util.StatusCode;
 import sunnn.sunsite.dto.request.UploadPictureInfo;
 import sunnn.sunsite.service.GalleryService;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,16 +41,45 @@ public class GalleryController {
         this.galleryService = galleryService;
     }
 
+    @Deprecated
     @GetMapping(value = "/list")
     @ResponseBody
     public PictureListResponse pictureList(@RequestParam("p") int page,
-                                           @RequestParam("s") int pageSize) {
+                                           @RequestParam("s") int pageSize,
+                                           HttpServletRequest request, HttpServletResponse response) {
+        /*
+              清空cookie
+         */
+        Cookie filterInfo = new Cookie("filter", "");
+        filterInfo.setMaxAge(86400 * 7);
+        filterInfo.setPath("/galleryHome");
+        filterInfo.setHttpOnly(false);
+        response.addCookie(filterInfo);
+
         return galleryService.getPictureList(page, pageSize);
     }
 
     @PostMapping(value = "/filter")
     @ResponseBody
-    public PictureListResponse pictureListWithFilter(@Valid @RequestBody PictureListWithFilter filter) {
+    public PictureListResponse pictureListWithFilter(@Valid @RequestBody PictureListWithFilter filter,
+                                                     HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException {
+        /*
+            设置cookie，下次访问时能直接访问上一次的请求
+         */
+        String v = filter.getType() + "/" + filter.getIllustrator() + "/" + filter.getCollection();
+        /*
+            按照HTML4规范，空格应该被编码成加号"+"，而如果字符本身就是加号"+"，则应该被编码成%2B
+            按照RFC-3986规范，空格被编码成%20，而加号"+"被编码成%2B
+            一个是JDK自带的java.net.URLEncoder,另一个是Apache的org.apache.commons.codec.net.URLCodec。这两个类遵循的都是HTML4标准
+         */
+        Cookie filterInfo = new Cookie("filter",
+                URLEncoder.encode(v, "UTF-8").replaceAll("\\+", "%20"));
+//        filterInfo.setDomain("localhost");
+        filterInfo.setMaxAge(86400 * 7);
+        filterInfo.setPath("/galleryHome");
+        filterInfo.setHttpOnly(false);
+        response.addCookie(filterInfo);
+
         return galleryService.getPictureListWithFilter(filter);
     }
 
