@@ -42,10 +42,31 @@ public class Picture {
     private String thumbnailName;
 
     /**
-     * 画师
+     * 图片高度
      */
-    @Field(value = "illustrator")
-    private Illustrator illustrator;
+    @Field(value = "height")
+    private int height;
+
+    /**
+     * 图片宽度
+     */
+    @Field(value = "width")
+    private int width;
+
+    /**
+     * 图片是竖的还是横的
+     * 1：竖
+     * 0：方
+     * -1：横
+     */
+    @Field(value = "vOrH")
+    private int vOrH;
+
+    /**
+     * 文件大小
+     */
+    @Field(value = "size")
+    private long size;
 
     /**
      * 上传（到本系统的）时间
@@ -54,10 +75,10 @@ public class Picture {
     private long uploadTime;
 
     /**
-     * 文件大小
+     * 画师
      */
-    @Field(value = "size")
-    private long size;
+    @Field(value = "illustrator")
+    private Illustrator illustrator;
 
     /**
      * 插画所属

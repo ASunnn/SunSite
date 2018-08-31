@@ -168,7 +168,7 @@ public class GalleryServiceImpl implements GalleryService {
         /*
             对文件名进行检查
          */
-        Matcher fileNameMatcher = Pattern.compile("\\.(jpg|jpeg|png)$")
+        Matcher fileNameMatcher = Pattern.compile("\\.(jpg|jpeg|png|bmp)$")
                 .matcher(file.getOriginalFilename());
         if (!fileNameMatcher.find())
             return StatusCode.ILLEGAL_DATA;
@@ -251,8 +251,20 @@ public class GalleryServiceImpl implements GalleryService {
                 Thumbnails.of(file.getPath())
                         .size(SunSiteConstant.thumbnailSize, SunSiteConstant.thumbnailSize)
                         .toFile(picture.getPath() + picture.getThumbnailName());
+
                 //保存原图
                 FileUtils.copyFile(file, picture.getPath() + picture.getFileName());
+
+                //获取图片信息
+                int[] pictureSize = Utils.getPictureSize(picture.getPath());
+                picture.setWidth(pictureSize[0]);
+                picture.setHeight(pictureSize[1]);
+                if (picture.getWidth() < picture.getHeight())
+                    picture.setVOrH(-1);
+                else if (picture.getWidth() > picture.getHeight())
+                    picture.setVOrH(1);
+                else
+                    picture.setVOrH(0);
             } catch (IOException e) {
                 //若中间出错直接返回
                 log.error("Error At SaveUpload : ", e);

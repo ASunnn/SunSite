@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import sunnn.sunsite.dao.MeDao;
-import sunnn.sunsite.entity.Me;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -33,10 +32,9 @@ public class ShiroConfiguration {
         filterChainDefinitionMap.put("/hello", "anon");
         filterChainDefinitionMap.put("/verify", "anon");
         filterChainDefinitionMap.put("/error", "anon");
-        filterChainDefinitionMap.put("/interceptor", "anon");
         filterChainDefinitionMap.put("/favicon.ico", "anon");   //我能怎么办也很绝望啊
         filterChainDefinitionMap.put("/**", "authc");
-        filterChainDefinitionMap.put("/index", "logout");   //这行代码一开始是在拦截链最上面的
+//        filterChainDefinitionMap.put("/index", "logout");
 
         shiroFilterFactoryBean.setLoginUrl("/index");
         shiroFilterFactoryBean.setSuccessUrl("/home");

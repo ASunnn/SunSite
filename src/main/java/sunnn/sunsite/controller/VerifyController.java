@@ -12,11 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import sunnn.sunsite.util.MD5s;
 import sunnn.sunsite.util.SunSiteConstant;
 
-/**
- * 登录认证控制层
- *
- * @author ASun
- */
 @Controller
 public class VerifyController {
 

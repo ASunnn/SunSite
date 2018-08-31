@@ -179,7 +179,7 @@ public class FileUtils {
 
             boolean flag = true;
             for (File f : files) {
-                if (!doCopyPath(f, destPath + "\\" + f.getName()))
+                if (!doCopyPath(f, destPath + SunSiteConstant.pathSeparator + f.getName()))
                     flag = false;
             }
 
