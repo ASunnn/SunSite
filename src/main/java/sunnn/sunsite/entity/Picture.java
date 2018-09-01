@@ -55,9 +55,9 @@ public class Picture {
 
     /**
      * 图片是竖的还是横的
-     * 1：竖
+     * 1：横
      * 0：方
-     * -1：横
+     * -1：竖
      */
     @Field(value = "vOrH")
     private int vOrH;

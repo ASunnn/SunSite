@@ -256,7 +256,7 @@ public class GalleryServiceImpl implements GalleryService {
                 FileUtils.copyFile(file, picture.getPath() + picture.getFileName());
 
                 //获取图片信息
-                int[] pictureSize = Utils.getPictureSize(picture.getPath());
+                int[] pictureSize = Utils.getPictureSize(picture.getPath() + picture.getFileName());
                 picture.setWidth(pictureSize[0]);
                 picture.setHeight(pictureSize[1]);
                 if (picture.getWidth() < picture.getHeight())
