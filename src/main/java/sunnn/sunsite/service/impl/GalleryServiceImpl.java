@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import sunnn.sunsite.dto.BaseDataBoxing;
 import sunnn.sunsite.dto.request.PictureListWithFilter;
 import sunnn.sunsite.dto.response.PictureInfoResponse;
 import sunnn.sunsite.exception.IllegalFileRequestException;

@@ -1,4 +1,4 @@
-package sunnn.sunsite.util;
+package sunnn.sunsite.dto;
 
 /**
  * 将基本数据类型真·装箱

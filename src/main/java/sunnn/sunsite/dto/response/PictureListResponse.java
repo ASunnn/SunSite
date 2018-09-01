@@ -5,7 +5,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 import sunnn.sunsite.entity.Picture;
-import sunnn.sunsite.util.Convertible;
+import sunnn.sunsite.dto.Convertible;
 import sunnn.sunsite.util.StatusCode;
 
 import java.util.List;

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import sunnn.sunsite.dto.AggregationRes;
 import sunnn.sunsite.dto.request.PictureListWithFilter;
 import sunnn.sunsite.entity.Picture;
-import sunnn.sunsite.util.BaseDataBoxing;
+import sunnn.sunsite.dto.BaseDataBoxing;
 
 import java.util.ArrayList;
 import java.util.List;

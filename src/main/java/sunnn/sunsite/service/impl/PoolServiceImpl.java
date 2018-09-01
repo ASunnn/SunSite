@@ -8,6 +8,7 @@ import sunnn.sunsite.dao.CollectionDao;
 import sunnn.sunsite.dao.IllustratorDao;
 import sunnn.sunsite.dao.PictureDao;
 import sunnn.sunsite.dao.TypeDao;
+import sunnn.sunsite.dto.BaseDataBoxing;
 import sunnn.sunsite.dto.response.PictureListResponse;
 import sunnn.sunsite.entity.Collection;
 import sunnn.sunsite.entity.Illustrator;

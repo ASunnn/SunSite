@@ -1,4 +1,4 @@
-package sunnn.sunsite.util;
+package sunnn.sunsite.dto;
 
 import java.util.List;
 
