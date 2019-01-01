@@ -11,14 +11,13 @@ import javax.validation.constraints.NotBlank;
 @ToString
 public class UploadPictureInfo {
 
-    @NotBlank
     private String illustrator;
 
     @NotBlank
-    private String collection;
+    private String group;
 
     @NotBlank
-    private String type;
+    private String collection;
 
     @NotBlank
     private String uploadCode;

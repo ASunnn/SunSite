@@ -16,9 +16,19 @@ public class PictureInfoResponse extends BaseResponse {
 
     private String name;
 
-    private String illustrator;
+    private String group;
+
+    private String cId;
 
     private String collection;
+
+    private String[] illustrator;
+
+    private String[] tag;
+
+    private int width;
+
+    private int height;
 
     private String prev;
 
@@ -26,24 +36,6 @@ public class PictureInfoResponse extends BaseResponse {
 
     public PictureInfoResponse(StatusCode statusCode) {
         super(statusCode);
-    }
-
-    public PictureInfoResponse(StatusCode statusCode, long sequence, String name, String illustrator, String collection) {
-        super(statusCode);
-        this.sequence = String.valueOf(sequence);
-        this.name = name;
-        this.illustrator = illustrator;
-        this.collection = collection;
-    }
-
-    public PictureInfoResponse(StatusCode statusCode, long sequence, String name, String illustrator, String collection, long prev, long next) {
-        super(statusCode);
-        this.sequence = String.valueOf(sequence);
-        this.name = name;
-        this.illustrator = illustrator;
-        this.collection = collection;
-        this.prev = String.valueOf(prev);
-        this.next = String.valueOf(next);
     }
 
     public PictureInfoResponse setSequence(long sequence) {

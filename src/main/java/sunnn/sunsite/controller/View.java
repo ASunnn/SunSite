@@ -28,49 +28,130 @@ public class View {
     /**
      * 主页
      */
-    @RequestMapping(value = "/home")
-    public String home() {
-        return "home";
-    }
-
-    /**
-     * 画册主页
-     */
-    @RequestMapping(value = "/galleryHome")
-    public String galleryHome() {
-        return "galleryHome";
-    }
-
-    /**
-     * 图片显示
-     */
-    @RequestMapping(value = "/gallery/show/*")
+    @RequestMapping(value = "/gallery")
     public String gallery() {
         return "gallery";
     }
 
     /**
-     * 画师显示
+     * 图片页
      */
-    @RequestMapping(value = "/illustrator/show/*")
-    public String illustrator() {
-        return "illustrator";
+    @RequestMapping(value = "/gallery/show/*")
+    public String galleryShow() {
+        return "post";
     }
 
     /**
-     * 画册显示
+     * 社团
      */
-    @RequestMapping(value = "/collection/show/*")
+    @RequestMapping(value = "/group")
+    public String group() {
+        return "group";
+    }
+
+    /**
+     * 社团
+     */
+    @RequestMapping(value = "/group/show/*")
+    public String groupShow() {
+        return "work";
+    }
+
+    /**
+     * 画集
+     */
+    @RequestMapping(value = "/collection")
     public String collection() {
         return "collection";
     }
 
     /**
-     * Pool显示
+     * 画集页
      */
-    @RequestMapping(value = "/pool/show/**")
-    public String pool() {
+    @RequestMapping(value = "/collection/show/*")
+    public String collectionShow() {
         return "pool";
     }
+
+    /**
+     * 类型
+     */
+    @RequestMapping(value = "/type")
+    public String type() {
+        return "type";
+    }
+
+    /**
+     * 类型页
+     */
+    @RequestMapping(value = "/type/show/*")
+    public String typeShow() {
+        return "list";
+    }
+
+    /**
+     * 创建画集页
+     */
+    @RequestMapping(value = "/create")
+    public String create() {
+        return "create";
+    }
+
+    /**
+     * 画师
+     */
+    @RequestMapping(value = "/illustrator")
+    public String illustrator() {
+        return "illustrator";
+    }
+
+    /**
+     * 画师页
+     */
+    @RequestMapping(value = "/illustrator/show/*")
+    public String illustratorShow() {
+        return "artwork";
+    }
+
+    /**
+     * 上传图片页
+     */
+    @RequestMapping(value = "/upload")
+    public String upload() {
+        return "upload";
+    }
+
+//
+//    /**
+//     * 图片显示
+//     */
+//    @RequestMapping(value = "/gallery/show/*")
+//    public String gallery() {
+//        return "gallery";
+//    }
+//
+//    /**
+//     * 画师显示
+//     */
+//    @RequestMapping(value = "/illustrators/show/*")
+//    public String illustrators() {
+//        return "illustrators";
+//    }
+//
+//    /**
+//     * 画册显示
+//     */
+//    @RequestMapping(value = "/collection/show/*")
+//    public String collection() {
+//        return "collection";
+//    }
+//
+//    /**
+//     * Pool显示
+//     */
+//    @RequestMapping(value = "/pool/show/**")
+//    public String pool() {
+//        return "pool";
+//    }
 
 }

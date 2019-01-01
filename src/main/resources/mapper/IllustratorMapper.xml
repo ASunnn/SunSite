@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="sunnn.sunsite.dao.IllustratorMapper">
+
+    <select id="find" parameterType="java.lang.String" resultType="sunnn.sunsite.entity.Illustrator">
+        SELECT *
+        FROM illustrator
+        WHERE `name` = #{name}
+    </select>
+
+    <select id="findAllInfo" resultType="sunnn.sunsite.dto.IllustratorInfo">
+        SELECT
+            i.`name` AS illustrator,
+            COUNT( a.illustrator ) AS post
+        FROM
+            illustrator AS i
+            LEFT JOIN artwork AS a ON i.id = a.illustrator
+        GROUP BY
+            i.id
+        LIMIT #{skip}, #{limit}
+    </select>
+    
+    <insert id="insert" parameterType="sunnn.sunsite.entity.Illustrator" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO illustrator (`name`)
+        VALUES (#{name})
+    </insert>
+
+    <select id="count" resultType="java.lang.Integer">
+        SELECT COUNT( * ) AS c
+        FROM illustrator
+    </select>
+
+    <delete id="delete">
+        DELETE FROM illustrator WHERE `name` = #{name}
+    </delete>
+
+    <!-- ———————————— Artwork ———————————— -->
+
+    <insert id="insertAllArtwork" parameterType="java.util.List">
+        INSERT INTO artwork (illustrator, sequence)
+        VALUES
+        <foreach collection="list" item="a" separator=",">
+            (#{a.illustrator}, #{a.sequence})
+        </foreach>
+    </insert>
+
+    <select id="findAllByPicture" parameterType="java.lang.Long" resultType="sunnn.sunsite.entity.Illustrator">
+        SELECT i.id, i.`name`
+        FROM illustrator AS i, artwork AS a
+        WHERE i.id = a.illustrator AND a.sequence = #{sequence};
+    </select>
+
+    <select id="findAllByIllustrator" resultType="sunnn.sunsite.entity.Pic">
+        SELECT
+            p.sequence,
+            p.`name`,
+            p.size,
+            p.width,
+            p.height,
+            p.vOrH,
+            p.uploadTime,
+            p.thumbnailName,
+            p.path
+        FROM
+            illustrator AS i,
+            artwork AS a,
+            pic AS p
+        WHERE
+            i.id = a.illustrator
+            AND a.sequence = p.sequence
+            AND i.`name` = #{illustrator}
+        ORDER BY
+            p.uploadTime DESC
+        LIMIT #{skip}, #{limit}
+    </select>
+
+    <select id="countByIllustrator" parameterType="java.lang.String" resultType="java.lang.Integer">
+        SELECT COUNT( * ) AS c
+        FROM illustrator AS i, artwork AS a
+        WHERE i.id = a.illustrator AND i.`name` = #{illustrator}
+    </select>
+
+    <update id="update">
+        UPDATE artwork
+        SET illustrator = #{newIllustrator}
+        WHERE illustrator = #{oldIllustrator}
+    </update>
+
+    <delete id="deletePicture" parameterType="java.lang.Long">
+        DELETE FROM artwork WHERE sequence = #{sequence}
+    </delete>
+</mapper>

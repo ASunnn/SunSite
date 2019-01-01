@@ -1,6 +1,6 @@
 package sunnn.sunsite.util;
 
-import sunnn.sunsite.entity.Picture;
+import sunnn.sunsite.entity.Pic;
 
 import java.io.*;
 import java.util.Objects;
@@ -130,6 +130,6 @@ public class ZipCompress {
      */
     private static boolean checkThumbnail(File file) {
         return file.getName()
-                .startsWith(Picture.THUMBNAIL_PREFIX);
+                .startsWith(Pic.THUMBNAIL_PREFIX);
     }
 }

@@ -1,10 +1,11 @@
 package sunnn.sunsite.util;
 
 public enum StatusCode {
+
     OJBK(0),
     ERROR(-1),
-    EMPTY_UPLOAD(1 << 0),
-    ILLEGAL_DATA(1 << 1),
+    DUPLICATE_INPUT(1 << 0),
+    ILLEGAL_INPUT(1 << 1),
     NO_DATA(1 << 2),
     UPLOAD_TIMEOUT(1 << 3),
     DELETE_FAILED(1 << 4),

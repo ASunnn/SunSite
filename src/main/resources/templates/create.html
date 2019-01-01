@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Create | Collection</title>
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.9.0.min.js"></script>
+    <style>
+        /* 标题菜单 */
+        .menu {
+            margin-left: auto;
+            margin-right: auto;
+            width: 1800px;
+            height: 50px;
+        }
+        .menuContent {
+            text-align: center;
+            float: left;
+            width: 150px;
+        }
+        /* 表单 */
+        .content {
+            text-align: center;
+        }
+        .createInput {
+            height: 20px
+        }
+        ul, li {
+            list-style-type:none;
+            padding:0;
+            margin:0
+        }
+        label {
+            display: inline-block;
+            width: 100px;
+            height: 30px;
+            margin: auto;
+            text-align: right;
+        }
+        a {
+            text-decoration: none;
+            color: #000;
+        }
+    </style>
+    <!-- 上传 -->
+    <script>
+        $(function () {
+            $("#submitInfo").click(function () {
+                var button = this;
+                $(button).attr('disabled', 'disabled');
+
+                var collection = $('#collection').val();
+                var group = $('#group').val();
+                var type = $('#type').val();
+    
+                var data = {
+                    "collection": collection,
+                    "group" : group,
+                    "type": type
+                };
+    
+                $.ajax({
+                    method: 'post',
+                    url: "/collection/create",
+                    data: JSON.stringify(data),
+                    dataType: "JSON",
+                    contentType: "application/json"
+                }).done(function (data) {
+                    alert(data.msg);
+                    window.location.reload();
+                }).fail(function () {
+                    alert("error");
+                    window.location.href = "/error";
+                });
+            });
+        });
+    </script>
+</head>
+
+
+<body>
+    <div id="title">
+        <h1 style="text-align:center;font-size:50px">
+            Collection</h1>
+    </div>
+    <div class="menu">
+        <ul>
+            <li class="menuContent">
+                <a href="/gallery">Gallery</a>
+            </li>
+            <li class="menuContent">
+                <a href="/illustrator">Illustrator</a>
+            </li>
+            <li class="menuContent">
+                <a href="/group">Group</a>
+            </li>
+            <li class="menuContent">
+                <a href="/collection">Collection</a>
+            </li>
+            <li class="menuContent">
+                <a href="/type">Type</a>
+            </li>
+        </ul>
+    </div>
+    
+    <div class="content" id="content">
+        <form id="createInfoForm">
+            <label for="collection">Collection</label>
+            <input type="text" name="collection" id="collection" class="createInput", autocomplete="off"/>
+            <br />
+            <label for="group">Group</label>
+            <input type="text" name="group" id="group" class="createInput", autocomplete="off"/>
+            <br />
+            <label for="type">Type</label>
+            <input type="text" name="type" id="type" class="createInput", autocomplete="off"/>
+            <br />
+            <input id="submitInfo" type="button" value="sumbit!">
+        </form>
+    </div>
+</body>
+</html>

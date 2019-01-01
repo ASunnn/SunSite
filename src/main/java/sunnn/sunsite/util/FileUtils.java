@@ -47,10 +47,9 @@ public class FileUtils {
      * @return 创建了文件夹或者文件夹已存在时返回true
      */
     public static boolean createPath(File pathFile) {
-        if (pathFile.isFile())
-            return false;
-        if (pathFile.exists())
-            return true;
+        if (pathFile.exists()) {
+            return !pathFile.isFile();
+        }
         return pathFile.mkdirs();
     }
 
@@ -151,7 +150,7 @@ public class FileUtils {
      * 对一个文件夹进行复制
      *
      * @param srcFile     源文件夹
-     * @param destPath    目标路径
+     * @param destPath    目标路径，目标路径不存在时，会自动创建
      * @param onlyContent 复制的时候是否只复制文件夹内的文件
      * @throws IOException 发生了意外错误
      */
@@ -192,16 +191,17 @@ public class FileUtils {
      * 对一个文件进行复制
      *
      * @param srcFile  源文件
-     * @param destPath 复制的目标路径
+     * @param destPath 复制的目标路径，路径不存在时，会自动创建
      * @throws IOException 发生了意外错误
      */
     public static boolean copyFile(File srcFile, String destPath) throws IOException {
         if (srcFile.isDirectory())
             return false;
 
-        File destFile = new File(destPath);
-        if (destFile.exists())
-            return false;
+        String fileName = srcFile.getName();
+        File destFile = new File(destPath + File.separator + fileName);
+        if (!destFile.getParentFile().exists())
+            createPath(destPath);
 
         try (FileChannel inputChannel =
                      new FileInputStream(srcFile).getChannel();

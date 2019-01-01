@@ -37,7 +37,7 @@ public class VerifyController {
 
         Session session = subject.getSession();
         session.setTimeout(SunSiteConstant.sessionTimeout);
-        return "redirect:/home";
+        return "redirect:/gallery";
     }
 
     /**

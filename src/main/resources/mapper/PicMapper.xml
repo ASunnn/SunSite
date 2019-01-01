@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="sunnn.sunsite.dao.PicMapper">
+
+    <insert id="insert" parameterType="sunnn.sunsite.entity.Pic">
+        INSERT INTO pic (sequence, `name`, size, width, height, vOrH, uploadTime, thumbnailName, path)
+        VALUES (#{sequence}, #{name}, #{size}, #{width}, #{height}, #{vOrH}, #{uploadTime}, #{thumbnailName}, #{path})
+    </insert>
+
+    <select id="find" parameterType="java.lang.Long" resultType="sunnn.sunsite.entity.Pic">
+        SELECT *
+        FROM pic
+        WHERE sequence = #{sequence}
+    </select>
+
+    <select id="findAll" resultType="sunnn.sunsite.entity.Pic">
+        SELECT *
+        FROM pic
+        ORDER BY uploadTime DESC
+        LIMIT #{skip}, #{limit}
+    </select>
+
+    <select id="count" resultType="java.lang.Integer">
+        SELECT COUNT( * ) AS c
+        FROM pic
+    </select>
+
+    <delete id="delete">
+        DELETE FROM pic WHERE sequence = #{sequence}
+    </delete>
+</mapper>
+
+
+

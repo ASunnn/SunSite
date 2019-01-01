@@ -9,6 +9,7 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 @ToString
+@Deprecated
 public class PictureListWithFilter {
 
     @NotNull

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Loading...</title>
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.9.0.min.js"></script>
+
+    <style>
+        /* 标题菜单 */
+        .menu {
+            margin-left: auto;
+            margin-right: auto;
+            width: 1800px;
+            height: 50px;
+        }
+        .menuContent {
+            text-align: center;
+            float: left;
+            width: 150px;
+        }
+        ul, li {
+            list-style-type:none;
+            padding:0;
+            margin:0
+        }
+        a {
+            text-decoration: none;
+            color: #000;
+        }
+
+        table {
+            text-align: center;
+            width: 1500px;
+            margin: 20px;
+        }
+        /* 工具 */
+        .tool {
+            margin-bottom: 10px;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .separator {
+            float: left;
+        }
+        .next {
+            text-align: center;
+            margin: 30px;
+        }
+    </style>
+
+    <script>
+        window.onload = function () {
+            var r = window.location.href.split("/");
+            var type = r[r.length-1];
+            document.title = decodeURIComponent(type) + " | Type";
+
+            getCollectionList(type, 0);
+        };
+    </script>
+    <script>
+        function getCollectionList(type, page) {
+            $.get("/type/info?n=" + type + "&p=" + page, function (data) {
+                collectionListHandler(data, page, 0);
+            });
+        }
+
+        function collectionListHandler(data, page, isFilter) {
+            if (data.code == 0) {
+                for (i = 0; i < data.collectionList.length; ++i) {
+                    setCollection(data.collectionList[i]);
+                }
+
+                page = page - 0 + 1;
+                if (page >= data.pageCount) {   // 如果页数到顶了，就要删除页码
+                    if (page > 1) { // page=1时就是初始化的时候，创都没创建
+                        var nextButton = document.getElementById("next");
+                        nextButton.remove();
+                    }
+                } else if (page == 1) { // page=1即初始化，这时候创建页码
+                    var nextButton = document.createElement("h3");
+                    nextButton.setAttribute("id", "next");
+                    nextButton.setAttribute("class", "next");
+                    nextButton.innerHTML = page;
+                    nextButton.setAttribute("isFilter", isFilter);
+
+                    var pageElement = document.getElementById("page");
+                    pageElement.appendChild(nextButton);
+                } else {    // 正常情况page+1，更新
+                    var nextButton = document.getElementById("next");
+                    nextButton.innerHTML = page;
+                }
+            } else if (data.code == 4) 
+                alert(data.msg);
+            else
+                window.location.href = "/error";
+        }
+        
+        function setCollection(data) {
+            var sequence = data.sequence;
+            var collection = data.group + " - " + data.collection;
+            var post = data.post;
+            var lastUpdate = data.lastUpdate;
+            var type = data.type;
+
+            var tableBody = document.getElementById("tableBody");
+            
+            var trElement = document.createElement("tr");
+            tableBody.appendChild(trElement);
+
+            var collectionTd = document.createElement("td");
+            var collectionLink = document.createElement("a");
+            collectionLink.setAttribute("href", "/collection/show/" + sequence);
+            collectionLink.innerHTML = collection;
+            collectionTd.appendChild(collectionLink);
+            trElement.appendChild(collectionTd);
+
+            var postTd = document.createElement("td");
+            postTd.innerHTML = post;
+            trElement.appendChild(postTd);
+
+            var lastUpdateTd = document.createElement("td");
+            lastUpdateTd.innerHTML = lastUpdate;
+            trElement.appendChild(lastUpdateTd);
+
+            var typeTd = document.createElement("td");
+            typeTd.innerHTML = type;
+            trElement.appendChild(typeTd);
+        }
+    </script>
+    <script>
+        $(function () {
+            $("#download").click(function () {
+                alert("BOOM!!!!!!");
+                // var r = window.location.href.split("/");
+                // var type = decodeURIComponent(r[r.length-1]);
+
+                // window.location.href = "/type/download/" + type;
+            });
+        });
+        $(function () {
+            $("#delete").click(function () {
+                var r = window.location.href.split("/");
+                var type = decodeURIComponent(r[r.length-1]);
+
+                var data = {
+                    "deleteInfo": type
+                };
+    
+                $.ajax({
+                    method: 'post',
+                    url: "/type/delete",
+                    data: JSON.stringify(data),
+                    dataType: "JSON",
+                    contentType: "application/json"
+                }).done(function (data) {
+                    alert(data.msg);
+                    window.location.href = "/type";
+                }).fail(function () {
+                    alert("error");
+                    window.location.href = "/error";
+                });
+            });
+        });
+
+        $(function () {
+            $("#page").click(function () {
+                var page = document.getElementById("next");
+                if (page.getAttribute("isFilter") == 0) {
+                    var r = window.location.href.split("/");
+                    var type = decodeURIComponent(r[r.length-1]);
+                    getCollectionList(type, page.innerHTML);
+                }
+                // else
+                //     getPictureListWithFilter(page.innerHTML);
+            });
+        });
+    </script>
+</head>
+<body>
+    <div id="title">
+        <h1 style="text-align:center;font-size:50px">
+            Type</h1>
+    </div>
+    <div class="menu">
+        <ul>
+            <li class="menuContent">
+                <a href="/gallery">Gallery</a>
+            </li>
+            <li class="menuContent">
+                <a href="/illustrator">Illustrator</a>
+            </li>
+            <li class="menuContent">
+                <a href="/group">Group</a>
+            </li>
+            <li class="menuContent">
+                <a href="/collection">Collection</a>
+            </li>
+            <li class="menuContent">
+                <a href="/type">Type</a>
+            </li>
+        </ul>
+    </div>
+
+    <div id="content" style="margin:auto; width: 1800px;">
+        <table width="100%" id="contentTable" class="contentTable">
+            <thead>
+                <tr>
+                    <th width="60%">Collection</th>
+                    <th width="*">Post</th>
+                    <th width="*">LastUpdate</th>
+                    <th width="*">Type</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+            </tbody>
+        </table>
+        <div id="page">
+        </div>
+        <div class="tool">
+            <ul>
+                <li id="download" class="menuContent">
+                    Download
+                </li>
+                <li class="separator">|</li>
+                <li id="delete" class="menuContent">
+                    Delete
+                </li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

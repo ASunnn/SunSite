@@ -4,64 +4,59 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.sql.Timestamp;
 import java.util.Objects;
 
 /**
- * 图片所属的文件夹
+ * 画集
  */
-@Document(collection = "collection")
 @Getter
 @Setter
 @Accessors(chain = true)
 @ToString
 public class Collection {
 
-    @Id
-    private String id;
+    /**
+     * 画集序列号
+     */
+    private long cId;
 
     /**
-     * 文件夹名
+     * 画集名
      */
-    @Field(value = "name")
     private String name;
 
     /**
-     * 图片类型
+     * 所属社团
      */
-    @Field(value = "type")
-    private Type type;
+    private int group;
 
-    public Collection(String name, Type type) {
+    /**
+     * 画集类型
+     */
+    private int type;
+
+    /**
+     * 创建时间
+     */
+    private Timestamp createTime;
+
+    /**
+     * 最后更新时间
+     */
+    private Timestamp lastUpdate;
+
+    public Collection() {
+    }
+
+    public Collection(long cId, String name, int group, int type, Timestamp createTime, Timestamp lastUpdate) {
+        this.cId = cId;
         this.name = name;
+        this.group = group;
         this.type = type;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Type getType() {
-        return type;
-    }
-
-    public void setType(Type type) {
-        this.type = type;
+        this.createTime = createTime;
+        this.lastUpdate = lastUpdate;
     }
 
     @Override
@@ -69,13 +64,12 @@ public class Collection {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Collection that = (Collection) o;
-        return Objects.equals(name, that.name) &&
-                Objects.equals(type, that.type);
+        return cId == that.cId;
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(name, type);
+        return Objects.hash(cId);
     }
 }

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Type | Sunsite</title>
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.9.0.min.js"></script>
+
+    <style>
+        /* 标题菜单 */
+        .menu {
+            margin-left: auto;
+            margin-right: auto;
+            width: 1800px;
+            height: 50px;
+        }
+        .menuContent {
+            text-align: center;
+            float: left;
+            width: 150px;
+        }
+        ul, li {
+            list-style-type:none;
+            padding:0;
+            margin:0
+        }
+        a {
+            text-decoration: none;
+            color: #000;
+        }
+        table {
+            text-align: center;
+            width: 1500px;
+            margin: 20px;
+        }
+    </style>
+
+    <script>
+        window.onload = function () {
+            $.get("/type/list", function (data) {
+                if (data.code == 0) {
+                    for (i = 0; i < data.typeList.length; ++i) {
+                        var type = data.typeList[i].type;
+                        var lastUpdate = data.typeList[i].lastUpdate;
+
+                        var tableBody = document.getElementById("tableBody");
+                        
+                        var trElement = document.createElement("tr");
+                        tableBody.appendChild(trElement);
+
+                        var typeTd = document.createElement("td");
+                        var typeLink = document.createElement("a");
+                        typeLink.setAttribute("href", "/type/show/" + type);
+                        typeLink.innerHTML = type;
+                        typeTd.appendChild(typeLink);
+                        trElement.appendChild(typeTd);
+
+                        var lastUpdateTd = document.createElement("td");
+                        lastUpdateTd.innerHTML = lastUpdate;
+                        trElement.appendChild(lastUpdateTd);
+                    }
+                } else if (data.code == 4) {
+                    alert(data.msg);
+                } else
+                    window.location.href = "/error";
+            });
+        };
+    </script>
+</head>
+<body>
+    <div id="title">
+        <h1 style="text-align:center;font-size:50px">
+            Type</h1>
+    </div>
+    <div class="menu">
+        <ul>
+            <li class="menuContent">
+                <a href="/gallery">Gallery</a>
+            </li>
+            <li class="menuContent">
+                <a href="/illustrator">Illustrator</a>
+            </li>
+            <li class="menuContent">
+                <a href="/group">Group</a>
+            </li>
+            <li class="menuContent">
+                <a href="/collection">Collection</a>
+            </li>
+            <li class="menuContent">
+                <a href="/type">Type</a>
+            </li>
+        </ul>
+    </div>
+    <div id="content" style="margin:auto; width: 1800px;">
+        <table width="100%" id="contentTable" class="contentTable">
+            <thead>
+                <tr>
+                    <th width="50%">Type</th>
+                    <th width="*">LastUpdate</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

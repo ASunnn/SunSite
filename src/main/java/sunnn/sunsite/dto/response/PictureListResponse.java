@@ -4,8 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
-import sunnn.sunsite.entity.Picture;
 import sunnn.sunsite.dto.Convertible;
+import sunnn.sunsite.dto.PictureBase;
 import sunnn.sunsite.util.StatusCode;
 
 import java.util.List;
@@ -14,9 +14,9 @@ import java.util.List;
 @Setter
 @Accessors(chain = true)
 @ToString
-public class PictureListResponse extends BaseResponse implements Convertible<PictureListResponse, Picture> {
+public class PictureListResponse extends BaseResponse implements Convertible<PictureListResponse, PictureBase> {
 
-    private String[] fileList;
+    private PictureListInfo[] pictureList;
 
     private int pageCount;
 
@@ -24,22 +24,35 @@ public class PictureListResponse extends BaseResponse implements Convertible<Pic
         super(statusCode);
     }
 
-    public PictureListResponse(StatusCode statusCode, String[] pictureList, int pageCount) {
-        super(statusCode);
-        this.fileList = pictureList;
-        this.pageCount = pageCount;
-    }
-
     @Override
-    public PictureListResponse convertTo(List<Picture> pictures) {
-        if (pictures.isEmpty())
+    public PictureListResponse convertTo(List<PictureBase> entity) {
+        if (entity.isEmpty())
             return this;
 
-        String[] fileNameList = new String[pictures.size()];
-        for (int i = 0; i < pictures.size(); ++i)
-            fileNameList[i] =
-                    String.valueOf(pictures.get(i).getSequence());
+        PictureListInfo[] pictureList = new PictureListInfo[entity.size()];
+        for (int i = 0; i < entity.size(); ++i) {
+            PictureListInfo info = new PictureListInfo();
+            info.sequence = String.valueOf(entity.get(i).getSequence());
+            info.group = entity.get(i).getGroup();
+            info.cId = String.valueOf(entity.get(i).getCId());
+            info.collection = entity.get(i).getCollection();
 
-        return setFileList(fileNameList);
+            pictureList[i] = info;
+        }
+
+        return setPictureList(pictureList);
     }
+}
+
+@Getter
+@Setter
+class PictureListInfo {
+
+    String sequence;
+
+    String group;
+
+    String cId;
+
+    String collection;
 }

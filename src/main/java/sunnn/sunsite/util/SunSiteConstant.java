@@ -23,6 +23,8 @@ public class SunSiteConstant {
 
     public static int cacheInitCapacity;
 
+    public static int pageSize;
+
     public static String getTempPath() {
         return tempPath;
     }
@@ -77,5 +79,13 @@ public class SunSiteConstant {
 
     public static void setCacheInitCapacity(int cacheInitCapacity) {
         SunSiteConstant.cacheInitCapacity = cacheInitCapacity;
+    }
+
+    public static int getPageSize() {
+        return pageSize;
+    }
+
+    public static void setPageSize(int pageSize) {
+        SunSiteConstant.pageSize = pageSize;
     }
 }

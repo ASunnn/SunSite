@@ -7,12 +7,15 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.List;
 
 public class Utils {
 
-    public static boolean isIllegalPageParam(int page, int size) {
-        return page < 0 || size < 1;
+    public static boolean isIllegalPageParam(int page) {
+        return page < 0;
     }
+
+    /* 快速获取图片分辨率 */
 
     public static int[] getPictureSize(String path) throws IOException {
         Dimension dimension = getImageDimension(path);

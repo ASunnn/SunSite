@@ -4,33 +4,38 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.sql.Timestamp;
 import java.util.Objects;
 
 /**
  * 图的类型
  */
-@Document(collection = "type")
 @Getter
 @Setter
 @Accessors(chain = true)
 @ToString
 public class Type {
 
-    @Id
-    private String id;
+    private int id;
 
     /**
      * 类型名
      */
-    @Field(value = "name")
     private String name;
 
-    public Type(String name) {
+    /**
+     * 最后更新时间
+     */
+    private Timestamp lastUpdate;
+
+    public Type() {
+    }
+
+    public Type(int id, String name, Timestamp lastUpdate) {
+        this.id = id;
         this.name = name;
+        this.lastUpdate = lastUpdate;
     }
 
     @Override

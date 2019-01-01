@@ -1,4 +1,4 @@
-package sunnn.sunsite.entity;
+package sunnn.sunsite.entity.mongo;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

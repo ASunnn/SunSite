@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="sunnn.sunsite.dao.CollectionMapper">
+
+    <select id="find" parameterType="java.lang.Long" resultType="sunnn.sunsite.entity.Collection">
+        SELECT *
+        FROM collection
+        WHERE cId = #{cId}
+    </select>
+
+    <select id="findByInfo" resultType="sunnn.sunsite.entity.Collection">
+        SELECT
+            c.cId AS cId,
+            c.`name` AS `name`,
+            c.`group` AS `group`,
+            c.type AS type
+        FROM
+            collection AS c,
+            `group` AS g
+        WHERE
+            c.`group` = g.id
+            AND c.name = #{name}
+            AND g.name = #{group}
+    </select>
+
+    <select id="findBaseInfo" parameterType="java.lang.Long" resultType="sunnn.sunsite.dto.CollectionBase">
+        SELECT
+            c.`name` AS `collection`,
+            g.name AS `group`,
+            t.name AS `type`
+        FROM
+            collection AS c,
+            `group` AS g,
+            `type` AS t
+        WHERE
+            c.cId = #{cId}
+            AND c.group = g.id
+            AND c.type = t.id
+    </select>
+
+    <select id="findAllInfo" resultType="sunnn.sunsite.dto.CollectionInfo">
+        SELECT
+            c.cId AS sequence,
+            g.`name` AS `group`,
+            c.`name` AS collection,
+            t.`name` AS type,
+            c.lastUpdate,
+            COUNT( p.sequence ) AS post
+        FROM
+            collection AS c
+            LEFT JOIN picture AS p ON c.cId = p.collection
+            JOIN `group` AS g ON c.`group` = g.id
+            JOIN type AS t ON c.type = t.id
+        GROUP BY
+            c.cId
+        ORDER BY
+            lastUpdate DESC
+        LIMIT #{skip}, #{limit}
+    </select>
+
+    <select id="findAllInfoByGroup" resultType="sunnn.sunsite.dto.CollectionInfo">
+        SELECT
+            c.cId AS sequence,
+            g.`name` AS `group`,
+            c.`name` AS collection,
+            t.`name` AS type,
+            c.lastUpdate,
+            COUNT( p.sequence ) AS post
+        FROM
+            collection AS c
+            LEFT JOIN picture AS p ON c.cId = p.collection
+            JOIN `group` AS g ON c.`group` = g.id
+            JOIN type AS t ON c.type = t.id
+        WHERE
+            g.`name` =  #{group}
+        GROUP BY
+            c.cId
+        ORDER BY
+            lastUpdate DESC
+        LIMIT #{skip}, #{limit}
+    </select>
+
+    <select id="findAllInfoByType" resultType="sunnn.sunsite.dto.CollectionInfo">
+        SELECT
+            c.cId AS sequence,
+            g.`name` AS `group`,
+            c.`name` AS collection,
+            t.`name` AS type,
+            c.lastUpdate,
+            COUNT( p.sequence ) AS post
+        FROM
+            collection AS c
+            LEFT JOIN picture AS p ON c.cId = p.collection
+            JOIN `group` AS g ON c.`group` = g.id
+            JOIN type AS t ON c.type = t.id
+        WHERE
+            t.`name` = #{type}
+        GROUP BY
+            c.cId
+        ORDER BY
+            lastUpdate DESC
+        LIMIT #{skip}, #{limit}
+    </select>
+
+    <insert id="insert" parameterType="sunnn.sunsite.entity.Collection">
+        INSERT INTO collection (cId, `name`, `group`, `type`, createTime)
+        VALUES (#{cId}, #{name}, #{group}, #{type}, #{createTime})
+    </insert>
+
+    <update id="update">
+        UPDATE collection
+        SET `lastUpdate` = #{lastUpdate}
+        WHERE cId = #{cId}
+    </update>
+
+    <select id="count" resultType="java.lang.Integer">
+        SELECT COUNT( * ) AS c
+        FROM collection
+    </select>
+
+    <select id="countByGroup" parameterType="java.lang.String" resultType="java.lang.Integer">
+        SELECT COUNT( * ) AS c
+        FROM
+            collection, `group`
+        WHERE
+            collection.group = `group`.id
+            AND `group`.`name` = #{group}
+    </select>
+
+    <select id="countByType" parameterType="java.lang.String" resultType="java.lang.Integer">
+        SELECT COUNT( * ) AS c
+        FROM
+            collection, `type`
+        WHERE
+            collection.type = `type`.id
+            AND `type`.`name` = #{type}
+    </select>
+
+    <delete id="delete">
+        DELETE FROM collection WHERE cId = #{cId}
+    </delete>
+</mapper>

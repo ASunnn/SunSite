@@ -36,19 +36,19 @@ public class FileCache {
         this.expiration = expiration;
     }
 
-    /**
-     * 设置缓存
-     *
-     * @param key  键
-     * @param file 服务器接收的临时文件
-     * @throws IOException 文件保存失败
-     */
-    public void setFile(String key, MultipartFile file) throws IOException {
-        //将MultipartFile转换为File
-        File f = FileUtils.storeFile(file,
-                SunSiteConstant.tempPath + key + SunSiteConstant.pathSeparator);
-        setFile(key, f);
-    }
+//    /**
+//     * 设置缓存
+//     *
+//     * @param key  键
+//     * @param file 服务器接收的临时文件
+//     * @throws IOException 文件保存失败
+//     */
+//    public void setFile(String key, MultipartFile file) throws IOException {
+//        //将MultipartFile转换为File
+//        File f = FileUtils.storeFile(file,
+//                SunSiteConstant.tempPath + key + SunSiteConstant.pathSeparator);
+//        setFile(key, f);
+//    }
 
     /**
      * 设置缓存

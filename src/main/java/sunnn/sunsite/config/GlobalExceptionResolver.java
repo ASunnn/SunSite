@@ -22,7 +22,7 @@ public class GlobalExceptionResolver {
     @ResponseBody
     public BaseResponse argumentNotValidExceptionResolver() {
         log.warn("Method Argument Not Valid");
-        return new BaseResponse(StatusCode.ILLEGAL_DATA);
+        return new BaseResponse(StatusCode.ILLEGAL_INPUT);
     }
 
     @ExceptionHandler(value = IllegalFileRequestException.class)
