@@ -14,7 +14,6 @@ import sunnn.sunsite.dto.response.PictureInfoResponse;
 import sunnn.sunsite.dto.response.CollectionInfoResponse;
 import sunnn.sunsite.dto.response.PictureListResponse;
 import sunnn.sunsite.entity.Pic;
-import sunnn.sunsite.entity.Artwork;
 import sunnn.sunsite.entity.Illustrator;
 import sunnn.sunsite.entity.Picture;
 import sunnn.sunsite.exception.IllegalFileRequestException;

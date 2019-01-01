@@ -4,7 +4,6 @@ import sunnn.sunsite.dto.response.PictureInfoResponse;
 import sunnn.sunsite.dto.response.CollectionInfoResponse;
 import sunnn.sunsite.dto.response.PictureListResponse;
 import sunnn.sunsite.exception.IllegalFileRequestException;
-import sunnn.sunsite.util.StatusCode;
 
 import java.io.File;
 

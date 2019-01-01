@@ -10,7 +10,6 @@ import sunnn.sunsite.dto.IllustratorInfo;
 import sunnn.sunsite.dto.response.IllustratorListResponse;
 import sunnn.sunsite.entity.Illustrator;
 import sunnn.sunsite.entity.Pic;
-import sunnn.sunsite.entity.Picture;
 import sunnn.sunsite.exception.IllegalFileRequestException;
 import sunnn.sunsite.service.IllustratorService;
 import sunnn.sunsite.util.*;

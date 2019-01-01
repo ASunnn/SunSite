@@ -9,7 +9,6 @@ import sunnn.sunsite.dao.GroupMapper;
 import sunnn.sunsite.dto.CollectionInfo;
 import sunnn.sunsite.dto.GroupInfo;
 import sunnn.sunsite.dto.response.GroupListResponse;
-import sunnn.sunsite.entity.Collection;
 import sunnn.sunsite.entity.Group;
 import sunnn.sunsite.exception.IllegalFileRequestException;
 import sunnn.sunsite.service.CollectionService;

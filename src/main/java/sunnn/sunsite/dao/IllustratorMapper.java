@@ -3,10 +3,8 @@ package sunnn.sunsite.dao;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import sunnn.sunsite.dto.IllustratorInfo;
-import sunnn.sunsite.entity.Artwork;
 import sunnn.sunsite.entity.Illustrator;
 import sunnn.sunsite.entity.Pic;
-import sunnn.sunsite.entity.Picture;
 
 import java.util.List;
 
