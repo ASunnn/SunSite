@@ -4,8 +4,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import sunnn.sunsite.dao.IllustratorMapper;
-import sunnn.sunsite.dao.PicMapper;
 import sunnn.sunsite.dto.IllustratorInfo;
 import sunnn.sunsite.dto.response.IllustratorListResponse;
 import sunnn.sunsite.entity.Illustrator;
@@ -32,15 +34,14 @@ public class IllustratorServiceImpl implements IllustratorService {
     @Resource
     private IllustratorMapper illustratorMapper;
 
-    @Resource
-    private PicMapper picMapper;
-
     @Autowired
     public IllustratorServiceImpl(FileCache fileCache) {
         this.fileCache = fileCache;
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW,
+            isolation = Isolation.DEFAULT)
     public Illustrator createIllustrator(String name) {
         Illustrator illustrator = illustratorMapper.find(name);
         if (illustrator == null)
@@ -125,6 +126,7 @@ public class IllustratorServiceImpl implements IllustratorService {
     }
 
     @Override
+    @Transactional
     public StatusCode delete(String name) {
         Illustrator i = illustratorMapper.find(name);
         if (i == null || i.getName().equals(Illustrator.DEFAULT_VALUE))

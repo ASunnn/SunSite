@@ -4,6 +4,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import sunnn.sunsite.dao.CollectionMapper;
 import sunnn.sunsite.dao.GroupMapper;
 import sunnn.sunsite.dto.CollectionInfo;
@@ -53,6 +56,8 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED,
+            isolation = Isolation.DEFAULT)
     public Group createGroup(String name) {
         Group group = groupMapper.find(name);
         if (group == null)
@@ -140,6 +145,8 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED,
+            isolation = Isolation.DEFAULT)
     public StatusCode delete(String name) {
         Group g = groupMapper.find(name);
         if (g == null)

@@ -4,6 +4,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import sunnn.sunsite.dao.CollectionMapper;
 import sunnn.sunsite.dto.CollectionBase;
 import sunnn.sunsite.dto.CollectionInfo;
@@ -65,6 +68,8 @@ public class CollectionServiceImpl implements CollectionService {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED,
+            isolation = Isolation.DEFAULT)
     public StatusCode createCollection(CollectionBase info) {
         /*
             非法字符校验
@@ -77,7 +82,7 @@ public class CollectionServiceImpl implements CollectionService {
             处理type和group
          */
         Group group = groupService.createGroup(info.getGroup());
-        Type type = typeService.createGroup(info.getType());
+        Type type = typeService.createType(info.getType());
         /*
             生成序列号
          */
@@ -207,6 +212,8 @@ public class CollectionServiceImpl implements CollectionService {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW,
+            isolation = Isolation.DEFAULT)
     public StatusCode delete(long sequence) {
         Collection c = collectionMapper.find(sequence);
         if (c == null)

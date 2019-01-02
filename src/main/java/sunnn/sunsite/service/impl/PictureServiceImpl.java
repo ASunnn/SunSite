@@ -4,6 +4,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import sunnn.sunsite.dao.*;
 import sunnn.sunsite.dto.CollectionBase;
@@ -92,6 +95,8 @@ public class PictureServiceImpl implements PictureService {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED,
+            isolation = Isolation.DEFAULT)
     public StatusCode uploadInfoAndSave(UploadPictureInfo info) {
         /*
             获取上传的文件
@@ -216,6 +221,7 @@ public class PictureServiceImpl implements PictureService {
     }
 
     @Override
+    @Transactional
     public StatusCode delete(long sequence) {
         Pic p = picMapper.find(sequence);
         if (p == null)
@@ -234,6 +240,8 @@ public class PictureServiceImpl implements PictureService {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED,
+            isolation = Isolation.DEFAULT)
     public StatusCode deleteCollection(long sequence) {
         List<Picture> pictures = pictureMapper.findAllByCollection(sequence);
 

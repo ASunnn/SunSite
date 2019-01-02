@@ -4,6 +4,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import sunnn.sunsite.dao.CollectionMapper;
 import sunnn.sunsite.dao.TypeMapper;
 import sunnn.sunsite.dto.CollectionInfo;
@@ -46,7 +49,9 @@ public class TypeServiceImpl implements TypeService {
     }
 
     @Override
-    public Type createGroup(String name) {
+    @Transactional(propagation = Propagation.REQUIRED,
+            isolation = Isolation.DEFAULT)
+    public Type createType(String name) {
         Type type = typeMapper.find(name);
         if (type == null)
             typeMapper.insert(type = new Type().setName(name));
@@ -100,6 +105,8 @@ public class TypeServiceImpl implements TypeService {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED,
+            isolation = Isolation.DEFAULT)
     public StatusCode delete(String name) {
         Type t = typeMapper.find(name);
         if (t == null)

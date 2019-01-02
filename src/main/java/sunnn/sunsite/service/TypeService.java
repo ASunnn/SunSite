@@ -15,7 +15,7 @@ public interface TypeService {
      * @param name 新类型
      * @return 如果记录已经存在，直接返回记录，否则创建后再返回
      */
-    Type createGroup(String name);
+    Type createType(String name);
 
     /**
      * 获取类型列表
