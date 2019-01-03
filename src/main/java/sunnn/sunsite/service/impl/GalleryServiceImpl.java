@@ -82,7 +82,9 @@ public class GalleryServiceImpl implements GalleryService {
 
         List<PictureBase> pictureList = pictureMapper.findAllBaseInfoByCollection(collection, skip, size);
         if (pictureList.isEmpty())
-            return new CollectionInfoResponse(StatusCode.NO_DATA);
+            return new CollectionInfoResponse(StatusCode.NO_DATA)
+                    .setGroup(baseInfo.getGroup())
+                    .setCollection(baseInfo.getCollection());
 
         int count = pictureMapper.countByCollection(collection);
         int pageCount = (int) Math.ceil((double) count / SunsiteConstant.pageSize);

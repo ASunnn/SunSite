@@ -10,16 +10,15 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 @EnableScheduling
 @MapperScan("sunnn.sunsite.dao")
-public class SunSiteApplication {
-//public class SunSiteApplication extends SpringBootServletInitializer {
+public class SunSiteApplication extends SpringBootServletInitializer {
 
     public static void main(String[] args) {
         SpringApplication.run(SunSiteApplication.class, args);
     }
 
-//    @Override
-//    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-//        return application.sources(SunSiteApplication.class);
-//    }
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+        return application.sources(SunSiteApplication.class);
+    }
 
 }

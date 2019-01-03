@@ -105,6 +105,7 @@ public class CollectionServiceImpl implements CollectionService {
                 + File.separator
                 + info.getCollection();
         FileUtils.createPath(path);
+
         Collection c = new Collection()
                 .setCId(cId)
                 .setName(info.getCollection())

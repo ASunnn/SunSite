@@ -72,11 +72,11 @@
                 if (data.code == 2) {
                     alert(data.msg);
                     window.location.href = "/error";
-                }
-
-                setPage(data);
+                } else {
+                    setPage(data);
                     
                 keyEvent(data.prev, data.next);
+                }
             });
         };
 

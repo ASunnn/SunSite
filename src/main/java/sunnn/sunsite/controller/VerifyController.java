@@ -11,10 +11,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import sunnn.sunsite.util.SunSiteProperties;
 
-import java.lang.reflect.Field;
-import java.util.Iterator;
-import java.util.Vector;
-
 @Controller
 public class VerifyController {
 
@@ -26,7 +22,6 @@ public class VerifyController {
      */
     @RequestMapping(value = "/verify", method = RequestMethod.GET)
     public String login(@RequestParam(value = "code", defaultValue = "") String passCode) {
-//        t();
 //        String md5Code = MD5s.getMD5(passCode);
 //        if (md5Code == null)    // 注意MD5工具里的异常处理
 //            return "redirect:/error";
@@ -52,21 +47,6 @@ public class VerifyController {
     @RequestMapping(value = "/interceptor", method = RequestMethod.GET)
     public String interceptor() {
         return "redirect:/error";
-    }
-
-    private void t() {
-        try {
-
-            Field f = ClassLoader.class.getDeclaredField("classes");
-            f.setAccessible(true);
-            Vector classes = (Vector) f.get(ClassLoader.getSystemClassLoader());
-            for (Object aClass : classes) {
-                Class c = (Class) aClass;
-                System.out.println(c.toString());
-            }
-        } catch (IllegalAccessException | NoSuchFieldException e) {
-            e.printStackTrace();
-        }
     }
 
 }

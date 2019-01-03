@@ -18,6 +18,12 @@ public class GlobalExceptionResolver {
 
     private static Logger log = LoggerFactory.getLogger(GlobalExceptionResolver.class);
 
+    @ExceptionHandler(value = Exception.class)
+    public String errorResolver(Exception e) {
+        log.error("", e);
+        return "error";
+    }
+
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     @ResponseBody
     public BaseResponse argumentNotValidExceptionResolver() {

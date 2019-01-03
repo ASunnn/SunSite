@@ -1,6 +1,5 @@
 package sunnn.sunsite.dao;
 
-import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import sunnn.sunsite.dto.CollectionBase;
 import sunnn.sunsite.dto.CollectionInfo;
