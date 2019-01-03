@@ -73,9 +73,9 @@ public class BeanConfiguration {
 //        int length = SunSiteProperties.logPath.length();
 //        char lastChar = SunSiteProperties.logPath.charAt(length - 1);
 //        if (lastChar == '\\' || lastChar == '/')
-//            return SunSiteProperties.logPath + Constants.logFile;
+//            return SunSiteProperties.logPath + SunsiteConstant.logFile;
 //        else
-//            return SunSiteProperties.logPath + File.separator + Constants.logFile;
+//            return SunSiteProperties.logPath + File.separator + SunsiteConstant.logFile;
 //    }
 //
 //    // /home/sun/log/SunSite-%d{yyyy-MM-dd}.log

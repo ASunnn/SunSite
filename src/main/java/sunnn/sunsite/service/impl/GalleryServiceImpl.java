@@ -17,7 +17,7 @@ import sunnn.sunsite.entity.Illustrator;
 import sunnn.sunsite.entity.Picture;
 import sunnn.sunsite.exception.IllegalFileRequestException;
 import sunnn.sunsite.service.GalleryService;
-import sunnn.sunsite.util.Constants;
+import sunnn.sunsite.util.SunsiteConstant;
 import sunnn.sunsite.util.StatusCode;
 import sunnn.sunsite.util.SunSiteProperties;
 
@@ -50,7 +50,7 @@ public class GalleryServiceImpl implements GalleryService {
         if (isIllegalPageParam(page))
             return new PictureListResponse(StatusCode.ILLEGAL_INPUT);
 
-        int size = Constants.pageSize;
+        int size = SunsiteConstant.pageSize;
         int skip = page * size;
         List<Pic> pictures = picMapper.findAll(skip, size);
 
@@ -64,7 +64,7 @@ public class GalleryServiceImpl implements GalleryService {
         }
 
         int count = picMapper.count();
-        int pageCount = (int) Math.ceil((double) count / Constants.pageSize);
+        int pageCount = (int) Math.ceil((double) count / SunsiteConstant.pageSize);
 
         return new PictureListResponse(StatusCode.OJBK)
                 .setPageCount(pageCount)
@@ -77,7 +77,7 @@ public class GalleryServiceImpl implements GalleryService {
         if (baseInfo == null || isIllegalPageParam(page))
             return new CollectionInfoResponse(StatusCode.ILLEGAL_INPUT);
 
-        int size = Constants.pageSize;
+        int size = SunsiteConstant.pageSize;
         int skip = page * size;
 
         List<PictureBase> pictureList = pictureMapper.findAllBaseInfoByCollection(collection, skip, size);
@@ -85,7 +85,7 @@ public class GalleryServiceImpl implements GalleryService {
             return new CollectionInfoResponse(StatusCode.NO_DATA);
 
         int count = pictureMapper.countByCollection(collection);
-        int pageCount = (int) Math.ceil((double) count / Constants.pageSize);
+        int pageCount = (int) Math.ceil((double) count / SunsiteConstant.pageSize);
 
         return new CollectionInfoResponse(StatusCode.OJBK)
                 .setPageCount(pageCount)
@@ -99,7 +99,7 @@ public class GalleryServiceImpl implements GalleryService {
         if (isIllegalPageParam(page) || illustratorMapper.find(illustrator) == null)
             return new PictureListResponse(StatusCode.ILLEGAL_INPUT);
 
-        int size = Constants.pageSize;
+        int size = SunsiteConstant.pageSize;
         int skip = page * size;
         List<Pic> pictures = illustratorMapper.findAllByIllustrator(illustrator, skip, size);
 
@@ -113,7 +113,7 @@ public class GalleryServiceImpl implements GalleryService {
         }
 
         long count = illustratorMapper.countByIllustrator(illustrator);
-        int pageCount = (int) Math.ceil((double) count / Constants.pageSize);
+        int pageCount = (int) Math.ceil((double) count / SunsiteConstant.pageSize);
 
         return new PictureListResponse(StatusCode.OJBK)
                 .setPageCount(pageCount)

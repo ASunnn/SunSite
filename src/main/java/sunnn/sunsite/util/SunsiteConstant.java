@@ -1,6 +1,6 @@
 package sunnn.sunsite.util;
 
-public class Constants {
+public class SunsiteConstant {
 
     public static final int thumbnailSize = 250;
 

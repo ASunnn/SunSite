@@ -70,7 +70,7 @@ public class GroupServiceImpl implements GroupService {
         if (isIllegalPageParam(page))
             return new GroupListResponse(StatusCode.ILLEGAL_INPUT);
 
-        int size = Constants.pageSize;
+        int size = SunsiteConstant.pageSize;
         int skip = page * size;
 
         List<GroupInfo> collectionList = groupMapper.findAllInfo(skip, size);
@@ -78,7 +78,7 @@ public class GroupServiceImpl implements GroupService {
             return new GroupListResponse(StatusCode.NO_DATA);
 
         int count = groupMapper.count();
-        int pageCount = (int) Math.ceil((double) count / Constants.pageSize);
+        int pageCount = (int) Math.ceil((double) count / SunsiteConstant.pageSize);
 
         return new GroupListResponse(StatusCode.OJBK)
                 .setPageCount(pageCount)

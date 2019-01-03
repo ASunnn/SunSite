@@ -55,7 +55,7 @@ public class IllustratorServiceImpl implements IllustratorService {
         if (isIllegalPageParam(page))
             return new IllustratorListResponse(StatusCode.ILLEGAL_INPUT);
 
-        int size = Constants.pageSize;
+        int size = SunsiteConstant.pageSize;
         int skip = page * size;
 
         List<IllustratorInfo> illustratorList = illustratorMapper.findAllInfo(skip, size);
@@ -63,7 +63,7 @@ public class IllustratorServiceImpl implements IllustratorService {
             return new IllustratorListResponse(StatusCode.NO_DATA);
 
         int count = illustratorMapper.count();
-        int pageCount = (int) Math.ceil((double) count / Constants.pageSize);
+        int pageCount = (int) Math.ceil((double) count / SunsiteConstant.pageSize);
 
         return new IllustratorListResponse(StatusCode.OJBK)
                 .setPageCount(pageCount)

@@ -4,7 +4,7 @@ import net.coobird.thumbnailator.Thumbnails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import sunnn.sunsite.util.Constants;
+import sunnn.sunsite.util.SunsiteConstant;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
@@ -44,7 +44,7 @@ public class ThumbnailTask {
 
             try {
                 Thumbnails.of(src)
-                        .size(Constants.thumbnailSize, Constants.thumbnailSize)
+                        .size(SunsiteConstant.thumbnailSize, SunsiteConstant.thumbnailSize)
                         .toFile(dest);
             } catch (IOException e) {
                 log.error("Cannot Create Thumbnail : "+ e);

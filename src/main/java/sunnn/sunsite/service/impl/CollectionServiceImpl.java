@@ -122,7 +122,7 @@ public class CollectionServiceImpl implements CollectionService {
         if (isIllegalPageParam(page))
             return new CollectionListResponse(StatusCode.ILLEGAL_INPUT);
 
-        int size = Constants.pageSize;
+        int size = SunsiteConstant.pageSize;
         int skip = page * size;
 
         List<CollectionInfo> collectionList = collectionMapper.findAllInfo(skip, size);
@@ -130,7 +130,7 @@ public class CollectionServiceImpl implements CollectionService {
             return new CollectionListResponse(StatusCode.NO_DATA);
 
         int count = collectionMapper.count();
-        int pageCount = (int) Math.ceil((double) count / Constants.pageSize);
+        int pageCount = (int) Math.ceil((double) count / SunsiteConstant.pageSize);
 
         return new CollectionListResponse(StatusCode.OJBK)
                 .setPageCount(pageCount)
@@ -152,7 +152,7 @@ public class CollectionServiceImpl implements CollectionService {
         if (isIllegalPageParam(page))
             return new CollectionListResponse(StatusCode.ILLEGAL_INPUT);
 
-        int size = Constants.pageSize;
+        int size = SunsiteConstant.pageSize;
         int skip = page * size;
 
         List<CollectionInfo> collectionList = collectionMapper.findAllInfoByType(type, skip, size);
@@ -160,7 +160,7 @@ public class CollectionServiceImpl implements CollectionService {
             return new CollectionListResponse(StatusCode.NO_DATA);
 
         int count = collectionMapper.countByType(type);
-        int pageCount = (int) Math.ceil((double) count / Constants.pageSize);
+        int pageCount = (int) Math.ceil((double) count / SunsiteConstant.pageSize);
 
         return new CollectionListResponse(StatusCode.OJBK)
                 .setPageCount(pageCount)
