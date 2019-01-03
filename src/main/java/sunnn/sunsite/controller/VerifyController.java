@@ -9,8 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import sunnn.sunsite.util.MD5s;
-import sunnn.sunsite.util.SunSiteConstant;
+import sunnn.sunsite.util.SunSiteProperties;
 
 @Controller
 public class VerifyController {
@@ -23,11 +22,10 @@ public class VerifyController {
      */
     @RequestMapping(value = "/verify", method = RequestMethod.GET)
     public String login(@RequestParam(value = "code", defaultValue = "") String passCode) {
-        String md5Code = MD5s.getMD5(passCode);
-        if (md5Code == null)    //注意MD5工具里的异常处理
-            return "redirect:/error";
-
-        UsernamePasswordToken token = new UsernamePasswordToken("", md5Code);
+//        String md5Code = MD5s.getMD5(passCode);
+//        if (md5Code == null)    // 注意MD5工具里的异常处理
+//            return "redirect:/error";
+        UsernamePasswordToken token = new UsernamePasswordToken("", passCode);
         Subject subject = SecurityUtils.getSubject();
         try {
             subject.login(token);
@@ -36,7 +34,7 @@ public class VerifyController {
         }
 
         Session session = subject.getSession();
-        session.setTimeout(SunSiteConstant.sessionTimeout);
+        session.setTimeout(SunSiteProperties.sessionTimeout);
         return "redirect:/gallery";
     }
 

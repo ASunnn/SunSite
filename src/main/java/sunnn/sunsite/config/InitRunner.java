@@ -6,8 +6,11 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 import sunnn.sunsite.util.FileUtils;
-import sunnn.sunsite.util.SunSiteConstant;
+import sunnn.sunsite.util.SunSiteProperties;
 
+/**
+ * https://docs.spring.io/spring-boot/docs/2.0.7.RELEASE/reference/htmlsingle/#boot-features-command-line-runner
+ */
 @Component
 public class InitRunner implements ApplicationRunner {
 
@@ -15,7 +18,7 @@ public class InitRunner implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
-        if (!FileUtils.deletePathForce(SunSiteConstant.tempPath))
+        if (!FileUtils.deletePathForce(SunSiteProperties.tempPath))
             log.warn("Clean TempPath Fail In InitializeRunner. Maybe TempPath Not Exists");
     }
 }

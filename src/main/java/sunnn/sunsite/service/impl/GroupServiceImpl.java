@@ -70,7 +70,7 @@ public class GroupServiceImpl implements GroupService {
         if (isIllegalPageParam(page))
             return new GroupListResponse(StatusCode.ILLEGAL_INPUT);
 
-        int size = SunSiteConstant.pageSize;
+        int size = Constants.pageSize;
         int skip = page * size;
 
         List<GroupInfo> collectionList = groupMapper.findAllInfo(skip, size);
@@ -78,7 +78,7 @@ public class GroupServiceImpl implements GroupService {
             return new GroupListResponse(StatusCode.NO_DATA);
 
         int count = groupMapper.count();
-        int pageCount = (int) Math.ceil((double) count / SunSiteConstant.pageSize);
+        int pageCount = (int) Math.ceil((double) count / Constants.pageSize);
 
         return new GroupListResponse(StatusCode.OJBK)
                 .setPageCount(pageCount)
@@ -97,13 +97,13 @@ public class GroupServiceImpl implements GroupService {
         if (files != null)
             return files.get(0);
 
-        String path = SunSiteConstant.tempPath
+        String path = SunSiteProperties.tempPath
                 + tempCode
-                + SunSiteConstant.pathSeparator
+                + File.separator
                 + name;
-        String zipPath = SunSiteConstant.tempPath
+        String zipPath = SunSiteProperties.tempPath
                 + tempCode
-                + SunSiteConstant.pathSeparator
+                + File.separator
                 + name
                 + ".zip";
         /*
@@ -112,11 +112,11 @@ public class GroupServiceImpl implements GroupService {
         List<CollectionInfo> collectionList = collectionMapper.findAllInfoByGroup(name, 0, Integer.MAX_VALUE);
         try {
             for (CollectionInfo collection : collectionList) {
-                String locate = SunSiteConstant.picturePath
+                String locate = SunSiteProperties.savePath
                         + collection.getType()
-                        + SunSiteConstant.pathSeparator
+                        + File.separator
                         + collection.getGroup()
-                        + SunSiteConstant.pathSeparator
+                        + File.separator
                         + collection.getCollection();
                 if (!FileUtils.copyPath(new File(locate), path, false))
                     log.error("Copy File Error : " + locate + " To " + path);

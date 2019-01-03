@@ -26,11 +26,11 @@ public class FileCache {
     private long expiration;
 
     public FileCache() {
-        this(16, 120000);
+        this(120000);
     }
 
-    public FileCache(int initCapacity, long expiration) {
-        cache = new ConcurrentHashMap<>(initCapacity);
+    public FileCache(long expiration) {
+        cache = new ConcurrentHashMap<>();
         this.expiration = expiration;
     }
 
@@ -99,8 +99,8 @@ public class FileCache {
                     if (!FileUtils.deleteFile(file))
                         log.warn("Delete Cache Failed : " + file.getName());
                 //删除目录
-                if (!FileUtils.deletePath(SunSiteConstant.tempPath + r.getKey()))
-                    log.warn("Can not Delete TempPath : " + SunSiteConstant.tempPath + r.getKey());
+                if (!FileUtils.deletePath(SunSiteProperties.tempPath + r.getKey()))
+                    log.warn("Can not Delete TempPath : " + SunSiteProperties.tempPath + r.getKey());
                 i.remove();
             }
         }

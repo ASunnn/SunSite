@@ -81,11 +81,11 @@ public class TypeServiceImpl implements TypeService {
         /*
             压缩文件
          */
-        String path = SunSiteConstant.picturePath
+        String path = SunSiteProperties.savePath
                 + name;
-        String zipPath = SunSiteConstant.tempPath
+        String zipPath = SunSiteProperties.tempPath
                 + tempCode
-                + SunSiteConstant.pathSeparator
+                + File.separator
                 + name
                 + ".zip";
         try {
@@ -119,7 +119,7 @@ public class TypeServiceImpl implements TypeService {
         typeMapper.delete(name);
 
         //删除文件本体
-        String path = SunSiteConstant.picturePath + name;
+        String path = SunSiteProperties.savePath + name;
         if (!FileUtils.deletePathForce(path))
             log.warn("Delete Collection Failed : " + path);
 

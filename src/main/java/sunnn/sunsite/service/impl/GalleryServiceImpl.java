@@ -2,7 +2,6 @@ package sunnn.sunsite.service.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import sunnn.sunsite.dao.CollectionMapper;
 import sunnn.sunsite.dao.IllustratorMapper;
@@ -18,12 +17,12 @@ import sunnn.sunsite.entity.Illustrator;
 import sunnn.sunsite.entity.Picture;
 import sunnn.sunsite.exception.IllegalFileRequestException;
 import sunnn.sunsite.service.GalleryService;
+import sunnn.sunsite.util.Constants;
 import sunnn.sunsite.util.StatusCode;
-import sunnn.sunsite.util.SunSiteConstant;
+import sunnn.sunsite.util.SunSiteProperties;
 
 import javax.annotation.Resource;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,7 +50,7 @@ public class GalleryServiceImpl implements GalleryService {
         if (isIllegalPageParam(page))
             return new PictureListResponse(StatusCode.ILLEGAL_INPUT);
 
-        int size = SunSiteConstant.pageSize;
+        int size = Constants.pageSize;
         int skip = page * size;
         List<Pic> pictures = picMapper.findAll(skip, size);
 
@@ -65,7 +64,7 @@ public class GalleryServiceImpl implements GalleryService {
         }
 
         int count = picMapper.count();
-        int pageCount = (int) Math.ceil((double) count / SunSiteConstant.pageSize);
+        int pageCount = (int) Math.ceil((double) count / Constants.pageSize);
 
         return new PictureListResponse(StatusCode.OJBK)
                 .setPageCount(pageCount)
@@ -78,7 +77,7 @@ public class GalleryServiceImpl implements GalleryService {
         if (baseInfo == null || isIllegalPageParam(page))
             return new CollectionInfoResponse(StatusCode.ILLEGAL_INPUT);
 
-        int size = SunSiteConstant.pageSize;
+        int size = Constants.pageSize;
         int skip = page * size;
 
         List<PictureBase> pictureList = pictureMapper.findAllBaseInfoByCollection(collection, skip, size);
@@ -86,7 +85,7 @@ public class GalleryServiceImpl implements GalleryService {
             return new CollectionInfoResponse(StatusCode.NO_DATA);
 
         int count = pictureMapper.countByCollection(collection);
-        int pageCount = (int) Math.ceil((double) count / SunSiteConstant.pageSize);
+        int pageCount = (int) Math.ceil((double) count / Constants.pageSize);
 
         return new CollectionInfoResponse(StatusCode.OJBK)
                 .setPageCount(pageCount)
@@ -100,7 +99,7 @@ public class GalleryServiceImpl implements GalleryService {
         if (isIllegalPageParam(page) || illustratorMapper.find(illustrator) == null)
             return new PictureListResponse(StatusCode.ILLEGAL_INPUT);
 
-        int size = SunSiteConstant.pageSize;
+        int size = Constants.pageSize;
         int skip = page * size;
         List<Pic> pictures = illustratorMapper.findAllByIllustrator(illustrator, skip, size);
 
@@ -114,7 +113,7 @@ public class GalleryServiceImpl implements GalleryService {
         }
 
         long count = illustratorMapper.countByIllustrator(illustrator);
-        int pageCount = (int) Math.ceil((double) count / SunSiteConstant.pageSize);
+        int pageCount = (int) Math.ceil((double) count / Constants.pageSize);
 
         return new PictureListResponse(StatusCode.OJBK)
                 .setPageCount(pageCount)
@@ -129,15 +128,13 @@ public class GalleryServiceImpl implements GalleryService {
             File f = new File(path);
             if (f.exists())
                 return f;
-        }
-
-        log.warn("Illegal File Request : " + sequence);
-        org.springframework.core.io.Resource resource = new ClassPathResource("/static/404.jpg");
-        try {
-            return resource.getFile();
-        } catch (IOException e) {
-            log.error("404.jpg Miss", e);
-        }
+        } else
+            log.warn("Illegal File Request : " + sequence);
+//        org.springframework.core.io.Resource resource = new ClassPathResource("/static/404.jpg");
+        File f = new File(SunSiteProperties.missPicture);
+        if (f.exists())
+            return f;
+        log.warn("404.jpg Miss");
         return null;
     }
 

@@ -98,11 +98,11 @@ public class CollectionServiceImpl implements CollectionService {
             保存
          */
         // 创建目录
-        String path = SunSiteConstant.picturePath
+        String path = SunSiteProperties.savePath
                 + info.getType()
-                + SunSiteConstant.pathSeparator
+                + File.separator
                 + info.getGroup()
-                + SunSiteConstant.pathSeparator
+                + File.separator
                 + info.getCollection();
         FileUtils.createPath(path);
         Collection c = new Collection()
@@ -122,7 +122,7 @@ public class CollectionServiceImpl implements CollectionService {
         if (isIllegalPageParam(page))
             return new CollectionListResponse(StatusCode.ILLEGAL_INPUT);
 
-        int size = SunSiteConstant.pageSize;
+        int size = Constants.pageSize;
         int skip = page * size;
 
         List<CollectionInfo> collectionList = collectionMapper.findAllInfo(skip, size);
@@ -130,7 +130,7 @@ public class CollectionServiceImpl implements CollectionService {
             return new CollectionListResponse(StatusCode.NO_DATA);
 
         int count = collectionMapper.count();
-        int pageCount = (int) Math.ceil((double) count / SunSiteConstant.pageSize);
+        int pageCount = (int) Math.ceil((double) count / Constants.pageSize);
 
         return new CollectionListResponse(StatusCode.OJBK)
                 .setPageCount(pageCount)
@@ -152,7 +152,7 @@ public class CollectionServiceImpl implements CollectionService {
         if (isIllegalPageParam(page))
             return new CollectionListResponse(StatusCode.ILLEGAL_INPUT);
 
-        int size = SunSiteConstant.pageSize;
+        int size = Constants.pageSize;
         int skip = page * size;
 
         List<CollectionInfo> collectionList = collectionMapper.findAllInfoByType(type, skip, size);
@@ -160,7 +160,7 @@ public class CollectionServiceImpl implements CollectionService {
             return new CollectionListResponse(StatusCode.NO_DATA);
 
         int count = collectionMapper.countByType(type);
-        int pageCount = (int) Math.ceil((double) count / SunSiteConstant.pageSize);
+        int pageCount = (int) Math.ceil((double) count / Constants.pageSize);
 
         return new CollectionListResponse(StatusCode.OJBK)
                 .setPageCount(pageCount)
@@ -182,15 +182,15 @@ public class CollectionServiceImpl implements CollectionService {
         /*
             压缩文件
          */
-        String path = SunSiteConstant.picturePath
+        String path = SunSiteProperties.savePath
                 + info.getType()
-                + SunSiteConstant.pathSeparator
+                + File.separator
                 + info.getGroup()
-                + SunSiteConstant.pathSeparator
+                + File.separator
                 + info.getCollection();
-        String zipPath = SunSiteConstant.tempPath
+        String zipPath = SunSiteProperties.tempPath
                 + tempCode
-                + SunSiteConstant.pathSeparator
+                + File.separator
                 + info.getGroup()
                 + "-"
                 + info.getCollection()
@@ -224,12 +224,12 @@ public class CollectionServiceImpl implements CollectionService {
         pictureService.deleteCollection(sequence);
         collectionMapper.delete(sequence);
 
-        String parentPath = SunSiteConstant.picturePath
+        String parentPath = SunSiteProperties.savePath
                 + info.getType()
-                + SunSiteConstant.pathSeparator
+                + File.separator
                 + info.getGroup();
         String path = parentPath
-                + SunSiteConstant.pathSeparator
+                + File.separator
                 + info.getCollection();
         // 删除文件本体
         if (!FileUtils.deletePathForce(path))

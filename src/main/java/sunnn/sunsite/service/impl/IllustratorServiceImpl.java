@@ -55,7 +55,7 @@ public class IllustratorServiceImpl implements IllustratorService {
         if (isIllegalPageParam(page))
             return new IllustratorListResponse(StatusCode.ILLEGAL_INPUT);
 
-        int size = SunSiteConstant.pageSize;
+        int size = Constants.pageSize;
         int skip = page * size;
 
         List<IllustratorInfo> illustratorList = illustratorMapper.findAllInfo(skip, size);
@@ -63,7 +63,7 @@ public class IllustratorServiceImpl implements IllustratorService {
             return new IllustratorListResponse(StatusCode.NO_DATA);
 
         int count = illustratorMapper.count();
-        int pageCount = (int) Math.ceil((double) count / SunSiteConstant.pageSize);
+        int pageCount = (int) Math.ceil((double) count / Constants.pageSize);
 
         return new IllustratorListResponse(StatusCode.OJBK)
                 .setPageCount(pageCount)
@@ -82,13 +82,13 @@ public class IllustratorServiceImpl implements IllustratorService {
         if (files != null)
             return files.get(0);
 
-        String path = SunSiteConstant.tempPath
+        String path = SunSiteProperties.tempPath
                 + tempCode
-                + SunSiteConstant.pathSeparator
+                + File.separator
                 + name;
-        String zipPath = SunSiteConstant.tempPath
+        String zipPath = SunSiteProperties.tempPath
                 + tempCode
-                + SunSiteConstant.pathSeparator
+                + File.separator
                 + name
                 + ".zip";
         /*

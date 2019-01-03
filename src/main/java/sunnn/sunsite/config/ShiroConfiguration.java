@@ -9,10 +9,9 @@ import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import sunnn.sunsite.dao.MeDao;
+import sunnn.sunsite.util.SunSiteProperties;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -60,8 +59,8 @@ public class ShiroConfiguration {
 
 class SunRealm extends AuthorizingRealm {
 
-    @Autowired
-    private MeDao meDao;
+//    @Autowired
+//    private MeDao meDao;
 
     @Override
     public String getName() {
@@ -75,9 +74,9 @@ class SunRealm extends AuthorizingRealm {
 
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
-        String passCode = meDao.getCorrectMe().getPassCode();
+        String passCode = SunSiteProperties.verifyCode;
         return new SimpleAuthenticationInfo(
-                "", //个人系统验证不需要用户名
+                "", // 个人系统验证不需要用户名
                 passCode,
                 getName());
     }

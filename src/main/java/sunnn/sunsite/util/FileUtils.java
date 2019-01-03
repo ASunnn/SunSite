@@ -160,7 +160,7 @@ public class FileUtils {
 
         return onlyContent ?
                 doCopyPath(srcFile, destPath) :
-                doCopyPath(srcFile, destPath + SunSiteConstant.pathSeparator + srcFile.getName());
+                doCopyPath(srcFile, destPath + File.separator + srcFile.getName());
     }
 
     private static boolean doCopyPath(File srcFile, String destPath) throws IOException {
@@ -178,7 +178,7 @@ public class FileUtils {
 
             boolean flag = true;
             for (File f : files) {
-                if (!doCopyPath(f, destPath + SunSiteConstant.pathSeparator + f.getName()))
+                if (!doCopyPath(f, destPath + File.separator + f.getName()))
                     flag = false;
             }
 

@@ -84,7 +84,7 @@ public class PictureServiceImpl implements PictureService {
         try {
             //将MultipartFile转换为File
             File f = FileUtils.storeFile(file,
-                SunSiteConstant.tempPath + uploadCode + SunSiteConstant.pathSeparator);
+                SunSiteProperties.tempPath + uploadCode + File.separator);
             fileCache.setFile(uploadCode, f);
         } catch (IOException e) {
             log.error("Trans TempFile Failed : " + e);
@@ -184,13 +184,13 @@ public class PictureServiceImpl implements PictureService {
                 .setName(file.getName())
                 .setSize(file.length())
                 .setUploadTime(new Timestamp(System.currentTimeMillis()))
-                .setPath(SunSiteConstant.picturePath
+                .setPath(SunSiteProperties.savePath
                             + info.getType()
-                        + SunSiteConstant.pathSeparator
+                        + File.separator
                             + info.getGroup()
-                        + SunSiteConstant.pathSeparator
+                        + File.separator
                             + info.getCollection()
-                        + SunSiteConstant.pathSeparator);
+                        + File.separator);
 
         //缩略图文件名
         String thumbnailName = Pic.THUMBNAIL_PREFIX + picture.getName();
