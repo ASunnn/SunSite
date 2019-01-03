@@ -8,7 +8,6 @@ import sunnn.sunsite.entity.Group;
 import java.sql.Timestamp;
 import java.util.List;
 
-@Mapper
 public interface GroupMapper {
 
     Group find(String name);

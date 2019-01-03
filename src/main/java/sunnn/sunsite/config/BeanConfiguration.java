@@ -1,6 +1,8 @@
 package sunnn.sunsite.config;
 
 import com.zaxxer.hikari.HikariDataSource;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.mybatis.spring.SqlSessionFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Scope;
@@ -21,6 +23,13 @@ public class BeanConfiguration {
     }
 
     @Bean
+    public SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception {
+        SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
+        sqlSessionFactoryBean.setDataSource(dataSource);
+        return sqlSessionFactoryBean.getObject();
+    }
+
+    @Bean
     public DataSource dataSource() {
 //        HikariDataSource dataSource = DataSourceBuilder.create().type(HikariDataSource.class).build();
         HikariDataSource dataSource = new HikariDataSource();
@@ -38,52 +47,4 @@ public class BeanConfiguration {
                 + "/" + SunSiteProperties.database
                 + "?characterEncoding=utf8&useSSL=false";
     }
-
-//    @Bean
-//    public Logger logger() {
-//        LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
-//
-//        RollingFileAppender fileAppender = new RollingFileAppender();
-//
-//        fileAppender.setFile(parseLogFile());
-//
-//        TimeBasedRollingPolicy rollingPolicy = new TimeBasedRollingPolicy<>();
-//        rollingPolicy.setMaxHistory(30);
-//        rollingPolicy.setFileNamePattern(parseRollingLogFile());
-//        fileAppender.setRollingPolicy(rollingPolicy);
-//
-//        PatternLayoutEncoder encoder = new PatternLayoutEncoder();
-//        encoder.setCharset(Charset.forName("utf-8"));
-//        encoder.setPattern("%d{HH:mm:ss.SSS} %-5level --- [%thread] %logger : %msg%n");
-//        encoder.setContext(context);
-////        encoder.start();
-//        fileAppender.setEncoder(encoder);
-//
-//        fileAppender.setContext(context);
-//
-////        fileAppender.start();
-//
-//        ch.qos.logback.classic.Logger logger = context.getLogger("Main");
-//        logger.addAppender(fileAppender);
-//        logger.setLevel(Level.WARN);
-//        return logge
-//    }
-
-//    private String parseLogFile() {
-//        int length = SunSiteProperties.logPath.length();
-//        char lastChar = SunSiteProperties.logPath.charAt(length - 1);
-//        if (lastChar == '\\' || lastChar == '/')
-//            return SunSiteProperties.logPath + SunsiteConstant.logFile;
-//        else
-//            return SunSiteProperties.logPath + File.separator + SunsiteConstant.logFile;
-//    }
-//
-//    // /home/sun/log/SunSite-%d{yyyy-MM-dd}.log
-//
-//    private String parseRollingLogFile() {
-//        String logFile = parseLogFile();
-//        int index = logFile.lastIndexOf('.');
-//
-//        return logFile.substring(0, index) + "-%d{yyyy-MM-dd}" + logFile.substring(index);
-//    }
 }

@@ -9,7 +9,6 @@ import sunnn.sunsite.entity.Collection;
 import java.sql.Timestamp;
 import java.util.List;
 
-@Mapper
 public interface CollectionMapper {
 
     Collection find(long cId);

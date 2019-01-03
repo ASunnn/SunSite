@@ -6,7 +6,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 @ConfigurationProperties(prefix = "sunsite")
-@PropertySource("file:${properties-file.path}")
+@PropertySource(value = "file:F:\\sunsite.properties")
+//@PropertySource(value = "file:${properties-file}")
 public class SunSiteProperties {
 
     public static int port;

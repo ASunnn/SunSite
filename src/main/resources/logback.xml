@@ -3,7 +3,6 @@
 <configuration>
 
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
-        <!--展示格式 layout-->
         <layout class="ch.qos.logback.classic.PatternLayout">
             <pattern>
                 <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level --- [%thread] %logger : %msg%n</pattern>
@@ -18,14 +17,11 @@
         -->
         <file>SunSite.log</file>
         <!--<file>/home/sun/log/SunSite.log</file>-->
-        <!--滚动策略，按照时间滚动 TimeBasedRollingPolicy-->
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <!--文件路径,定义了日志的切分方式——把每一天的日志归档到一个文件中,以防止日志填满整个磁盘空间-->
             <fileNamePattern>SunSite-%d{yyyy-MM-dd}.log</fileNamePattern>
-            <!--只保留最近90天的日志-->
             <maxHistory>90</maxHistory>
         </rollingPolicy>
-        <!--日志输出编码格式化-->
+
         <encoder>
             <charset>UTF-8</charset>
             <pattern>%d{HH:mm:ss.SSS} %-5level --- [%thread] %logger : %msg%n</pattern>

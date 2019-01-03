@@ -7,7 +7,6 @@ import sunnn.sunsite.entity.Picture;
 
 import java.util.List;
 
-@Mapper
 public interface PictureMapper {
 
     void insert(Picture picture);

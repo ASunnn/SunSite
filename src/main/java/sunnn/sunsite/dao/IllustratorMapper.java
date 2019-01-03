@@ -8,7 +8,6 @@ import sunnn.sunsite.entity.Pic;
 
 import java.util.List;
 
-@Mapper
 public interface IllustratorMapper {
 
     Illustrator find(String name);

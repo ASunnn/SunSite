@@ -6,7 +6,6 @@ import sunnn.sunsite.entity.Pic;
 
 import java.util.List;
 
-@Mapper
 public interface PicMapper {
 
     Pic find(long sequence);

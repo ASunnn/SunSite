@@ -7,7 +7,6 @@ import sunnn.sunsite.entity.Type;
 import java.sql.Timestamp;
 import java.util.List;
 
-@Mapper
 public interface TypeMapper {
 
     Type find(String name);

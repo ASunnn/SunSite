@@ -26,3 +26,5 @@ nbdist/
 
 ### Others ###
 *.log
+*.MF
+out/

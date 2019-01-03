@@ -1,5 +1,6 @@
 package sunnn.sunsite;
 
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -8,16 +9,17 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableScheduling
-//@MapperScan("sunnn.sunsite.mapper")
-public class SunSiteApplication extends SpringBootServletInitializer {
+@MapperScan("sunnn.sunsite.dao")
+public class SunSiteApplication {
+//public class SunSiteApplication extends SpringBootServletInitializer {
 
     public static void main(String[] args) {
         SpringApplication.run(SunSiteApplication.class, args);
     }
 
-    @Override
-    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-        return application.sources(SunSiteApplication.class);
-    }
+//    @Override
+//    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+//        return application.sources(SunSiteApplication.class);
+//    }
 
 }
