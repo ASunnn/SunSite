@@ -1,30 +1,20 @@
 package sunnn.sunsite.util;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.stereotype.Component;
-
-@Component
-@ConfigurationProperties(prefix = "sunsite")
-@PropertySource(value = "file:F:\\sunsite.properties")
-//@PropertySource(value = "file:${properties-file}")
 public class SunSiteProperties {
 
-    public static int port;
+    public static int port = 80;
 
     public static String verifyCode;
-
-//    public static String logPath;
 
     public static String savePath;
 
     public static String tempPath;
 
-    public static long cacheTimeout;
+    public static long cacheTimeout = 600000;
 
-    public static long sessionTimeout;
+    public static long sessionTimeout = 1200000;
 
-    public static String missPicture;
+    public static String missPicture = "";
 
     public static String host;
 
@@ -42,10 +32,6 @@ public class SunSiteProperties {
         SunSiteProperties.verifyCode = verifyCode;
     }
 
-//    public static void setLogPath(String logPath) {
-//        SunSiteProperties.logPath = logPath;
-//    }
-
     public static void setSavePath(String savePath) {
         SunSiteProperties.savePath = savePath;
     }
@@ -55,11 +41,11 @@ public class SunSiteProperties {
     }
 
     public static void setCacheTimeout(long cacheTimeout) {
-        SunSiteProperties.cacheTimeout = cacheTimeout;
+        SunSiteProperties.cacheTimeout = cacheTimeout * 60000;
     }
 
     public static void setSessionTimeout(long sessionTimeout) {
-        SunSiteProperties.sessionTimeout = sessionTimeout;
+        SunSiteProperties.sessionTimeout = sessionTimeout * 60000;
     }
 
     public static void setMissPicture(String missPicture) {
