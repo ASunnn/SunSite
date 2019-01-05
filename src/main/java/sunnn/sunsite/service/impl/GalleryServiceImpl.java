@@ -126,7 +126,7 @@ public class GalleryServiceImpl implements GalleryService {
     public File getThumbnail(long sequence) {
         Pic picture = picMapper.find(sequence);
         if (picture != null) {
-            String path = picture.getPath() + picture.getThumbnailName();
+            String path = SunSiteProperties.savePath + picture.getPath() + picture.getThumbnailName();
             File f = new File(path);
             if (f.exists())
                 return f;
@@ -146,7 +146,7 @@ public class GalleryServiceImpl implements GalleryService {
         if (picture == null)
             throw new IllegalFileRequestException(String.valueOf(sequence));
 
-        String path = picture.getPath() + picture.getName();
+        String path = SunSiteProperties.savePath + picture.getPath() + picture.getName();
         return new File(path);
     }
 

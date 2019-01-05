@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import sun.security.provider.Sun;
 import sunnn.sunsite.dao.IllustratorMapper;
 import sunnn.sunsite.dto.IllustratorInfo;
 import sunnn.sunsite.dto.response.IllustratorListResponse;
@@ -99,7 +100,7 @@ public class IllustratorServiceImpl implements IllustratorService {
             if (!FileUtils.createPath(path))
                 throw new IOException("Cant not Create Path : " + path);
             for (Pic picture : pictureList) {
-                String locate = picture.getPath() + picture.getName();
+                String locate = SunSiteProperties.savePath + picture.getPath() + picture.getName();
                 FileUtils.copyFile(new File(locate), path);
             }
         } catch (IOException e) {

@@ -131,7 +131,7 @@ public class PictureServiceImpl implements PictureService {
                 continue;
             // 存文件
             try {
-                FileUtils.copyFile(file, pictureData.getPath());
+                FileUtils.copyFile(file, SunSiteProperties.savePath + pictureData.getPath());
             } catch (IOException e) {
                 log.error("Error When Save Pic " + pictureData.getName() + " : ", e);
                 continue;
@@ -156,7 +156,8 @@ public class PictureServiceImpl implements PictureService {
                 illustratorMapper.insertAllArtwork(artworks);
 
             // 设置缩略图任务
-            thumbnailTask.submit(pictureData.getPath(), pictureData.getName(), pictureData.getThumbnailName());
+            thumbnailTask.submit(
+                    SunSiteProperties.savePath + pictureData.getPath(), pictureData.getName(), pictureData.getThumbnailName());
         }
         // 设置index更新任务
         indexTask.submit(c.getCId());
@@ -184,8 +185,7 @@ public class PictureServiceImpl implements PictureService {
                 .setName(file.getName())
                 .setSize(file.length())
                 .setUploadTime(new Timestamp(System.currentTimeMillis()))
-                .setPath(SunSiteProperties.savePath
-                            + info.getType()
+                .setPath(info.getType()
                         + File.separator
                             + info.getGroup()
                         + File.separator
@@ -232,9 +232,10 @@ public class PictureServiceImpl implements PictureService {
         illustratorMapper.deletePicture(sequence);
 
         //删除文件本体
-        if (!FileUtils.deleteFile(p.getPath() + p.getName())
-                | !FileUtils.deleteFile(p.getPath() + p.getThumbnailName()))
-            log.warn("Delete Picture Failed : " + p.getPath() + p.getName());
+        String path = SunSiteProperties.savePath + p.getPath();
+        if (!FileUtils.deleteFile(path + p.getName())
+                | !FileUtils.deleteFile(path + p.getThumbnailName()))
+            log.warn("Delete Picture Failed : " + path + p.getName());
 
         return StatusCode.OJBK;
     }
