@@ -48,7 +48,7 @@ public class BeanConfiguration {
         String sys = System.getProperty("os.name");
 
         if (sys.contains("Windows")) {
-            return "F:\\sunsite.properties";
+            return "C:\\ProgramData\\sunsite\\sunsite.properties";
         } else if (sys.contains("Linux"))
             return "";
 
