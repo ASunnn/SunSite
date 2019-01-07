@@ -49,7 +49,6 @@ public class ThumbnailTask {
             } catch (IOException e) {
                 log.error("Cannot Create Thumbnail : "+ e);
             }
-//            System.out.println("Complete : " + src);
         }
     }
 }

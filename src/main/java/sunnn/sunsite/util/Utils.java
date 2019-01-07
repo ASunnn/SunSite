@@ -21,6 +21,7 @@ public class Utils {
         if (dimension == null)
             throw new IOException("No Dimension Info");
         String dimensionString = dimension.toString();
+
         //分割出图片信息部分
         String info = dimensionString.substring(
                 dimensionString.indexOf("[") + 1,
@@ -40,14 +41,14 @@ public class Utils {
             return null;
 
         Dimension result = null;
-        //获取后缀名
+        // 获取后缀名
         String extension = path.substring(path.lastIndexOf('.') + 1);
-        //解码具有给定后缀的文件
+        // 解码具有给定后缀的文件
         Iterator<ImageReader> iterator = ImageIO.getImageReadersBySuffix(extension);
         if (iterator.hasNext()) {
             ImageReader reader = iterator.next();
-            try {
-                reader.setInput(new FileImageInputStream(new File(path)));
+            try (FileImageInputStream inputStream = new FileImageInputStream(new File(path))) {
+                reader.setInput(inputStream);
                 result = new Dimension(
                         reader.getWidth(reader.getMinIndex()),
                         reader.getHeight(reader.getMinIndex()));

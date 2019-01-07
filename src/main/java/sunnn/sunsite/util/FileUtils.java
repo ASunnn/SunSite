@@ -124,8 +124,11 @@ public class FileUtils {
             return false;
 
         for (File f : files) {
-            if (!(f.isDirectory() ? deletePathForce(f) : deleteFile(f)))
+            if (!(f.isDirectory() ? deletePathForce(f) : deleteFile(f))) {
+                System.out.println("Fail " + f.getName());
                 flag = false;
+            }
+
         }
 
         return flag && file.delete();

@@ -131,11 +131,13 @@ public class IllustratorServiceImpl implements IllustratorService {
     public StatusCode delete(String name) {
         Illustrator i = illustratorMapper.find(name);
         if (i == null || i.getName().equals(Illustrator.DEFAULT_VALUE))
-            return StatusCode.ILLEGAL_INPUT;
+            return StatusCode.DELETE_FAILED;
 
         illustratorMapper.delete(name);
 
         Illustrator newIllustrator = illustratorMapper.find(Illustrator.DEFAULT_VALUE);
+        if (newIllustrator == null)
+            newIllustrator = createIllustrator(Illustrator.DEFAULT_VALUE);
         illustratorMapper.update(newIllustrator.getId(), i.getId());
 
         return StatusCode.OJBK;

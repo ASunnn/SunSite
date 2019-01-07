@@ -218,7 +218,7 @@ public class CollectionServiceImpl implements CollectionService {
     public StatusCode delete(long sequence) {
         Collection c = collectionMapper.find(sequence);
         if (c == null)
-            return StatusCode.ILLEGAL_INPUT;
+            return StatusCode.DELETE_FAILED;
 
         CollectionBase info = collectionMapper.findBaseInfo(sequence);
 

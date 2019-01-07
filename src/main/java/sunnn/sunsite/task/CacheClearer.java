@@ -22,9 +22,6 @@ public class CacheClearer {
         this.fileCache = fileCache;
     }
 
-    /**
-     * 每小时执行一次缓存清理任务
-     */
     @Scheduled(cron = "0 * * * * *")
     public void clearFileCache() {
         log.info("Run Scheduled Task : " +
@@ -33,5 +30,4 @@ public class CacheClearer {
         fileCache.clearCache();
         log.info("After Clear : " + String.valueOf(fileCache.getSize()));
     }
-
 }

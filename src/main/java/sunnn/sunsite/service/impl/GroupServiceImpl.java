@@ -150,7 +150,7 @@ public class GroupServiceImpl implements GroupService {
     public StatusCode delete(String name) {
         Group g = groupMapper.find(name);
         if (g == null)
-            return StatusCode.ILLEGAL_INPUT;
+            return StatusCode.DELETE_FAILED;
 
         List<CollectionInfo> collectionList = collectionMapper.findAllInfoByGroup(name, 0, Integer.MAX_VALUE);
         for (CollectionInfo collection : collectionList) {

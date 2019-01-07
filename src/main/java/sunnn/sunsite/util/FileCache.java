@@ -84,6 +84,18 @@ public class FileCache {
     }
 
     /**
+     * 移除缓存记录，但不删除缓存对应的文件
+     *
+     * @param key 键
+     * @return 如果存在缓存记录，则将保存的文件返回
+     * 如果不存在，返回null
+     */
+    public synchronized List<File> remove(String key) {
+        TempFiles files = cache.remove(key);
+        return files == null ? null : files.getFiles();
+    }
+
+    /**
      * 清除过期缓存
      * 此方法由定时任务调用
      */

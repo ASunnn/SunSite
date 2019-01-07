@@ -5,11 +5,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.DependsOn;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import sunnn.sunsite.exception.IllegalPropertiesException;
 import sunnn.sunsite.exception.UnSupportSystemException;
 import sunnn.sunsite.filter.RequestFilter;
 import sunnn.sunsite.util.FileCache;
+import sunnn.sunsite.util.InputDataScanner;
 import sunnn.sunsite.util.SunSiteProperties;
 
 import javax.servlet.MultipartConfigElement;
@@ -48,7 +50,7 @@ public class BeanConfiguration {
         String sys = System.getProperty("os.name");
 
         if (sys.contains("Windows")) {
-            return "C:\\ProgramData\\sunsite\\sunsite.properties";
+            return "C:\\ProgramData\\sunsite\\sunsite-dev.properties";
         } else if (sys.contains("Linux"))
             return "";
 
@@ -89,6 +91,10 @@ public class BeanConfiguration {
         if (missPicture != null)
             SunSiteProperties.setMissPicture(missPicture);
 
+        String scanAutoFill = properties.getProperty("scanAutoFill");
+        if (scanAutoFill != null)
+            SunSiteProperties.setScanAutoFill(Boolean.valueOf(scanAutoFill));
+
 
         String host = properties.getProperty("host");
         if (host == null)
@@ -124,6 +130,12 @@ public class BeanConfiguration {
     @DependsOn("sunSiteProperties")
     public FileCache fileCache() {
         return new FileCache(SunSiteProperties.cacheTimeout);
+    }
+
+    @Bean
+    @Scope(value = "prototype")
+    public InputDataScanner dataScanner() {
+        return new InputDataScanner();
     }
 
     @Bean

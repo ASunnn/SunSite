@@ -23,9 +23,6 @@ public enum StatusCode {
 
     @Override
     public String toString() {
-        return "Illustrator{" +
-                "msg='" + this.name() + '\'' +
-                ", code='" + code + '\'' +
-                '}';
+        return code + ":" + this.name();
     }
 }

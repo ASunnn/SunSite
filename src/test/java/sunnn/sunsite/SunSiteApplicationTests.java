@@ -10,6 +10,8 @@ import sunnn.sunsite.dto.IllustratorInfo;
 import sunnn.sunsite.service.CollectionService;
 import sunnn.sunsite.task.ThumbnailTask;
 import sunnn.sunsite.util.FileUtils;
+import sunnn.sunsite.util.InputDataScanner;
+import sunnn.sunsite.util.SunSiteProperties;
 
 import javax.annotation.Resource;
 import java.io.File;
@@ -29,9 +31,11 @@ public class SunSiteApplicationTests {
 	@Resource
 	private IllustratorMapper mapper;
 
+	@Autowired
+	private InputDataScanner scanner;
+
 	@Test
 	public void contextLoads() throws InterruptedException, IOException {
-
-		System.out.println(FileUtils.copyPath(new File("E:\\新建文件夹 (2)"), "D:\\", false));
+		scanner.scan(SunSiteProperties.scanAutoFill);
 	}
 }

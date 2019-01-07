@@ -201,7 +201,7 @@ public class PictureServiceImpl implements PictureService {
                     0, thumbnailName.lastIndexOf('.')) + ".jpg";
         picture.setThumbnailName(thumbnailName);
 
-        //获取图片长宽
+        // get图片长宽
         try {
             int[] pictureSize = Utils.getPictureSize(file.getPath());
             picture.setWidth(pictureSize[0]);
@@ -210,6 +210,7 @@ public class PictureServiceImpl implements PictureService {
             log.error("Cannot Get UploadPictureInfo Info : ", e);
             return null;
         }
+
         if (picture.getWidth() < picture.getHeight())
             picture.setVOrH(-1);
         else if (picture.getWidth() > picture.getHeight())
@@ -225,7 +226,7 @@ public class PictureServiceImpl implements PictureService {
     public StatusCode delete(long sequence) {
         Pic p = picMapper.find(sequence);
         if (p == null)
-            return StatusCode.ILLEGAL_INPUT;
+            return StatusCode.DELETE_FAILED;
 
         pictureMapper.delete(sequence);
         picMapper.delete(sequence);

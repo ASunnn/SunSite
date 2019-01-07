@@ -110,7 +110,7 @@ public class TypeServiceImpl implements TypeService {
     public StatusCode delete(String name) {
         Type t = typeMapper.find(name);
         if (t == null)
-            return StatusCode.ILLEGAL_INPUT;
+            return StatusCode.DELETE_FAILED;
 
         List<CollectionInfo> collectionList = collectionMapper.findAllInfoByType(name, 0, Integer.MAX_VALUE);
         for (CollectionInfo collection : collectionList) {

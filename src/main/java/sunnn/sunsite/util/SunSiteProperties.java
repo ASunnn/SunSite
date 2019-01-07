@@ -16,6 +16,8 @@ public class SunSiteProperties {
 
     public static String missPicture = "";
 
+    public static boolean scanAutoFill = false;
+
     public static String host;
 
     public static String database;
@@ -41,6 +43,8 @@ public class SunSiteProperties {
     }
 
     public static void setCacheTimeout(long cacheTimeout) {
+        if (cacheTimeout < 5)
+            cacheTimeout = 5;
         SunSiteProperties.cacheTimeout = cacheTimeout * 60000;
     }
 
@@ -50,6 +54,10 @@ public class SunSiteProperties {
 
     public static void setMissPicture(String missPicture) {
         SunSiteProperties.missPicture = missPicture;
+    }
+
+    public static void setScanAutoFill(boolean scanAutoFill) {
+        SunSiteProperties.scanAutoFill = scanAutoFill;
     }
 
     public static void setHost(String host) {
