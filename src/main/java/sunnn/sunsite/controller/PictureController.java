@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import sunnn.sunsite.dto.response.PictureInfoResponse;
 import sunnn.sunsite.exception.IllegalFileRequestException;
 import sunnn.sunsite.service.GalleryService;
 
@@ -39,12 +40,19 @@ public class PictureController {
     }
 
     @GetMapping(value = "/p/{sequence}")
-    public ResponseEntity pictureFile(@PathVariable("sequence") long sequence)
+    public String pictureFile(@PathVariable("sequence") long sequence) {
+        PictureInfoResponse response = galleryService.getPictureInfo(sequence);
+
+        return "redirect:/p/" + response.getSequence() + "/" + response.getName();
+    }
+
+    @GetMapping(value = "/p/{sequence}/{name}")
+    public ResponseEntity pictureFile(@PathVariable("sequence") long sequence, @PathVariable("name") String name)
             throws IllegalFileRequestException, IOException {
         File file = galleryService.getPictureFile(sequence);
 
         String fileName = file.getName();
-        String extension = fileName.substring(fileName.lastIndexOf('.') + 1);
+        String extension = fileName.substring(fileName.lastIndexOf('.') + 1).toLowerCase();
 
         HttpHeaders headers = new HttpHeaders();
         switch (extension) {
@@ -55,8 +63,6 @@ public class PictureController {
             case "png":
                 headers.setContentType(MediaType.IMAGE_PNG);
                 break;
-            default:
-                headers.setContentType(MediaType.IMAGE_JPEG);
         }
         return new ResponseEntity<>(FileUtils.readFileToByteArray(file), headers, HttpStatus.OK);
     }
