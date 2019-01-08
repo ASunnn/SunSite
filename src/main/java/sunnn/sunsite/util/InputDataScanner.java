@@ -75,8 +75,8 @@ public class InputDataScanner {
     }
 
     private void pictureScanner(File basePath, String type, String group, String collection) {
-        File[] targets = basePath.listFiles(pathname -> pathname.isFile()
-                && !FileUtils.fileNameMatcher(pathname.getName()));
+        File[] targets = basePath.listFiles(
+                pathname -> pathname.isFile() && !FileUtils.fileNameMatcher(pathname.getName()));
 
         registerData(type, group, collection, targets);
     }
@@ -85,7 +85,7 @@ public class InputDataScanner {
         if (targets == null || targets.length <= 0)
             return;
 
-        if (createCollection(type, group, collection)) {
+        if (prepareRegister(type, group, collection)) {
             StatusCode code = pictureServiceAdapter(type, group, collection, targets);
 
             if (code.equals(StatusCode.OJBK))
@@ -101,6 +101,7 @@ public class InputDataScanner {
 
         for (File p : pics)
             fileCache.setFile(info.getUploadCode(), p);
+
         StatusCode code = pictureService.uploadInfoAndSave(info);
 
         fileCache.remove(info.getUploadCode());
@@ -108,7 +109,7 @@ public class InputDataScanner {
         return code;
     }
 
-    private boolean createCollection(String type, String group, String collection) {
+    private boolean prepareRegister(String type, String group, String collection) {
         CollectionBase collectionInfo = new CollectionBase()
                 .setType(type)
                 .setGroup(group)

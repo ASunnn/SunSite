@@ -1,5 +1,7 @@
 package sunnn.sunsite.util;
 
+import java.io.File;
+
 public class SunSiteProperties {
 
     public static int port = 80;
@@ -35,11 +37,17 @@ public class SunSiteProperties {
     }
 
     public static void setSavePath(String savePath) {
-        SunSiteProperties.savePath = savePath;
+        if (!savePath.endsWith("/") || !savePath.endsWith("\\"))
+            SunSiteProperties.savePath = savePath + File.separator;
+        else
+            SunSiteProperties.savePath = savePath;
     }
 
     public static void setTempPath(String tempPath) {
-        SunSiteProperties.tempPath = tempPath;
+        if (!tempPath.endsWith("/") || !tempPath.endsWith("\\"))
+            SunSiteProperties.tempPath = tempPath + File.separator;
+        else
+            SunSiteProperties.tempPath = tempPath;
     }
 
     public static void setCacheTimeout(long cacheTimeout) {

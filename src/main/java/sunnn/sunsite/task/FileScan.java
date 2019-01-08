@@ -16,7 +16,7 @@ public class FileScan {
         this.scanner = scanner;
     }
 
-    @Scheduled(cron = "0 0/10 * * * *")
+    @Scheduled(cron = "0 0/15 * * * *")
     public void inputDataScan() {
         scanner.scan(SunSiteProperties.scanAutoFill);
     }
