@@ -74,7 +74,7 @@ public class PictureServiceImpl implements PictureService {
         /*
             对文件名进行检查
          */
-        Matcher fileNameMatcher = Pattern.compile("\\.(jpg|jpeg|png|bmp)$")
+        Matcher fileNameMatcher = Pattern.compile("\\.(jpg|jpeg|png)$")
                 .matcher(file.getOriginalFilename());
         if (!fileNameMatcher.find())
             return StatusCode.ILLEGAL_INPUT;

@@ -37,14 +37,14 @@ public class SunSiteProperties {
     }
 
     public static void setSavePath(String savePath) {
-        if (!savePath.endsWith("/") || !savePath.endsWith("\\"))
+        if (!savePath.endsWith("/") && !savePath.endsWith("\\"))
             SunSiteProperties.savePath = savePath + File.separator;
         else
             SunSiteProperties.savePath = savePath;
     }
 
     public static void setTempPath(String tempPath) {
-        if (!tempPath.endsWith("/") || !tempPath.endsWith("\\"))
+        if (!tempPath.endsWith("/") && !tempPath.endsWith("\\"))
             SunSiteProperties.tempPath = tempPath + File.separator;
         else
             SunSiteProperties.tempPath = tempPath;

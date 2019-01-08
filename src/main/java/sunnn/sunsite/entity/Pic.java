@@ -17,8 +17,6 @@ import java.util.Objects;
 @ToString
 public class Pic {
 
-    private String id;
-
     /**
      * 插画的序列号
      */

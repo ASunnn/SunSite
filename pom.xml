@@ -5,7 +5,7 @@
 
     <groupId>sunnn</groupId>
     <artifactId>sunsite</artifactId>
-    <version>1.1.1</version>
+    <version>1.1.2</version>
     <packaging>war</packaging>
 
     <name>SunSite</name>

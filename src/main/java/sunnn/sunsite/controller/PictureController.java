@@ -43,8 +43,21 @@ public class PictureController {
             throws IllegalFileRequestException, IOException {
         File file = galleryService.getPictureFile(sequence);
 
+        String fileName = file.getName();
+        String extension = fileName.substring(fileName.lastIndexOf('.') + 1);
+
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.IMAGE_JPEG);
+        switch (extension) {
+            case "jpg":
+            case "jpeg":
+                headers.setContentType(MediaType.IMAGE_JPEG);
+                break;
+            case "png":
+                headers.setContentType(MediaType.IMAGE_PNG);
+                break;
+            default:
+                headers.setContentType(MediaType.IMAGE_JPEG);
+        }
         return new ResponseEntity<>(FileUtils.readFileToByteArray(file), headers, HttpStatus.OK);
     }
 }
