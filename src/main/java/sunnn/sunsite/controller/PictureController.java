@@ -15,6 +15,8 @@ import sunnn.sunsite.service.GalleryService;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 @Controller
 public class PictureController {
@@ -40,10 +42,16 @@ public class PictureController {
     }
 
     @GetMapping(value = "/p/{sequence}")
-    public String pictureFile(@PathVariable("sequence") long sequence) {
+    public String pictureFile(@PathVariable("sequence") long sequence) throws UnsupportedEncodingException {
         PictureInfoResponse response = galleryService.getPictureInfo(sequence);
-
-        return "redirect:/p/" + response.getSequence() + "/" + response.getName();
+        /*
+            按照HTML4规范，空格应该被编码成加号"+"，而如果字符本身就是加号"+"，则应该被编码成%2B
+            按照RFC-3986规范，空格被编码成%20，而加号"+"被编码成%2B
+            一个是JDK自带的java.net.URLEncoder,另一个是Apache的org.apache.commons.codec.net.URLCodec。这两个类遵循的都是HTML4标准
+         */
+        return "redirect:/p/"
+                + response.getSequence()
+                + "/" + URLEncoder.encode(response.getName(), "UTF-8").replaceAll("\\+", "%20");
     }
 
     @GetMapping(value = "/p/{sequence}/{name}")
