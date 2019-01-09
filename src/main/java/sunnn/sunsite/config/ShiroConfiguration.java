@@ -37,7 +37,7 @@ public class ShiroConfiguration {
 
         shiroFilterFactoryBean.setLoginUrl("/index");
         shiroFilterFactoryBean.setSuccessUrl("/home");
-        shiroFilterFactoryBean.setUnauthorizedUrl("/error");
+        shiroFilterFactoryBean.setUnauthorizedUrl("/index");
 
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
 

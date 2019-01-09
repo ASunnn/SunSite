@@ -31,9 +31,6 @@ public class SunSiteApplicationTests {
 	@Resource
 	private IllustratorMapper mapper;
 
-	@Autowired
-	private InputDataScanner scanner;
-
 	@Test
 	public void contextLoads() throws InterruptedException, IOException {
 	}

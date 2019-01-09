@@ -74,9 +74,10 @@ public class PictureServiceImpl implements PictureService {
         /*
             对文件名进行检查
          */
-        Matcher fileNameMatcher = Pattern.compile("\\.(jpg|jpeg|png)$")
-                .matcher(file.getOriginalFilename());
-        if (!fileNameMatcher.find())
+        String fileName = file.getOriginalFilename().toLowerCase();
+        Matcher extensionNameMatcher = Pattern.compile("\\.(jpg|jpeg|png)$")
+                .matcher(fileName);
+        if (!extensionNameMatcher.find() || FileUtils.fileNameMatcher(fileName))
             return StatusCode.ILLEGAL_INPUT;
         /*
             将图片放入缓存
@@ -194,9 +195,9 @@ public class PictureServiceImpl implements PictureService {
 
         //缩略图文件名
         String thumbnailName = Pic.THUMBNAIL_PREFIX + picture.getName();
-        Matcher fileNameMatcher = Pattern.compile("\\.(jpg|jpeg)$")
+        Matcher extensionNameMatcher = Pattern.compile("\\.(jpg|jpeg)$")
                 .matcher(picture.getName());
-        if (!fileNameMatcher.find())
+        if (!extensionNameMatcher.find())
             thumbnailName = thumbnailName.substring(
                     0, thumbnailName.lastIndexOf('.')) + ".jpg";
         picture.setThumbnailName(thumbnailName);

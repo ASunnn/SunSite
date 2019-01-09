@@ -64,10 +64,10 @@ public class GalleryController {
             对上传的文件进行逐个处理
          */
         for (MultipartFile file : files) {
-            StatusCode s = pictureService.uploadPicture(file, uploadCode);
+            StatusCode code = pictureService.uploadPicture(file, uploadCode);
             // 非法文件，直接返回错误
-            if (s != StatusCode.OJBK)
-                return new FileUploadResponse(s);
+            if (code != StatusCode.OJBK)
+                return new FileUploadResponse(code);
         }
 
         return new FileUploadResponse(StatusCode.OJBK, uploadCode);
