@@ -11,7 +11,6 @@ import sunnn.sunsite.util.SunSiteProperties;
  */
 @Component
 @DependsOn("sunSiteProperties")
-//@Order
 public class PortConfiguration implements WebServerFactoryCustomizer<ConfigurableServletWebServerFactory> {
 
     @Override

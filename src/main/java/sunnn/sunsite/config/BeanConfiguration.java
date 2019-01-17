@@ -118,7 +118,6 @@ public class BeanConfiguration {
     }
 
     @Bean
-    @DependsOn("sunSiteProperties")
     public MultipartConfigElement multipartConfigElement() {
         MultipartConfigFactory factory = new MultipartConfigFactory();
         factory.setMaxFileSize("320MB");
@@ -139,7 +138,6 @@ public class BeanConfiguration {
     }
 
     @Bean
-    @DependsOn("sunSiteProperties")
     public RequestFilter requestFilter() {
         return new RequestFilter();
     }

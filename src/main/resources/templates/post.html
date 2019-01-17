@@ -107,7 +107,7 @@
             var groupLink = document.createElement("a");
             groupLink.setAttribute("id", "pictureGroup");
             groupLink.setAttribute("class", "infoElement");
-            groupLink.setAttribute("href", "/group/show/" + group);
+            groupLink.setAttribute("href", "/group/show/" + encodeURIComponent(group));
             groupLink.appendChild(groupElement);
             groupDiv.appendChild(groupLink);
 
@@ -117,7 +117,7 @@
             var collectionLink = document.createElement("a");
             collectionLink.setAttribute("id", "pictureCollection");
             collectionLink.setAttribute("class", "infoElement");
-            collectionLink.setAttribute("href", "/collection/show/" + cId);
+            collectionLink.setAttribute("href", "/collection/show/" + encodeURIComponent(cId));
             collectionLink.appendChild(collectionElement);
             collectionDiv.appendChild(collectionLink);
 

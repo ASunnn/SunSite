@@ -82,7 +82,7 @@
             var r = window.location.href.split("/");
             var illustrator = r[r.length-1];
 
-            $.get("/illustrator/info?i=" + decodeURIComponent(illustrator) + "&p=" + page, function (data) {
+            $.get("/illustrator/info?n=" + illustrator + "&p=" + page, function (data) {
                 pictureListHandler(data, page);
             });
         }

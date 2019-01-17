@@ -15,7 +15,6 @@ import javax.sql.DataSource;
 
 @Configuration
 @DependsOn("sunSiteProperties")
-//@Order
 public class DataSourceConfiguration {
 
     @Bean

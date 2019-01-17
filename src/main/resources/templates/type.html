@@ -50,7 +50,7 @@
 
                         var typeTd = document.createElement("td");
                         var typeLink = document.createElement("a");
-                        typeLink.setAttribute("href", "/type/show/" + type);
+                        typeLink.setAttribute("href", "/type/show/" + encodeURIComponent(type));
                         typeLink.innerHTML = type;
                         typeTd.appendChild(typeLink);
                         trElement.appendChild(typeTd);

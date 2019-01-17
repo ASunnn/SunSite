@@ -42,7 +42,7 @@ public class IllustratorController {
 
     @RequestMapping(value = "/info")
     @ResponseBody
-    public PictureListResponse illustratorDetail(@RequestParam("i") String illustrator, @RequestParam("p") int page) {
+    public PictureListResponse illustratorDetail(@RequestParam("n") String illustrator, @RequestParam("p") int page) {
         return galleryService.getPictureListByiIllustrator(illustrator, page);
     }
 

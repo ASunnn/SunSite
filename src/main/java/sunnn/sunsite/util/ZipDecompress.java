@@ -63,9 +63,10 @@ public class ZipDecompress {
                 生成文件，并将压缩文件里在文件夹内部的文件提出来
              */
             String entryPath = entry.getName();
+            int subIndex = entryPath.lastIndexOf("/");
             File entryFile = new File(
                     destFile.getPath() + File.separator
-                            + entryPath.substring(entryPath.lastIndexOf("/")));
+                            + entryPath.substring(subIndex == -1 ? 0 : subIndex));
             /*
                 解压
              */

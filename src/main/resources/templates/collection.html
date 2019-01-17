@@ -100,7 +100,7 @@
 
             var collectionTd = document.createElement("td");
             var collectionLink = document.createElement("a");
-            collectionLink.setAttribute("href", "/collection/show/" + sequence);
+            collectionLink.setAttribute("href", "/collection/show/" + encodeURIComponent(sequence));
             collectionLink.innerHTML = collection;
             collectionTd.appendChild(collectionLink);
             trElement.appendChild(collectionTd);

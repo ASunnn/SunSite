@@ -96,7 +96,7 @@
 
             var illustratorTd = document.createElement("td");
             var illustratorLink = document.createElement("a");
-            illustratorLink.setAttribute("href", "/illustrator/show/" + illustrator);
+            illustratorLink.setAttribute("href", "/illustrator/show/" + encodeURIComponent(illustrator));
             illustratorLink.innerHTML = illustrator;
             illustratorTd.appendChild(illustratorLink);
             trElement.appendChild(illustratorTd);

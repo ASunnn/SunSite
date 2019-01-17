@@ -97,7 +97,7 @@
 
             var groupTd = document.createElement("td");
             var groupLink = document.createElement("a");
-            groupLink.setAttribute("href", "/group/show/" + group);
+            groupLink.setAttribute("href", "/group/show/" + encodeURIComponent(group));
             groupLink.innerHTML = group;
             groupTd.appendChild(groupLink);
             trElement.appendChild(groupTd);
