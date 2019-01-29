@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="sunnn.sunsite.dao.AliasDao">
+
+    <insert id="insertAllAlias" parameterType="java.util.List">
+        INSERT INTO alias (alias, origin, kind)
+        VALUES
+        <foreach collection="aliases" item="a" separator=",">
+            (#{a.alias}, #{a.origin}, #{a.kind})
+        </foreach>
+    </insert>
+
+    <delete id="deleteAlias" parameterType="sunnn.sunsite.entity.Alias">
+        DELETE FROM alias
+        WHERE
+            alias = #{alias}
+            AND origin = #{origin}
+            AND kind = #{kind}
+    </delete>
+
+    <select id="getAllAliasByOrigin" resultType="java.lang.String">
+        SELECT alias FROM alias
+        WHERE
+	        alias.origin = #{origin}
+	        AND alias.kind = #{kind}
+    </select>
+</mapper>

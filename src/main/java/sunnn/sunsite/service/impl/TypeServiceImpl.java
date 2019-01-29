@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import sunnn.sunsite.dao.CollectionMapper;
-import sunnn.sunsite.dao.TypeMapper;
+import sunnn.sunsite.dao.CollectionDao;
+import sunnn.sunsite.dao.TypeDao;
 import sunnn.sunsite.dto.CollectionInfo;
 import sunnn.sunsite.dto.response.TypeListResponse;
 import sunnn.sunsite.entity.Type;
@@ -32,10 +32,10 @@ public class TypeServiceImpl implements TypeService {
     private final FileCache fileCache;
 
     @Resource
-    private TypeMapper typeMapper;
+    private TypeDao typeDao;
 
     @Resource
-    private CollectionMapper collectionMapper;
+    private CollectionDao collectionDao;
 
     @Autowired
     public TypeServiceImpl(FileCache fileCache) {
@@ -52,15 +52,15 @@ public class TypeServiceImpl implements TypeService {
     @Transactional(propagation = Propagation.REQUIRED,
             isolation = Isolation.DEFAULT)
     public Type createType(String name) {
-        Type type = typeMapper.find(name);
+        Type type = typeDao.find(name);
         if (type == null)
-            typeMapper.insert(type = new Type().setName(name));
+            typeDao.insert(type = new Type().setName(name));
         return type;
     }
 
     @Override
     public TypeListResponse getTypeList() {
-        List<Type> collectionList = typeMapper.findAll();
+        List<Type> collectionList = typeDao.findAll();
         if (collectionList.isEmpty())
             return new TypeListResponse(StatusCode.NO_DATA);
 
@@ -70,7 +70,7 @@ public class TypeServiceImpl implements TypeService {
 
     @Override
     public File download(String name) throws IllegalFileRequestException {
-        Type t = typeMapper.find(name);
+        Type t = typeDao.find(name);
         if (t == null)
             throw new IllegalFileRequestException("Type : " + name);
 
@@ -108,15 +108,15 @@ public class TypeServiceImpl implements TypeService {
     @Transactional(propagation = Propagation.REQUIRED,
             isolation = Isolation.DEFAULT)
     public StatusCode delete(String name) {
-        Type t = typeMapper.find(name);
+        Type t = typeDao.find(name);
         if (t == null)
             return StatusCode.DELETE_FAILED;
 
-        List<CollectionInfo> collectionList = collectionMapper.findAllInfoByType(name, 0, Integer.MAX_VALUE);
+        List<CollectionInfo> collectionList = collectionDao.findAllInfoByType(name, 0, Integer.MAX_VALUE);
         for (CollectionInfo collection : collectionList) {
             collectionService.delete(collection.getSequence());
         }
-        typeMapper.delete(name);
+        typeDao.delete(name);
 
         //删除文件本体
         String path = SunSiteProperties.savePath + name;

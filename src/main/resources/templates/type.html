@@ -12,26 +12,35 @@
             margin-left: auto;
             margin-right: auto;
             width: 1800px;
-            height: 50px;
+            height: 70px;
+            margin-top: 15px;
+            margin-bottom: 15px;
         }
         .menuContent {
             text-align: center;
             float: left;
-            width: 150px;
+            width: 200px;
+            height: 70px;
+        }
+        .menuLink {
+            position: relative;
+            top: 40px;
         }
         ul, li {
             list-style-type:none;
             padding:0;
-            margin:0
+            margin:0;
         }
-        a {
-            text-decoration: none;
-            color: #000;
-        }
+
+        /* 其他 */
         table {
             text-align: center;
             width: 1500px;
             margin: 20px;
+        }
+        a {
+            text-decoration: none;
+            color: #000;
         }
     </style>
 
@@ -67,27 +76,27 @@
         };
     </script>
 </head>
+
 <body>
-    <div id="title">
-        <h1 style="text-align:center;font-size:50px">
-            Type</h1>
-    </div>
     <div class="menu">
         <ul>
-            <li class="menuContent">
-                <a href="/gallery">Gallery</a>
+            <li class="menuContent" style="text-align:center; font-size:50px">
+                SunSite
             </li>
             <li class="menuContent">
-                <a href="/illustrator">Illustrator</a>
+                <a class="menuLink" href="/gallery">Gallery</a>
             </li>
             <li class="menuContent">
-                <a href="/group">Group</a>
+                <a class="menuLink" href="/illustrator">Illustrator</a>
             </li>
             <li class="menuContent">
-                <a href="/collection">Collection</a>
+                <a class="menuLink" href="/group">Group</a>
             </li>
             <li class="menuContent">
-                <a href="/type">Type</a>
+                <a class="menuLink" href="/collection">Collection</a>
+            </li>
+            <li class="menuContent">
+                <a class="menuLink" href="/type">Type</a>
             </li>
         </ul>
     </div>

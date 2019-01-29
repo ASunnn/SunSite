@@ -12,38 +12,67 @@
             margin-left: auto;
             margin-right: auto;
             width: 1800px;
-            height: 50px;
+            height: 70px;
+            margin-top: 15px;
+            margin-bottom: 15px;
         }
         .menuContent {
             text-align: center;
             float: left;
-            width: 150px;
+            width: 200px;
+            height: 70px;
+        }
+        .menuLink {
+            position: relative;
+            top: 40px;
         }
         ul, li {
             list-style-type:none;
             padding:0;
-            margin:0
+            margin:0;
         }
-        a {
-            text-decoration: none;
-            color: #000;
-        }
-
+        /* 内容 */
         table {
             text-align: center;
             width: 1500px;
             margin: 20px;
         }
         /* 工具 */
-        .tool {
-                margin-bottom: 10px;
-                position: absolute;
-                left: 50%;
-                transform: translateX(-50%);
-            }
-            .separator {
-                float: left;
-            }
+        .toolContent {
+            text-align: center;
+            float: left;
+            width: 200px;
+            height: 40px;
+        }
+        .separator {
+            float: left;
+            width: 2px;
+        }
+        /* 修改表单 */ 
+        .modifyContent {
+            margin:auto;
+            margin-top:20px;
+            margin-bottom:20px;
+            width:1800px;
+            text-align:center;
+            background-color: #fafafa;
+        }
+        .modifyInput {
+            width: 200px;
+            height: 20px;
+        }
+        label {
+            display: inline-block;
+            width: 100px;
+            height: 30px;
+            margin: auto;
+            text-align: right;
+        }
+        /* 通用 */   
+        a {
+            text-decoration: none;
+            color: #000;
+        }
     </style>
 
     <script>
@@ -55,6 +84,7 @@
             getCollectionList(group);
         };
     </script>
+    <!-- 画集列表 -->
     <script>
         function getCollectionList(group) {
             $.get("/group/info?n=" + group, function (data) {
@@ -105,7 +135,18 @@
             trElement.appendChild(typeTd);
         }
     </script>
+    <!-- 下载、删除 -->
     <script>
+        $(function () {
+            $("#modify").click(function () {
+                var modifyContent = document.getElementById("modifyContent");
+                if (modifyContent.style.display == "none")
+                    modifyContent.style.display = "block";
+                else
+                    modifyContent.style.display = "none";
+            });
+        });
+
         $(function () {
             $("#download").click(function () {
                 var r = window.location.href.split("/");
@@ -114,6 +155,7 @@
                 window.location.href = "/group/download/" + group;
             });
         });
+        
         $(function () {
             $("#delete").click(function () {
                 var r = window.location.href.split("/");
@@ -138,33 +180,63 @@
                 });
             });
         });
+
+        $(function () {
+            $("#submit").click(function () {
+                var r = window.location.href.split("/");
+                var group = decodeURIComponent(r[r.length-1]);
+
+                var newName = $('#modifyName').val();
+                var aliases = $('#modifyAlias').val();
+
+                var data = {
+                    "group": group,
+                    "newName": newName,
+                    "aliases": aliases
+                }
+
+                $.ajax({
+                    method: 'post',
+                    url: "/group/modify",
+                    data: JSON.stringify(data),
+                    dataType: "JSON",
+                    contentType: "application/json"
+                }).done(function (data) {
+                    alert(data.msg);
+                    if (data.code == 0) 
+                        window.location.href = "/group/show/" + encodeURIComponent(newName);
+                }).fail(function () {
+                    alert("error");
+                    window.location.href = "/error";
+                });
+            });
+        });
     </script>
 </head>
+
 <body>
-    <div id="title">
-        <h1 style="text-align:center;font-size:50px">
-            Group</h1>
-    </div>
     <div class="menu">
         <ul>
-            <li class="menuContent">
-                <a href="/gallery">Gallery</a>
+            <li class="menuContent" style="text-align:center; font-size:50px">
+                SunSite
             </li>
             <li class="menuContent">
-                <a href="/illustrator">Illustrator</a>
+                <a class="menuLink" href="/gallery">Gallery</a>
             </li>
             <li class="menuContent">
-                <a href="/group">Group</a>
+                <a class="menuLink" href="/illustrator">Illustrator</a>
             </li>
             <li class="menuContent">
-                <a href="/collection">Collection</a>
+                <a class="menuLink" href="/group">Group</a>
             </li>
             <li class="menuContent">
-                <a href="/type">Type</a>
+                <a class="menuLink" href="/collection">Collection</a>
+            </li>
+            <li class="menuContent">
+                <a class="menuLink" href="/type">Type</a>
             </li>
         </ul>
     </div>
-
     <div id="content" style="margin:auto; width: 1800px;">
         <table width="100%" id="contentTable" class="contentTable">
             <thead>
@@ -178,17 +250,33 @@
             <tbody id="tableBody">
             </tbody>
         </table>
-        <div class="tool">
-            <ul>
-                <li id="download" class="menuContent">
+        <div id="tool">
+            <ul style="width:604px; height:40px; margin:auto;">
+                <li id="modify" class="toolContent">
+                    Modify
+                </li>
+                <li class="separator">|</li>
+                <li id="download" class="toolContent">
                     Download
                 </li>
                 <li class="separator">|</li>
-                <li id="delete" class="menuContent">
+                <li id="delete" class="toolContent">
                     Delete
                 </li>
             </ul>
         </div>
+    </div>
+    <div id="modifyContent" class="modifyContent" style="display: none">
+        <form id="modifyInfoForm">
+            <label for="alias">Aliases</label>
+            <input type="text" name="alias" id="modifyAlias" class="modifyInput", autocomplete="off"/>
+            <br />
+            <hr style="border-color:white" />
+            <label for="name">Name</label>
+            <input type="text" name="name" id="modifyName" class="modifyInput", autocomplete="off"/>
+            <br />
+            <input id="submit" type="button" value="sumbit!">
+        </form>
     </div>
 </body>
 </html>

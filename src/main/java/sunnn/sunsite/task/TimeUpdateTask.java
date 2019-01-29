@@ -3,9 +3,9 @@ package sunnn.sunsite.task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import sunnn.sunsite.dao.CollectionMapper;
-import sunnn.sunsite.dao.GroupMapper;
-import sunnn.sunsite.dao.TypeMapper;
+import sunnn.sunsite.dao.CollectionDao;
+import sunnn.sunsite.dao.GroupDao;
+import sunnn.sunsite.dao.TypeDao;
 import sunnn.sunsite.entity.Collection;
 
 import javax.annotation.Resource;
@@ -21,13 +21,13 @@ public class TimeUpdateTask {
     private ExecutorService executor = Executors.newSingleThreadExecutor();
 
     @Resource
-    private CollectionMapper collectionMapper;
+    private CollectionDao collectionDao;
 
     @Resource
-    private GroupMapper groupMapper;
+    private GroupDao groupDao;
 
     @Resource
-    private TypeMapper typeMapper;
+    private TypeDao typeDao;
 
     public void submit(long collection) {
         Task t = new Task(collection);
@@ -45,13 +45,13 @@ public class TimeUpdateTask {
 
         @Override
         public void run() {
-            Collection c = collectionMapper.find(cId);
+            Collection c = collectionDao.find(cId);
 
             Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
-            groupMapper.update(timestamp, c.getGroup());
-            collectionMapper.update(timestamp, cId);
-            typeMapper.update(timestamp, c.getType());
+            groupDao.update(timestamp, c.getGroup());
+            collectionDao.update(timestamp, cId);
+            typeDao.update(timestamp, c.getType());
         }
     }
 }

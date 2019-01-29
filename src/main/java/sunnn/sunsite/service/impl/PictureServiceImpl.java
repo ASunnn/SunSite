@@ -36,16 +36,16 @@ public class PictureServiceImpl implements PictureService {
     private final IllustratorService illustratorService;
 
     @Resource
-    private PicMapper picMapper;
+    private PicDao picDao;
 
     @Resource
-    private PictureMapper pictureMapper;
+    private PictureDao pictureDao;
 
     @Resource
-    private IllustratorMapper illustratorMapper;
+    private IllustratorDao illustratorDao;
 
     @Resource
-    private CollectionMapper collectionMapper;
+    private CollectionDao collectionDao;
 
     private final ThumbnailTask thumbnailTask;
 
@@ -108,13 +108,13 @@ public class PictureServiceImpl implements PictureService {
         /*
             图片信息处理
          */
-        Collection c = collectionMapper.findByInfo(info.getCollection(), info.getGroup());
+        Collection c = collectionDao.findByInfo(info.getCollection(), info.getGroup());
         if (c == null)
             return StatusCode.ILLEGAL_INPUT;
 
         String[] illustratorInfo;
         if (info.getIllustrator() != null && !info.getIllustrator().isEmpty())
-            illustratorInfo = info.getIllustrator().split("，");
+            illustratorInfo = info.getIllustrator().split(SunsiteConstant.SEPARATOR);
         else
             illustratorInfo = new String[]{Illustrator.DEFAULT_VALUE};
 
@@ -138,14 +138,14 @@ public class PictureServiceImpl implements PictureService {
                 continue;
             }
             // 存数据库
-            picMapper.insert(pictureData);
+            picDao.insert(pictureData);
 
             Picture pictureInfo = new Picture()
                     .setSequence(pictureData.getSequence())
                     .setName(pictureData.getName())
                     .setCollection(c.getCId())
                     .setIndex(Integer.MAX_VALUE);
-            pictureMapper.insert(pictureInfo);
+            pictureDao.insert(pictureInfo);
 
             List<Artwork> artworks = new ArrayList<>();
             for (Illustrator i : illustrators) {
@@ -154,7 +154,7 @@ public class PictureServiceImpl implements PictureService {
                         .setSequence(pictureData.getSequence()));
             }
             if (!artworks.isEmpty())
-                illustratorMapper.insertAllArtwork(artworks);
+                illustratorDao.insertAllArtwork(artworks);
 
             // 设置缩略图任务
             thumbnailTask.submit(
@@ -170,13 +170,13 @@ public class PictureServiceImpl implements PictureService {
 
     private Pic generateInfo(File file, Collection c) {
         Pic picture = new Pic();
-        CollectionBase info = collectionMapper.findBaseInfo(c.getCId());
+        CollectionBase info = collectionDao.findBaseInfo(c.getCId());
 
         String md5Source = info.getGroup() + info.getCollection() + file.getName();
         long sequence = MD5s.getMD5Sequence(md5Source);
         if (sequence == -1)
             return null;
-        if (picMapper.find(sequence) != null) {
+        if (picDao.find(sequence) != null) {
             log.warn("Duplicate Pic : " + md5Source);
             log.warn("Duplicate Sequence : " + sequence);
             return null;
@@ -225,13 +225,13 @@ public class PictureServiceImpl implements PictureService {
     @Override
     @Transactional
     public StatusCode delete(long sequence) {
-        Pic p = picMapper.find(sequence);
+        Pic p = picDao.find(sequence);
         if (p == null)
             return StatusCode.DELETE_FAILED;
 
-        pictureMapper.delete(sequence);
-        picMapper.delete(sequence);
-        illustratorMapper.deletePicture(sequence);
+        pictureDao.delete(sequence);
+        picDao.delete(sequence);
+        illustratorDao.deletePicture(sequence);
 
         //删除文件本体
         String path = SunSiteProperties.savePath + p.getPath();
@@ -246,13 +246,13 @@ public class PictureServiceImpl implements PictureService {
     @Transactional(propagation = Propagation.REQUIRED,
             isolation = Isolation.DEFAULT)
     public StatusCode deleteCollection(long sequence) {
-        List<Picture> pictures = pictureMapper.findAllByCollection(sequence);
+        List<Picture> pictures = pictureDao.findAllByCollection(sequence);
 
         for (Picture p : pictures) {
-            picMapper.delete(p.getSequence());
-            illustratorMapper.deletePicture(p.getSequence());
+            picDao.delete(p.getSequence());
+            illustratorDao.deletePicture(p.getSequence());
         }
-        pictureMapper.deleteAllByCollection(sequence);
+        pictureDao.deleteAllByCollection(sequence);
 
         return StatusCode.OJBK;
     }

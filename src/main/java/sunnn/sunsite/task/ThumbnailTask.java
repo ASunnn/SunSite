@@ -44,7 +44,7 @@ public class ThumbnailTask {
 
             try {
                 Thumbnails.of(src)
-                        .size(SunsiteConstant.thumbnailSize, SunsiteConstant.thumbnailSize)
+                        .size(SunsiteConstant.THUMBNAIL_SIZE, SunsiteConstant.THUMBNAIL_SIZE)
                         .toFile(dest);
             } catch (IOException e) {
                 log.error("Cannot Create Thumbnail : "+ e);

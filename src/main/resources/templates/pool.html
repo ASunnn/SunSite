@@ -6,65 +6,96 @@
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.9.0.min.js"></script>
     <style>
-            /* 标题菜单 */
-            .menu {
-                margin-left: auto;
-                margin-right: auto;
-                width: 1800px;
-                height: 50px;
-            }
-            .menuContent {
-                text-align: center;
-                float: left;
-                width: 150px;
-            }
-            ul, li {
-                list-style-type:none;
-                padding:0;
-                margin:0
-            }
-            /* 图片列表 */
-            .pictureList {
-                display: inline-block;
-                text-align: center;
-                width: 280px;
-                height: 295px;
-                margin: 10px;
-                background-color: #f4f4f4;
-            }
-            .imageDiv {
-                width: 250px; 
-                height: 250px; 
-                margin: auto; 
-            }
-            img {
-                display: block;
-                margin: auto;
-            }
-            .next {
-                text-align: center;
-                margin: 30px;
-            }
-            a {
-                text-decoration: none;
-                color: #000;
-            }
-            /* 工具 */
-            .tool {
-                margin-bottom: 10px;
-                position: absolute;
-                left: 50%;
-                transform: translateX(-50%);
-            }
-            .separator {
-                float: left;
-            }
-        </style>
+        /* 标题菜单 */
+        .menu {
+            margin-left: auto;
+            margin-right: auto;
+            width: 1800px;
+            height: 70px;
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+        .menuContent {
+            text-align: center;
+            float: left;
+            width: 200px;
+            height: 70px;
+        }
+        .menuLink {
+            position: relative;
+            top: 40px;
+        }
+        ul, li {
+            list-style-type:none;
+            padding:0;
+            margin:0;
+        }
+        /* 图片列表 */
+        .pictureList {
+            display: inline-block;
+            text-align: center;
+            width: 280px;
+            height: 295px;
+            margin: 10px;
+            background-color: #f4f4f4;
+        }
+        .imageDiv {
+            width: 250px; 
+            height: 250px; 
+            margin: auto; 
+        }
+        img {
+            display: block;
+            margin: auto;
+        }
+        .next {
+            text-align: center;
+            margin: 30px;
+        }
+        /* 工具 */
+        .toolContent {
+            text-align: center;
+            float: left;
+            width: 200px;
+            height: 40px;
+        }
+        .separator {
+            float: left;
+            width: 2px;
+        }
+        /* 修改表单 */ 
+        .modifyContent {
+            margin:auto;
+            margin-top:20px;
+            margin-bottom:20px;
+            width:1800px;
+            text-align:center;
+            background-color: #fafafa;
+        }
+        .modifyInput {
+            width: 200px;
+            height: 20px;
+        }
+        label {
+            display: inline-block;
+            width: 100px;
+            height: 30px;
+            margin: auto;
+            text-align: right;
+        }
+        /* 通用 */
+        a {
+            text-decoration: none;
+            color: #000;
+        }
+    </style>
+
     <script>
         window.onload = function () {
             getPictureList(0);
         };
     </script>
+
     <script>
         $(function () {
             $("#page").click(function () {
@@ -138,6 +169,7 @@
 
             var imageLink = document.createElement("a");
             imageLink.setAttribute("href", "/gallery/show/" + sequence);
+            imageLink.setAttribute("target", "_blank");
             imageLink.appendChild(image);
             imageDiv.appendChild(imageLink);
 
@@ -149,7 +181,18 @@
             divElement.appendChild(nameElement);
         }
     </script>
+    <!-- 下载、删除 -->
     <script>
+        $(function () {
+            $("#modify").click(function () {
+                var modifyContent = document.getElementById("modifyContent");
+                if (modifyContent.style.display == "none")
+                    modifyContent.style.display = "block";
+                else
+                    modifyContent.style.display = "none";
+            });
+        });
+
         $(function () {
             $("#download").click(function () {
                 var r = window.location.href.split("/");
@@ -158,6 +201,7 @@
                 window.location.href = "/collection/download/" + sequence;
             });
         });
+
         $(function () {
             $("#delete").click(function () {
                 var r = window.location.href.split("/");
@@ -182,49 +226,89 @@
                 });
             });
         });
+
+        $(function () {
+            $("#submit").click(function () {
+                var r = window.location.href.split("/");
+                var sequence = r[r.length-1];
+
+                var newName = $('#modifyName').val();
+
+                var data = {
+                    "sequence": sequence,
+                    "newName": newName
+                }
+
+                $.ajax({
+                    method: 'post',
+                    url: "/collection/modify",
+                    data: JSON.stringify(data),
+                    dataType: "JSON",
+                    contentType: "application/json"
+                }).done(function (data) {
+                    alert(data.msg);
+                    if (data.code == 0) 
+                        window.location.reload();
+                }).fail(function () {
+                    alert("error");
+                    window.location.href = "/error";
+                });
+            });
+        });
     </script>
 </head>
 
 <body>
-    <div id="title">
-        <h1 id="titleText" style="text-align:center;font-size:50px">
-            Collection</h1>
-    </div>
     <div class="menu">
         <ul>
-            <li class="menuContent">
-                <a href="/gallery">Gallery</a>
+            <li class="menuContent" style="text-align:center; font-size:50px">
+                SunSite
             </li>
             <li class="menuContent">
-                <a href="/illustrator">Illustrator</a>
+                <a class="menuLink" href="/gallery">Gallery</a>
             </li>
             <li class="menuContent">
-                <a href="/group">Group</a>
+                <a class="menuLink" href="/illustrator">Illustrator</a>
             </li>
             <li class="menuContent">
-                <a href="/collection">Collection</a>
+                <a class="menuLink" href="/group">Group</a>
             </li>
             <li class="menuContent">
-                <a href="/type">Type</a>
+                <a class="menuLink" href="/collection">Collection</a>
+            </li>
+            <li class="menuContent">
+                <a class="menuLink" href="/type">Type</a>
             </li>
         </ul>
     </div>
-    <div id="content" style="margin:auto; width:1800px; position: relative;">
+    <div id="content" style="margin:auto; width:1800px;">
         <div id="pictureList">
         </div>
         <div id="page">
         </div>
-        <div class="tool">
-            <ul>
-                <li id="download" class="menuContent">
+        <div id="tool">
+            <ul style="width:604px; height:40px; margin:auto;">
+                <li id="modify" class="toolContent">
+                    Modify
+                </li>
+                <li class="separator">|</li>
+                <li id="download" class="toolContent">
                     Download
                 </li>
                 <li class="separator">|</li>
-                <li id="delete" class="menuContent">
+                <li id="delete" class="toolContent">
                     Delete
                 </li>
             </ul>
         </div>
+    </div>
+    <div id="modifyContent" class="modifyContent" style="display: none">
+        <form id="modifyInfoForm">
+            <label for="name">Name</label>
+            <input type="text" name="name" id="modifyName" class="modifyInput", autocomplete="off"/>
+            <br />
+            <input id="submit" type="button" value="sumbit!">
+        </form>
     </div>
 </body>
 </html>

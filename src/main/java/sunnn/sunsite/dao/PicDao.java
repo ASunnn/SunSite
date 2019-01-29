@@ -5,7 +5,7 @@ import sunnn.sunsite.entity.Pic;
 
 import java.util.List;
 
-public interface PicMapper {
+public interface PicDao {
 
     Pic find(long sequence);
 
@@ -14,6 +14,8 @@ public interface PicMapper {
     void insert(Pic picture);
 
     int count();
+
+    void updatePath(@Param("sequence") long sequence, @Param("path") String path);
 
     void delete(long sequence);
 }

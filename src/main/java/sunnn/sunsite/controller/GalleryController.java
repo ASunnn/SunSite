@@ -83,7 +83,7 @@ public class GalleryController {
                 pictureService.uploadInfoAndSave(info));
     }
 
-    @RequestMapping(value = "/delete")
+    @PostMapping(value = "/delete")
     @ResponseBody
     public BaseResponse deletePicture(@Valid @RequestBody DeleteRequest info) {
         return new BaseResponse(

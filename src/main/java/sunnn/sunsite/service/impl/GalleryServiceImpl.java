@@ -3,10 +3,10 @@ package sunnn.sunsite.service.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import sunnn.sunsite.dao.CollectionMapper;
-import sunnn.sunsite.dao.IllustratorMapper;
-import sunnn.sunsite.dao.PicMapper;
-import sunnn.sunsite.dao.PictureMapper;
+import sunnn.sunsite.dao.CollectionDao;
+import sunnn.sunsite.dao.IllustratorDao;
+import sunnn.sunsite.dao.PicDao;
+import sunnn.sunsite.dao.PictureDao;
 import sunnn.sunsite.dto.CollectionBase;
 import sunnn.sunsite.dto.PictureBase;
 import sunnn.sunsite.dto.response.PictureInfoResponse;
@@ -34,37 +34,37 @@ public class GalleryServiceImpl implements GalleryService {
     private static Logger log = LoggerFactory.getLogger(GalleryServiceImpl.class);
 
     @Resource
-    private PicMapper picMapper;
+    private PicDao picDao;
 
     @Resource
-    private PictureMapper pictureMapper;
+    private PictureDao pictureDao;
 
     @Resource
-    private CollectionMapper collectionMapper;
+    private CollectionDao collectionDao;
 
     @Resource
-    private IllustratorMapper illustratorMapper;
+    private IllustratorDao illustratorDao;
 
     @Override
     public PictureListResponse getPictureList(int page) {
         if (isIllegalPageParam(page))
             return new PictureListResponse(StatusCode.ILLEGAL_INPUT);
 
-        int size = SunsiteConstant.pageSize;
+        int size = SunsiteConstant.PAGE_SIZE;
         int skip = page * size;
-        List<Pic> pictures = picMapper.findAll(skip, size);
+        List<Pic> pictures = picDao.findAll(skip, size);
 
         if (pictures.isEmpty())
             return new PictureListResponse(StatusCode.NO_DATA);
 
         List<PictureBase> pictureList = new ArrayList<>();
         for (Pic p : pictures) {
-            PictureBase r = pictureMapper.findBaseInfo(p.getSequence());
+            PictureBase r = pictureDao.findBaseInfo(p.getSequence());
             pictureList.add(r);
         }
 
-        int count = picMapper.count();
-        int pageCount = (int) Math.ceil((double) count / SunsiteConstant.pageSize);
+        int count = picDao.count();
+        int pageCount = (int) Math.ceil((double) count / SunsiteConstant.PAGE_SIZE);
 
         return new PictureListResponse(StatusCode.OJBK)
                 .setPageCount(pageCount)
@@ -73,21 +73,21 @@ public class GalleryServiceImpl implements GalleryService {
 
     @Override
     public CollectionInfoResponse getPictureListInCollection(long collection, int page) {
-        CollectionBase baseInfo = collectionMapper.findBaseInfo(collection);
+        CollectionBase baseInfo = collectionDao.findBaseInfo(collection);
         if (baseInfo == null || isIllegalPageParam(page))
             return new CollectionInfoResponse(StatusCode.ILLEGAL_INPUT);
 
-        int size = SunsiteConstant.pageSize;
+        int size = SunsiteConstant.PAGE_SIZE;
         int skip = page * size;
 
-        List<PictureBase> pictureList = pictureMapper.findAllBaseInfoByCollection(collection, skip, size);
+        List<PictureBase> pictureList = pictureDao.findAllBaseInfoByCollection(collection, skip, size);
         if (pictureList.isEmpty())
             return new CollectionInfoResponse(StatusCode.NO_DATA)
                     .setGroup(baseInfo.getGroup())
                     .setCollection(baseInfo.getCollection());
 
-        int count = pictureMapper.countByCollection(collection);
-        int pageCount = (int) Math.ceil((double) count / SunsiteConstant.pageSize);
+        int count = pictureDao.countByCollection(collection);
+        int pageCount = (int) Math.ceil((double) count / SunsiteConstant.PAGE_SIZE);
 
         return new CollectionInfoResponse(StatusCode.OJBK)
                 .setPageCount(pageCount)
@@ -98,24 +98,24 @@ public class GalleryServiceImpl implements GalleryService {
 
     @Override
     public PictureListResponse getPictureListByiIllustrator(String illustrator, int page) {
-        if (isIllegalPageParam(page) || illustratorMapper.find(illustrator) == null)
+        if (isIllegalPageParam(page) || illustratorDao.find(illustrator) == null)
             return new PictureListResponse(StatusCode.ILLEGAL_INPUT);
 
-        int size = SunsiteConstant.pageSize;
+        int size = SunsiteConstant.PAGE_SIZE;
         int skip = page * size;
-        List<Pic> pictures = illustratorMapper.findAllByIllustrator(illustrator, skip, size);
+        List<Pic> pictures = illustratorDao.findAllByIllustrator(illustrator, skip, size);
 
         if (pictures.isEmpty())
             return new PictureListResponse(StatusCode.NO_DATA);
 
         List<PictureBase> pictureList = new ArrayList<>();
         for (Pic p : pictures) {
-            PictureBase r = pictureMapper.findBaseInfo(p.getSequence());
+            PictureBase r = pictureDao.findBaseInfo(p.getSequence());
             pictureList.add(r);
         }
 
-        long count = illustratorMapper.countByIllustrator(illustrator);
-        int pageCount = (int) Math.ceil((double) count / SunsiteConstant.pageSize);
+        long count = illustratorDao.countByIllustrator(illustrator);
+        int pageCount = (int) Math.ceil((double) count / SunsiteConstant.PAGE_SIZE);
 
         return new PictureListResponse(StatusCode.OJBK)
                 .setPageCount(pageCount)
@@ -124,7 +124,7 @@ public class GalleryServiceImpl implements GalleryService {
 
     @Override
     public File getThumbnail(long sequence) {
-        Pic picture = picMapper.find(sequence);
+        Pic picture = picDao.find(sequence);
         if (picture != null) {
             String path = SunSiteProperties.savePath + picture.getPath() + picture.getThumbnailName();
             File f = new File(path);
@@ -142,7 +142,7 @@ public class GalleryServiceImpl implements GalleryService {
 
     @Override
     public File getPictureFile(long sequence) throws IllegalFileRequestException {
-        Pic picture = picMapper.find(sequence);
+        Pic picture = picDao.find(sequence);
         if (picture == null)
             throw new IllegalFileRequestException(String.valueOf(sequence));
 
@@ -152,7 +152,7 @@ public class GalleryServiceImpl implements GalleryService {
 
     @Override
     public PictureInfoResponse getPictureInfo(long sequence) {
-        Pic pictureData = picMapper.find(sequence);
+        Pic pictureData = picDao.find(sequence);
         if (pictureData == null)
             return new PictureInfoResponse(StatusCode.ILLEGAL_INPUT);
 
@@ -162,17 +162,17 @@ public class GalleryServiceImpl implements GalleryService {
                 .setWidth(pictureData.getWidth())
                 .setHeight(pictureData.getHeight());
 
-        PictureBase baseInfo = pictureMapper.findBaseInfo(sequence);
+        PictureBase baseInfo = pictureDao.findBaseInfo(sequence);
         response.setGroup(baseInfo.getGroup())
                 .setCId(String.valueOf(baseInfo.getCId()))
                 .setCollection(baseInfo.getCollection());
 
-        Picture p = pictureMapper.find(sequence);
+        Picture p = pictureDao.find(sequence);
         long[] seq = getClosePicture(p);
         response.setPrev(seq[0])
                 .setNext(seq[1]);
 
-        List<Illustrator> illustrators = illustratorMapper.findAllByPicture(sequence);
+        List<Illustrator> illustrators = illustratorDao.findAllByPicture(sequence);
         String[] is = new String[illustrators.size()];
         for (int i = 0; i < illustrators.size(); ++i) {
             is[i] = illustrators.get(i).getName();
@@ -183,7 +183,7 @@ public class GalleryServiceImpl implements GalleryService {
     }
 
     private long[] getClosePicture(Picture p) {
-        List<Picture> pictures = pictureMapper.findAllByCollection(p.getCollection());
+        List<Picture> pictures = pictureDao.findAllByCollection(p.getCollection());
 
         int index = pictures.indexOf(p);
 

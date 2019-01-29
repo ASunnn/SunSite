@@ -7,13 +7,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import sun.security.provider.Sun;
-import sunnn.sunsite.dao.IllustratorMapper;
+import sunnn.sunsite.dao.IllustratorDao;
 import sunnn.sunsite.dto.IllustratorInfo;
 import sunnn.sunsite.dto.response.IllustratorListResponse;
+import sunnn.sunsite.entity.Alias;
 import sunnn.sunsite.entity.Illustrator;
 import sunnn.sunsite.entity.Pic;
 import sunnn.sunsite.exception.IllegalFileRequestException;
+import sunnn.sunsite.service.AliasService;
 import sunnn.sunsite.service.IllustratorService;
 import sunnn.sunsite.util.*;
 
@@ -30,13 +31,16 @@ public class IllustratorServiceImpl implements IllustratorService {
 
     private static Logger log = LoggerFactory.getLogger(IllustratorServiceImpl.class);
 
+    private final AliasService aliasService;
+
     private final FileCache fileCache;
 
     @Resource
-    private IllustratorMapper illustratorMapper;
+    private IllustratorDao illustratorDao;
 
     @Autowired
-    public IllustratorServiceImpl(FileCache fileCache) {
+    public IllustratorServiceImpl(AliasService aliasService, FileCache fileCache) {
+        this.aliasService = aliasService;
         this.fileCache = fileCache;
     }
 
@@ -44,9 +48,9 @@ public class IllustratorServiceImpl implements IllustratorService {
     @Transactional(propagation = Propagation.REQUIRES_NEW,
             isolation = Isolation.DEFAULT)
     public Illustrator createIllustrator(String name) {
-        Illustrator illustrator = illustratorMapper.find(name);
+        Illustrator illustrator = illustratorDao.find(name);
         if (illustrator == null)
-            illustratorMapper.insert(illustrator = new Illustrator().setName(name));
+            illustratorDao.insert(illustrator = new Illustrator().setName(name));
 
         return illustrator;
     }
@@ -56,15 +60,15 @@ public class IllustratorServiceImpl implements IllustratorService {
         if (isIllegalPageParam(page))
             return new IllustratorListResponse(StatusCode.ILLEGAL_INPUT);
 
-        int size = SunsiteConstant.pageSize;
+        int size = SunsiteConstant.PAGE_SIZE;
         int skip = page * size;
 
-        List<IllustratorInfo> illustratorList = illustratorMapper.findAllInfo(skip, size);
+        List<IllustratorInfo> illustratorList = illustratorDao.findAllInfo(skip, size);
         if (illustratorList.isEmpty())
             return new IllustratorListResponse(StatusCode.NO_DATA);
 
-        int count = illustratorMapper.count();
-        int pageCount = (int) Math.ceil((double) count / SunsiteConstant.pageSize);
+        int count = illustratorDao.count();
+        int pageCount = (int) Math.ceil((double) count / SunsiteConstant.PAGE_SIZE);
 
         return new IllustratorListResponse(StatusCode.OJBK)
                 .setPageCount(pageCount)
@@ -73,7 +77,7 @@ public class IllustratorServiceImpl implements IllustratorService {
 
     @Override
     public File download(String name) throws IllegalFileRequestException {
-        Illustrator i = illustratorMapper.find(name);
+        Illustrator i = illustratorDao.find(name);
         if (i == null)
             throw new IllegalFileRequestException("Illustrator : " + name);
 
@@ -95,7 +99,7 @@ public class IllustratorServiceImpl implements IllustratorService {
         /*
             收集文件
          */
-        List<Pic> pictureList = illustratorMapper.findAllByIllustrator(name, 0, Integer.MAX_VALUE);
+        List<Pic> pictureList = illustratorDao.findAllByIllustrator(name, 0, Integer.MAX_VALUE);
         try {
             if (!FileUtils.createPath(path))
                 throw new IOException("Cant not Create Path : " + path);
@@ -127,18 +131,45 @@ public class IllustratorServiceImpl implements IllustratorService {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW,
+            isolation = Isolation.DEFAULT)
+    public StatusCode modifyName(String oldName, String newName) {
+        if (oldName.equals(newName))
+            return StatusCode.OJBK;
+
+        Illustrator i = illustratorDao.find(oldName);
+        if (i == null || i.getName().equals(Illustrator.DEFAULT_VALUE))
+            return StatusCode.ILLEGAL_INPUT;
+        if (illustratorDao.find(newName) != null)
+            return StatusCode.DUPLICATE_INPUT;
+
+        illustratorDao.update(oldName, newName);
+
+        return StatusCode.OJBK;
+    }
+
+    @Override
+    public StatusCode modifyAlias(String name, String alias) {
+        Illustrator i = illustratorDao.find(name);
+        if (i == null)
+            return StatusCode.ILLEGAL_INPUT;
+
+        return aliasService.modifyAlias(i.getId(), Alias.ILLUSTRATOR, alias.split(SunsiteConstant.SEPARATOR));
+    }
+
+    @Override
     @Transactional
     public StatusCode delete(String name) {
-        Illustrator i = illustratorMapper.find(name);
+        Illustrator i = illustratorDao.find(name);
         if (i == null || i.getName().equals(Illustrator.DEFAULT_VALUE))
             return StatusCode.DELETE_FAILED;
 
-        illustratorMapper.delete(name);
+        illustratorDao.delete(name);
 
-        Illustrator newIllustrator = illustratorMapper.find(Illustrator.DEFAULT_VALUE);
+        Illustrator newIllustrator = illustratorDao.find(Illustrator.DEFAULT_VALUE);
         if (newIllustrator == null)
             newIllustrator = createIllustrator(Illustrator.DEFAULT_VALUE);
-        illustratorMapper.update(newIllustrator.getId(), i.getId());
+        illustratorDao.updateArtwork(i.getId(), newIllustrator.getId());
 
         return StatusCode.OJBK;
     }

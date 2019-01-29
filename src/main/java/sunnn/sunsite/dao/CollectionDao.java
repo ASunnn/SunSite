@@ -8,7 +8,7 @@ import sunnn.sunsite.entity.Collection;
 import java.sql.Timestamp;
 import java.util.List;
 
-public interface CollectionMapper {
+public interface CollectionDao {
 
     Collection find(long cId);
 
@@ -25,6 +25,8 @@ public interface CollectionMapper {
     void insert(Collection collection);
 
     void update(@Param("lastUpdate") Timestamp lastUpdate, @Param("cId") long cId);
+
+    void updateName(@Param("cId") long cId, @Param("name") String name);
 
     int count();
 

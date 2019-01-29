@@ -7,7 +7,7 @@ import sunnn.sunsite.entity.Pic;
 
 import java.util.List;
 
-public interface IllustratorMapper {
+public interface IllustratorDao {
 
     Illustrator find(String name);
 
@@ -17,11 +17,13 @@ public interface IllustratorMapper {
 
     int count();
 
+    void update(@Param("oldIllustrator") String oldIllustrator, @Param("newIllustrator") String newIllustrator);
+
     void delete(String name);
 
     /* ———————————— Artwork ———————————— */
 
-    void insertAllArtwork(List list);
+    void insertAllArtwork(@Param("artworks") List artworks);
 
     List<Illustrator> findAllByPicture(long sequence);
 
@@ -29,7 +31,7 @@ public interface IllustratorMapper {
 
     int countByIllustrator(String illustrator);
 
-    void update(@Param("newIllustrator") int newIllustrator, @Param("oldIllustrator") int oldIllustrator);
+    void updateArtwork(@Param("oldIllustrator") int oldIllustrator, @Param("newIllustrator") int newIllustrator);
 
     void deletePicture(long sequence);
 }

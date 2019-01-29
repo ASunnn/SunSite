@@ -34,6 +34,25 @@ public interface IllustratorService {
     File download(String name) throws IllegalFileRequestException;
 
     /**
+     * 修改画师名
+     *
+     * @param oldName 要修改的画师
+     * @param newName 新名字
+     * @return 修改结果
+     */
+    StatusCode modifyName(String oldName, String newName);
+
+    /**
+     * 修改别名
+     *
+     * @param name 要修改的画师
+     * @param alias 别名列表
+     * @return 修改结果
+     */
+    StatusCode modifyAlias(String name, String alias);
+
+
+    /**
      * 删除一个画师记录
      *
      * @param name 图片序列号

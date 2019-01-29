@@ -9,12 +9,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import sunnn.sunsite.dto.request.DeleteRequest;
+import sunnn.sunsite.dto.request.ModifyGroup;
 import sunnn.sunsite.dto.response.BaseResponse;
 import sunnn.sunsite.dto.response.CollectionListResponse;
 import sunnn.sunsite.dto.response.GroupListResponse;
 import sunnn.sunsite.exception.IllegalFileRequestException;
 import sunnn.sunsite.service.CollectionService;
 import sunnn.sunsite.service.GroupService;
+import sunnn.sunsite.util.StatusCode;
 
 import javax.validation.Valid;
 import java.io.File;
@@ -34,19 +36,19 @@ public class GroupController {
         this.collectionService = collectionService;
     }
 
-    @RequestMapping(value = "/list")
+    @GetMapping(value = "/list")
     @ResponseBody
     public GroupListResponse groupList(@RequestParam("p") int page) {
         return groupService.getGroupList(page);
     }
 
-    @RequestMapping(value = "/info")
+    @GetMapping(value = "/info")
     @ResponseBody
     public CollectionListResponse groupDetail(@RequestParam("n") String group) {
         return collectionService.getCollectionListByGroup(group);
     }
 
-    @RequestMapping(value = "/download/{name}")
+    @GetMapping(value = "/download/{name}")
     @ResponseBody
     public ResponseEntity downloadGroup(@PathVariable("name") String name) throws IllegalFileRequestException, IOException {
         File file = groupService.download(name);
@@ -58,7 +60,22 @@ public class GroupController {
         return new ResponseEntity<>(FileUtils.readFileToByteArray(file), headers, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/delete")
+    @PostMapping(value = "/modify")
+    @ResponseBody
+    public BaseResponse modifyGroup(@Valid @RequestBody ModifyGroup modifyInfo) {
+        StatusCode modifyAlias = groupService.modifyAlias(
+                modifyInfo.getGroup(), modifyInfo.getAliases());
+        StatusCode modifyName = groupService.modifyName(modifyInfo.getGroup(), modifyInfo.getNewName());
+
+        if (!modifyAlias.equals(StatusCode.OJBK))
+            return new BaseResponse(modifyAlias);
+        else if (!modifyName.equals(StatusCode.OJBK))
+            return new BaseResponse(modifyName);
+        else
+            return new BaseResponse(StatusCode.OJBK);
+    }
+
+    @PostMapping(value = "/delete")
     @ResponseBody
     public BaseResponse deleteGroup(@Valid @RequestBody DeleteRequest info) {
         return new BaseResponse(

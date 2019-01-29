@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="sunnn.sunsite.dao.CollectionMapper">
+<mapper namespace="sunnn.sunsite.dao.CollectionDao">
 
     <select id="find" parameterType="java.lang.Long" resultType="sunnn.sunsite.entity.Collection">
         SELECT *
@@ -110,7 +110,13 @@
 
     <update id="update">
         UPDATE collection
-        SET `lastUpdate` = #{lastUpdate}
+        SET lastUpdate = #{lastUpdate}
+        WHERE cId = #{cId}
+    </update>
+
+    <update id="updateName">
+        UPDATE collection
+        SET `name` = #{name}
         WHERE cId = #{cId}
     </update>
 

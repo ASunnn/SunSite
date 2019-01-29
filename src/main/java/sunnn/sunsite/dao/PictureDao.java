@@ -6,7 +6,7 @@ import sunnn.sunsite.entity.Picture;
 
 import java.util.List;
 
-public interface PictureMapper {
+public interface PictureDao {
 
     void insert(Picture picture);
 

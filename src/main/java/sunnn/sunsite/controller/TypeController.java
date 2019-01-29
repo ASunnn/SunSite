@@ -34,19 +34,19 @@ public class TypeController {
         this.collectionService = collectionService;
     }
 
-    @RequestMapping(value = "/list")
+    @GetMapping(value = "/list")
     @ResponseBody
     public TypeListResponse typeList() {
         return typeService.getTypeList();
     }
 
-    @RequestMapping(value = "/info")
+    @GetMapping(value = "/info")
     @ResponseBody
     public CollectionListResponse groupDetail(@RequestParam("n") String type, @RequestParam("p") int page) {
         return collectionService.getCollectionListByType(type, page);
     }
 
-    @RequestMapping(value = "/download/{name}")
+    @GetMapping(value = "/download/{name}")
     @ResponseBody
     public ResponseEntity downloadType(@PathVariable("name") String name) throws IllegalFileRequestException, IOException {
         File file = typeService.download(name);
@@ -58,7 +58,7 @@ public class TypeController {
         return new ResponseEntity<>(FileUtils.readFileToByteArray(file), headers, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/delete")
+    @PostMapping(value = "/delete")
     @ResponseBody
     public BaseResponse deleteType(@Valid @RequestBody DeleteRequest info) {
         return new BaseResponse(

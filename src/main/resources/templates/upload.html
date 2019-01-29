@@ -12,24 +12,28 @@
             margin-left: auto;
             margin-right: auto;
             width: 1800px;
-            height: 50px;
+            height: 70px;
+            margin-top: 15px;
+            margin-bottom: 15px;
         }
         .menuContent {
             text-align: center;
             float: left;
-            width: 150px;
+            width: 200px;
+            height: 70px;
         }
-        /* 表单 */
-        .upload {
-            text-align: center;
-        }
-        .uploadInput {
-            height: 20px
+        .menuLink {
+            position: relative;
+            top: 40px;
         }
         ul, li {
             list-style-type:none;
             padding:0;
-            margin:0
+            margin:0;
+        }
+        /* 表单 */
+        .uploadInput {
+            height: 20px
         }
         label {
             display: inline-block;
@@ -38,6 +42,7 @@
             margin: auto;
             text-align: right;
         }
+        /* 通用 */
         a {
             text-decoration: none;
             color: #000;
@@ -45,126 +50,121 @@
     </style>
     <!-- 页面变换 -->
     <script>
-            // function upload() {
-            //     var content = document.getElementById("content");
-            //     content.style.display = "none";
-    
-            //     var uploadFile = document.getElementById("uploadFile");
-            //     uploadFile.style.display = "block";
-    
-            //     var title = document.getElementById("titleText");
-            //     title.onclick = null;
-            // }
-            function uploadInfo() {
-                var uploadFile = document.getElementById("uploadFile");
-                uploadFile.style.display = "none";
-    
-                var uploadInfo = document.getElementById("uploadInfo");
-                uploadInfo.style.display = "block";
-            }
+        // function upload() {
+        //     var content = document.getElementById("content");
+        //     content.style.display = "none";
 
-        </script>
-        <!-- 上传 -->
-        <script>
-            $(function () {
-                $("#submitFile").click(function () {
-                    var button = this;
-                    $(button).attr('disabled', 'disabled');
+        //     var uploadFile = document.getElementById("uploadFile");
+        //     uploadFile.style.display = "block";
+
+        //     var title = document.getElementById("titleText");
+        //     title.onclick = null;
+        // }
+        function uploadInfo() {
+            var uploadFile = document.getElementById("uploadFile");
+            uploadFile.style.display = "none";
+
+            var uploadInfo = document.getElementById("uploadInfo");
+            uploadInfo.style.display = "block";
+        }
+    </script>
+    <!-- 上传 -->
+    <script>
+        $(function () {
+            $("#submitFile").click(function () {
+                var button = this;
+                $(button).attr('disabled', 'disabled');
     
-                    var formData = new FormData($('#uploadFileForm')[0]);
-                    $.ajax({
-                        method: 'post',
-                        url: "/gallery/upload",
-                        data: formData,
-                        cache: false,   //上传文件无需缓存
-                        processData: false, //用于对data参数进行序列化处理 这里必须false
-                        contentType: false //必须
-                    }).done(function (data) {
-                        alert(data.msg);
-                        if (data.code == 0) {
-                            var uploadCode = document.getElementById("uploadCode");
-                            uploadCode.value = data.uploadCode;
-                            uploadInfo();
-                        } else {
-                            window.location.reload();
-                        }
-                    }).fail(function () {
-                        alert("error");
-                        window.location.href = "./error";
-                    });
-                });
-            });
-            $(function () {
-                $("#submitInfo").click(function () {
-                    var button = this;
-                    $(button).attr('disabled', 'disabled');
-    
-                    var illustrator = $('#illustrator').val();
-                    var group = $('#group').val();
-                    var collection = $('#collection').val();
-                    var uploadCode = $('#uploadCode').val();
-    
-                    var data = {
-                        "illustrator": illustrator,
-                        "group" : group,
-                        "collection": collection,
-                        "uploadCode": uploadCode
-                    };
-    
-                    $.ajax({
-                        method: 'post',
-                        url: "/gallery/uploadInfo",
-                        data: JSON.stringify(data),
-                        dataType: "JSON",
-                        contentType: "application/json"
-                    }).done(function (data) {
-                        alert(data.msg);
+                var formData = new FormData($('#uploadFileForm')[0]);
+                $.ajax({
+                    method: 'post',
+                    url: "/gallery/upload",
+                    data: formData,
+                    cache: false,   //上传文件无需缓存
+                    processData: false, //用于对data参数进行序列化处理 这里必须false
+                    contentType: false //必须
+                }).done(function (data) {
+                    alert(data.msg);
+                    if (data.code == 0) {
+                        var uploadCode = document.getElementById("uploadCode");
+                        uploadCode.value = data.uploadCode;
+                        uploadInfo();
+                    } else {
                         window.location.reload();
-                    }).fail(function () {
-                        alert("error");
-                        window.location.href = "/error";
-                    });
+                    }
+                }).fail(function () {
+                    alert("error");
+                    window.location.href = "./error";
                 });
             });
-        </script>
+        });
+        
+        $(function () {
+            $("#submitInfo").click(function () {
+                var button = this;
+                $(button).attr('disabled', 'disabled');
+    
+                var illustrator = $('#illustrator').val();
+                var group = $('#group').val();
+                var collection = $('#collection').val();
+                var uploadCode = $('#uploadCode').val();
+
+                var data = {
+                    "illustrator": illustrator,
+                    "group" : group,
+                    "collection": collection,
+                    "uploadCode": uploadCode
+                };
+
+                $.ajax({
+                    method: 'post',
+                    url: "/gallery/uploadInfo",
+                    data: JSON.stringify(data),
+                    dataType: "JSON",
+                    contentType: "application/json"
+                }).done(function (data) {
+                    alert(data.msg);
+                    window.location.reload();
+                }).fail(function () {
+                    alert("error");
+                        window.location.href = "/error";
+                });
+            });
+        });
+    </script>
 </head>
 
-
-
 <body>
-    <div id="title">
-        <h1 style="text-align:center;font-size:50px">
-            SunSite</h1>
-    </div>
     <div class="menu">
         <ul>
-            <li class="menuContent">
-                <a href="/gallery">Gallery</a>
+            <li class="menuContent" style="text-align:center; font-size:50px">
+                SunSite
             </li>
             <li class="menuContent">
-                <a href="/illustrator">Illustrator</a>
+                <a class="menuLink" href="/gallery">Gallery</a>
             </li>
             <li class="menuContent">
-                <a href="/group">Group</a>
+                <a class="menuLink" href="/illustrator">Illustrator</a>
             </li>
             <li class="menuContent">
-                <a href="/collection">Collection</a>
+                <a class="menuLink" href="/group">Group</a>
             </li>
             <li class="menuContent">
-                <a href="/type">Type</a>
+                <a class="menuLink" href="/collection">Collection</a>
+            </li>
+            <li class="menuContent">
+                <a class="menuLink" href="/type">Type</a>
             </li>
         </ul>
     </div>
-    
     <div id="content">
-        <div class="upload" id="uploadFile">
+        <div id="uploadFile" style="text-align: center;">
             <form id="uploadFileForm" enctype="multipart/form-data">
                 <input type="file" name="file" multiple="multiple" />
                 <input id="submitFile" type="button" value="sumbit!">
             </form>
         </div>
-        
-        <div class="upload" id="uploadInfo" style="display: none">
+        <div id="uploadInfo" style="text-align: center; display: none">
             <form id="uploadInfoForm">
                 <input type="hidden" name="uploadCode" id="uploadCode" value="" />
                 <label for="illustrator">Illustrator</label>

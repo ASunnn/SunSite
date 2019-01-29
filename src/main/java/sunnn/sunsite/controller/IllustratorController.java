@@ -9,12 +9,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import sunnn.sunsite.dto.request.DeleteRequest;
+import sunnn.sunsite.dto.request.ModifyIllustrator;
 import sunnn.sunsite.dto.response.BaseResponse;
 import sunnn.sunsite.dto.response.IllustratorListResponse;
 import sunnn.sunsite.dto.response.PictureListResponse;
 import sunnn.sunsite.exception.IllegalFileRequestException;
 import sunnn.sunsite.service.GalleryService;
 import sunnn.sunsite.service.IllustratorService;
+import sunnn.sunsite.util.StatusCode;
 
 import javax.validation.Valid;
 import java.io.File;
@@ -34,19 +36,19 @@ public class IllustratorController {
         this.galleryService = galleryService;
     }
 
-    @RequestMapping(value = "/list")
+    @GetMapping(value = "/list")
     @ResponseBody
     public IllustratorListResponse illustratorList(@RequestParam("p") int page) {
         return illustratorService.getIllustratorList(page);
     }
 
-    @RequestMapping(value = "/info")
+    @GetMapping(value = "/info")
     @ResponseBody
     public PictureListResponse illustratorDetail(@RequestParam("n") String illustrator, @RequestParam("p") int page) {
         return galleryService.getPictureListByiIllustrator(illustrator, page);
     }
 
-    @RequestMapping(value = "/download/{name}")
+    @GetMapping(value = "/download/{name}")
     @ResponseBody
     public ResponseEntity downloadIllustrator(@PathVariable("name") String name) throws IllegalFileRequestException, IOException {
         File file = illustratorService.download(name);
@@ -58,8 +60,23 @@ public class IllustratorController {
         return new ResponseEntity<>(FileUtils.readFileToByteArray(file), headers, HttpStatus.OK);
     }
 
+    @PostMapping(value = "/modify")
+    @ResponseBody
+    public BaseResponse modifyGroup(@Valid @RequestBody ModifyIllustrator modifyInfo) {
+        StatusCode modifyAlias = illustratorService.modifyAlias(
+                modifyInfo.getIllustrator(), modifyInfo.getAliases());
+        StatusCode modifyName = illustratorService.modifyName(modifyInfo.getIllustrator(), modifyInfo.getNewName());
 
-    @RequestMapping(value = "/delete")
+        if (!modifyAlias.equals(StatusCode.OJBK))
+            return new BaseResponse(modifyAlias);
+        else if (!modifyName.equals(StatusCode.OJBK))
+            return new BaseResponse(modifyAlias);
+        else
+            return new BaseResponse(modifyName.OJBK);
+    }
+
+
+    @PostMapping(value = "/delete")
     @ResponseBody
     public BaseResponse deleteIllustrator(@Valid @RequestBody DeleteRequest info) {
         return new BaseResponse(

@@ -7,13 +7,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import sunnn.sunsite.dao.CollectionMapper;
+import sunnn.sunsite.dao.CollectionDao;
+import sunnn.sunsite.dao.PicDao;
+import sunnn.sunsite.dao.PictureDao;
 import sunnn.sunsite.dto.CollectionBase;
 import sunnn.sunsite.dto.CollectionInfo;
 import sunnn.sunsite.dto.response.CollectionListResponse;
-import sunnn.sunsite.entity.Collection;
-import sunnn.sunsite.entity.Group;
-import sunnn.sunsite.entity.Type;
+import sunnn.sunsite.entity.*;
 import sunnn.sunsite.exception.IllegalFileRequestException;
 import sunnn.sunsite.service.CollectionService;
 import sunnn.sunsite.service.GroupService;
@@ -44,7 +44,13 @@ public class CollectionServiceImpl implements CollectionService {
     private final FileCache fileCache;
 
     @Resource
-    private CollectionMapper collectionMapper;
+    private CollectionDao collectionDao;
+
+    @Resource
+    private PictureDao pictureDao;
+
+    @Resource
+    private PicDao picDao;
 
     private final TimeUpdateTask updateTask;
 
@@ -89,7 +95,7 @@ public class CollectionServiceImpl implements CollectionService {
         String md5Source = info.getGroup() + info.getCollection();
         long cId = MD5s.getMD5Sequence(md5Source);
 
-        if (collectionMapper.find(cId) != null) {
+        if (collectionDao.find(cId) != null) {
             log.warn("Duplicate Collection : " + md5Source);
             log.warn("Duplicate Sequence : " + cId);
             return StatusCode.DUPLICATE_INPUT;
@@ -112,7 +118,7 @@ public class CollectionServiceImpl implements CollectionService {
                 .setGroup(group.getId())
                 .setType(type.getId())
                 .setCreateTime(new Timestamp(System.currentTimeMillis()));
-        collectionMapper.insert(c);
+        collectionDao.insert(c);
 
         updateTask.submit(c.getCId());
         return StatusCode.OJBK;
@@ -123,15 +129,15 @@ public class CollectionServiceImpl implements CollectionService {
         if (isIllegalPageParam(page))
             return new CollectionListResponse(StatusCode.ILLEGAL_INPUT);
 
-        int size = SunsiteConstant.pageSize;
+        int size = SunsiteConstant.PAGE_SIZE;
         int skip = page * size;
 
-        List<CollectionInfo> collectionList = collectionMapper.findAllInfo(skip, size);
+        List<CollectionInfo> collectionList = collectionDao.findAllInfo(skip, size);
         if (collectionList.isEmpty())
             return new CollectionListResponse(StatusCode.NO_DATA);
 
-        int count = collectionMapper.count();
-        int pageCount = (int) Math.ceil((double) count / SunsiteConstant.pageSize);
+        int count = collectionDao.count();
+        int pageCount = (int) Math.ceil((double) count / SunsiteConstant.PAGE_SIZE);
 
         return new CollectionListResponse(StatusCode.OJBK)
                 .setPageCount(pageCount)
@@ -140,7 +146,7 @@ public class CollectionServiceImpl implements CollectionService {
 
     @Override
     public CollectionListResponse getCollectionListByGroup(String group) {
-        List<CollectionInfo> collectionList = collectionMapper.findAllInfoByGroup(group, 0, Integer.MAX_VALUE);
+        List<CollectionInfo> collectionList = collectionDao.findAllInfoByGroup(group, 0, Integer.MAX_VALUE);
         if (collectionList.isEmpty())
             return new CollectionListResponse(StatusCode.NO_DATA);
 
@@ -153,15 +159,15 @@ public class CollectionServiceImpl implements CollectionService {
         if (isIllegalPageParam(page))
             return new CollectionListResponse(StatusCode.ILLEGAL_INPUT);
 
-        int size = SunsiteConstant.pageSize;
+        int size = SunsiteConstant.PAGE_SIZE;
         int skip = page * size;
 
-        List<CollectionInfo> collectionList = collectionMapper.findAllInfoByType(type, skip, size);
+        List<CollectionInfo> collectionList = collectionDao.findAllInfoByType(type, skip, size);
         if (collectionList.isEmpty())
             return new CollectionListResponse(StatusCode.NO_DATA);
 
-        int count = collectionMapper.countByType(type);
-        int pageCount = (int) Math.ceil((double) count / SunsiteConstant.pageSize);
+        int count = collectionDao.countByType(type);
+        int pageCount = (int) Math.ceil((double) count / SunsiteConstant.PAGE_SIZE);
 
         return new CollectionListResponse(StatusCode.OJBK)
                 .setPageCount(pageCount)
@@ -170,11 +176,11 @@ public class CollectionServiceImpl implements CollectionService {
 
     @Override
     public File download(long sequence) throws IllegalFileRequestException {
-        Collection c = collectionMapper.find(sequence);
+        Collection c = collectionDao.find(sequence);
         if (c == null)
             throw new IllegalFileRequestException("Collection : " + sequence);
 
-        CollectionBase info = collectionMapper.findBaseInfo(sequence);
+        CollectionBase info = collectionDao.findBaseInfo(sequence);
 
         String tempCode = "download_collection_" + sequence;
         List<File> files = fileCache.getFile(tempCode);
@@ -215,15 +221,62 @@ public class CollectionServiceImpl implements CollectionService {
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW,
             isolation = Isolation.DEFAULT)
+    public StatusCode modifyName(long sequence, String newName) {
+        // 校验
+        Collection c = collectionDao.find(sequence);
+        if (FileUtils.fileNameMatcher(newName)
+                || c == null)
+            return StatusCode.ILLEGAL_INPUT;
+
+        if (c.getName().equals(newName))
+            return StatusCode.OJBK;
+
+        CollectionBase baseInfo = collectionDao.findBaseInfo(sequence);
+        // 文件操作
+        String path = SunSiteProperties.savePath
+                + baseInfo.getType()
+                + File.separator
+                + baseInfo.getGroup()
+                + File.separator
+                + baseInfo.getCollection();
+        boolean result = FileUtils.rename(new File(path), newName);
+        if (!result)
+            return StatusCode.MODIFY_FAILED;
+
+        // 修改数据库
+        collectionDao.updateName(sequence, newName);
+        List<Picture> pictureList = pictureDao.findAllByCollection(sequence);
+        for (Picture picture : pictureList) {
+            Pic p = picDao.find(picture.getSequence());
+
+            String[] elements = p.getPath().split("\\\\");
+            if (elements.length == 0)
+                elements = p.getPath().split("/");
+            String newPath = elements[0]
+                    + File.separator
+                    + elements[1]
+                    + File.separator
+                    + newName
+                    + File.separator;
+
+            picDao.updatePath(p.getSequence(), newPath);
+        }
+
+        return StatusCode.OJBK;
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW,
+            isolation = Isolation.DEFAULT)
     public StatusCode delete(long sequence) {
-        Collection c = collectionMapper.find(sequence);
+        Collection c = collectionDao.find(sequence);
         if (c == null)
             return StatusCode.DELETE_FAILED;
 
-        CollectionBase info = collectionMapper.findBaseInfo(sequence);
+        CollectionBase info = collectionDao.findBaseInfo(sequence);
 
         pictureService.deleteCollection(sequence);
-        collectionMapper.delete(sequence);
+        collectionDao.delete(sequence);
 
         String parentPath = SunSiteProperties.savePath
                 + info.getType()

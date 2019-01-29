@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import sunnn.sunsite.dto.CollectionBase;
 import sunnn.sunsite.dto.request.DeleteRequest;
+import sunnn.sunsite.dto.request.ModifyCollection;
 import sunnn.sunsite.dto.response.BaseResponse;
 import sunnn.sunsite.dto.response.CollectionListResponse;
 import sunnn.sunsite.dto.response.CollectionInfoResponse;
@@ -35,25 +36,25 @@ public class CollectionController {
         this.galleryService = galleryService;
     }
 
-    @RequestMapping(value = "/create")
+    @PostMapping(value = "/create")
     @ResponseBody
     public BaseResponse createCollection(@Valid @RequestBody CollectionBase info) {
         return new BaseResponse(collectionService.createCollection(info));
     }
 
-    @RequestMapping(value = "/list")
+    @GetMapping(value = "/list")
     @ResponseBody
     public CollectionListResponse collectionList(@RequestParam("p") int page) {
         return collectionService.getCollectionList(page);
     }
 
-    @RequestMapping(value = "/info")
+    @GetMapping(value = "/info")
     @ResponseBody
     public CollectionInfoResponse collectionDetail(@RequestParam("seq") long sequence, @RequestParam("p") int page) {
         return galleryService.getPictureListInCollection(sequence, page);
     }
 
-    @RequestMapping(value = "/download/{sequence}")
+    @GetMapping(value = "/download/{sequence}")
     @ResponseBody
     public ResponseEntity downloadCollection(@PathVariable("sequence") long sequence) throws IllegalFileRequestException, IOException {
         File file = collectionService.download(sequence);
@@ -65,7 +66,14 @@ public class CollectionController {
         return new ResponseEntity<>(FileUtils.readFileToByteArray(file), headers, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/delete")
+    @PostMapping(value = "/modify")
+    @ResponseBody
+    public BaseResponse modifyCollection(@Valid @RequestBody ModifyCollection modifyInfo) {
+        return new BaseResponse(
+                collectionService.modifyName(Long.valueOf(modifyInfo.getSequence()), modifyInfo.getNewName()));
+    }
+
+    @PostMapping(value = "/delete")
     @ResponseBody
     public BaseResponse deleteCollection(@Valid @RequestBody DeleteRequest info) {
         return new BaseResponse(

@@ -1,7 +1,7 @@
 package sunnn.sunsite.task;
 
 import org.springframework.stereotype.Component;
-import sunnn.sunsite.dao.PictureMapper;
+import sunnn.sunsite.dao.PictureDao;
 import sunnn.sunsite.entity.Picture;
 
 import javax.annotation.Resource;
@@ -18,7 +18,7 @@ import static java.lang.Character.UnicodeBlock.of;
 public class PictureIndexTask {
 
     @Resource
-    private PictureMapper mapper;
+    private PictureDao dao;
 
     private ExecutorService executor = Executors.newSingleThreadExecutor();
 
@@ -53,7 +53,7 @@ public class PictureIndexTask {
 
         @Override
         public void run() {
-            List<Picture> pictures = mapper.findAllByCollection(collection);
+            List<Picture> pictures = dao.findAllByCollection(collection);
 
             int startIndex = getStartIndex(pictures);
             if (startIndex == -1)
@@ -78,7 +78,7 @@ public class PictureIndexTask {
                 newIndex = 1;
             while (!queue.isEmpty()) {
                 Picture p = queue.poll();
-                mapper.updateIndex(newIndex++, p.getSequence());
+                dao.updateIndex(newIndex++, p.getSequence());
             }
         }
 

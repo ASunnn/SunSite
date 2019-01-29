@@ -34,6 +34,24 @@ public interface GroupService {
     File download(String name) throws IllegalFileRequestException;
 
     /**
+     * 修改社团名
+     *
+     * @param oldName 要修改的社团
+     * @param newName 新名字
+     * @return 修改结果
+     */
+    StatusCode modifyName(String oldName, String newName);
+
+    /**
+     * 修改别名
+     *
+     * @param name  要修改的社团
+     * @param alias 别名列表
+     * @return 修改结果
+     */
+    StatusCode modifyAlias(String name, String alias);
+
+    /**
      * 删除一个社团记录
      *
      * @param name 社团名

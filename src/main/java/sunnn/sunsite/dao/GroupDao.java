@@ -7,7 +7,7 @@ import sunnn.sunsite.entity.Group;
 import java.sql.Timestamp;
 import java.util.List;
 
-public interface GroupMapper {
+public interface GroupDao {
 
     Group find(String name);
 
@@ -16,6 +16,8 @@ public interface GroupMapper {
     void insert(Group group);
 
     void update(@Param("lastUpdate") Timestamp lastUpdate, @Param("id") int id);
+
+    void updateName(@Param("oldName") String oldName, @Param("newName") String newName);
 
     int count();
 

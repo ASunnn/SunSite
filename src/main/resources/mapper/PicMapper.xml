@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="sunnn.sunsite.dao.PicMapper">
+<mapper namespace="sunnn.sunsite.dao.PicDao">
 
     <insert id="insert" parameterType="sunnn.sunsite.entity.Pic">
         INSERT INTO pic (sequence, `name`, size, width, height, vOrH, uploadTime, thumbnailName, path)
@@ -25,6 +25,12 @@
         SELECT COUNT( * ) AS c
         FROM pic
     </select>
+
+    <update id="updatePath">
+        UPDATE pic
+        SET path = #{path}
+        WHERE sequence = #{sequence}
+    </update>
 
     <delete id="delete">
         DELETE FROM pic WHERE sequence = #{sequence}

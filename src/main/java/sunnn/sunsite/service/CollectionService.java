@@ -44,6 +44,11 @@ public interface CollectionService {
     File download(long sequence) throws IllegalFileRequestException;
 
     /**
+     * 修改画集名
+     */
+    StatusCode modifyName(long sequence, String newName);
+
+    /**
      * 删除一个画集
      *
      * @param sequence 画集序列号

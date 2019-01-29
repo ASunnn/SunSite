@@ -12,24 +12,28 @@
             margin-left: auto;
             margin-right: auto;
             width: 1800px;
-            height: 50px;
+            height: 70px;
+            margin-top: 15px;
+            margin-bottom: 15px;
         }
         .menuContent {
             text-align: center;
             float: left;
-            width: 150px;
+            width: 200px;
+            height: 70px;
         }
-        /* 表单 */
-        .content {
-            text-align: center;
-        }
-        .createInput {
-            height: 20px
+        .menuLink {
+            position: relative;
+            top: 40px;
         }
         ul, li {
             list-style-type:none;
             padding:0;
-            margin:0
+            margin:0;
+        }
+        /* 表单 */
+        .createInput {
+            height: 20px;
         }
         label {
             display: inline-block;
@@ -38,6 +42,7 @@
             margin: auto;
             text-align: right;
         }
+        /* 其他 */
         a {
             text-decoration: none;
             color: #000;
@@ -78,33 +83,30 @@
     </script>
 </head>
 
-
 <body>
-    <div id="title">
-        <h1 style="text-align:center;font-size:50px">
-            Collection</h1>
-    </div>
     <div class="menu">
         <ul>
-            <li class="menuContent">
-                <a href="/gallery">Gallery</a>
+            <li class="menuContent" style="text-align:center; font-size:50px">
+                SunSite
             </li>
             <li class="menuContent">
-                <a href="/illustrator">Illustrator</a>
+                <a class="menuLink" href="/gallery">Gallery</a>
             </li>
             <li class="menuContent">
-                <a href="/group">Group</a>
+                <a class="menuLink" href="/illustrator">Illustrator</a>
             </li>
             <li class="menuContent">
-                <a href="/collection">Collection</a>
+                <a class="menuLink" href="/group">Group</a>
             </li>
             <li class="menuContent">
-                <a href="/type">Type</a>
+                <a class="menuLink" href="/collection">Collection</a>
+            </li>
+            <li class="menuContent">
+                <a class="menuLink" href="/type">Type</a>
             </li>
         </ul>
     </div>
-    
-    <div class="content" id="content">
+    <div id="content" style="text-align: center;">
         <form id="createInfoForm">
             <label for="collection">Collection</label>
             <input type="text" name="collection" id="collection" class="createInput", autocomplete="off"/>

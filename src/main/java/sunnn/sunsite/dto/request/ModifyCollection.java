@@ -9,13 +9,11 @@ import javax.validation.constraints.NotBlank;
 @Getter
 @Setter
 @ToString
-@Deprecated
-public class ChangeName {
+public class ModifyCollection {
 
     @NotBlank
-    private String oldName;
+    private String sequence;
 
     @NotBlank
     private String newName;
-
 }

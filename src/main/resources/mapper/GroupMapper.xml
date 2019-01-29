@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="sunnn.sunsite.dao.GroupMapper">
+<mapper namespace="sunnn.sunsite.dao.GroupDao">
 
     <select id="find" parameterType="java.lang.String" resultType="sunnn.sunsite.entity.Group">
         SELECT *
@@ -32,8 +32,14 @@
 
     <update id="update">
         UPDATE `group`
-        SET `lastUpdate` = #{lastUpdate}
+        SET lastUpdate = #{lastUpdate}
         WHERE id = #{id}
+    </update>
+
+    <update id="updateName">
+        UPDATE `group`
+        SET `name` = #{newName}
+        WHERE `name` = #{oldName}
     </update>
 
     <select id="count" resultType="java.lang.Integer">

@@ -7,13 +7,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import sunnn.sunsite.dao.CollectionMapper;
-import sunnn.sunsite.dao.GroupMapper;
+import sunnn.sunsite.dao.CollectionDao;
+import sunnn.sunsite.dao.GroupDao;
+import sunnn.sunsite.dao.PicDao;
+import sunnn.sunsite.dao.PictureDao;
 import sunnn.sunsite.dto.CollectionInfo;
 import sunnn.sunsite.dto.GroupInfo;
 import sunnn.sunsite.dto.response.GroupListResponse;
+import sunnn.sunsite.entity.Alias;
 import sunnn.sunsite.entity.Group;
+import sunnn.sunsite.entity.Pic;
+import sunnn.sunsite.entity.Picture;
 import sunnn.sunsite.exception.IllegalFileRequestException;
+import sunnn.sunsite.service.AliasService;
 import sunnn.sunsite.service.CollectionService;
 import sunnn.sunsite.service.GroupService;
 import sunnn.sunsite.util.*;
@@ -22,7 +28,9 @@ import javax.annotation.Resource;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static sunnn.sunsite.util.Utils.isIllegalPageParam;
 
@@ -33,17 +41,26 @@ public class GroupServiceImpl implements GroupService {
 
     private CollectionService collectionService;
 
+    private final AliasService aliasService;
+
     private final FileCache fileCache;
 
     @Resource
-    private GroupMapper groupMapper;
+    private GroupDao groupDao;
 
     @Resource
-    private CollectionMapper collectionMapper;
+    private CollectionDao collectionDao;
+
+    @Resource
+    private PictureDao pictureDao;
+
+    @Resource
+    private PicDao picDao;
 
     @Autowired
-    public GroupServiceImpl(FileCache fileCache) {
+    public GroupServiceImpl(FileCache fileCache, AliasService aliasService) {
         this.fileCache = fileCache;
+        this.aliasService = aliasService;
     }
 
     /**
@@ -59,9 +76,9 @@ public class GroupServiceImpl implements GroupService {
     @Transactional(propagation = Propagation.REQUIRED,
             isolation = Isolation.DEFAULT)
     public Group createGroup(String name) {
-        Group group = groupMapper.find(name);
+        Group group = groupDao.find(name);
         if (group == null)
-            groupMapper.insert(group = new Group().setName(name));
+            groupDao.insert(group = new Group().setName(name));
         return group;
     }
 
@@ -70,15 +87,15 @@ public class GroupServiceImpl implements GroupService {
         if (isIllegalPageParam(page))
             return new GroupListResponse(StatusCode.ILLEGAL_INPUT);
 
-        int size = SunsiteConstant.pageSize;
+        int size = SunsiteConstant.PAGE_SIZE;
         int skip = page * size;
 
-        List<GroupInfo> collectionList = groupMapper.findAllInfo(skip, size);
+        List<GroupInfo> collectionList = groupDao.findAllInfo(skip, size);
         if (collectionList.isEmpty())
             return new GroupListResponse(StatusCode.NO_DATA);
 
-        int count = groupMapper.count();
-        int pageCount = (int) Math.ceil((double) count / SunsiteConstant.pageSize);
+        int count = groupDao.count();
+        int pageCount = (int) Math.ceil((double) count / SunsiteConstant.PAGE_SIZE);
 
         return new GroupListResponse(StatusCode.OJBK)
                 .setPageCount(pageCount)
@@ -87,7 +104,7 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public File download(String name) throws IllegalFileRequestException {
-        Group g = groupMapper.find(name);
+        Group g = groupDao.find(name);
         if (g == null)
             throw new IllegalFileRequestException("Group : " + name);
 
@@ -109,7 +126,7 @@ public class GroupServiceImpl implements GroupService {
         /*
             收集文件
          */
-        List<CollectionInfo> collectionList = collectionMapper.findAllInfoByGroup(name, 0, Integer.MAX_VALUE);
+        List<CollectionInfo> collectionList = collectionDao.findAllInfoByGroup(name, 0, Integer.MAX_VALUE);
         try {
             for (CollectionInfo collection : collectionList) {
                 String locate = SunSiteProperties.savePath
@@ -145,18 +162,84 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW,
+            isolation = Isolation.DEFAULT)
+    public StatusCode modifyName(String oldName, String newName) {
+        // 校验
+        if (oldName.equals(newName))
+            return StatusCode.OJBK;
+
+        Group g = groupDao.find(oldName);
+        if (FileUtils.fileNameMatcher(newName)
+                || g == null)
+            return StatusCode.ILLEGAL_INPUT;
+        if (groupDao.find(newName) != null)
+            return StatusCode.DUPLICATE_INPUT;
+
+        // 文件操作
+        List<CollectionInfo> collectionList = collectionDao.findAllInfoByGroup(g.getName(), 0, Integer.MAX_VALUE);
+        Set<String> typeSet = new HashSet<>();
+
+        for (CollectionInfo collection : collectionList) {
+            if (!typeSet.contains(collection.getType())) {
+                typeSet.add(collection.getType());
+
+                String path = SunSiteProperties.savePath
+                    + collection.getType()
+                    + File.separator
+                    + oldName;
+                boolean result = FileUtils.rename(new File(path), newName);
+                if (!result)
+                    return StatusCode.MODIFY_FAILED;
+            }
+        }
+
+        // 修改数据库
+        groupDao.updateName(oldName, newName);
+        for (CollectionInfo collection : collectionList) {
+            List<Picture> pictureList = pictureDao.findAllByCollection(collection.getSequence());
+            for (Picture picture : pictureList) {
+                Pic p = picDao.find(picture.getSequence());
+
+                String[] elements = p.getPath().split("\\\\");
+                if (elements.length == 0)
+                    elements = p.getPath().split("/");
+                String newPath = elements[0]
+                        + File.separator
+                        + newName
+                        + File.separator
+                        + elements[2]
+                        + File.separator;
+
+                picDao.updatePath(p.getSequence(), newPath);
+            }
+        }
+
+        return StatusCode.OJBK;
+    }
+
+    @Override
+    public StatusCode modifyAlias(String name, String alias) {
+        Group g = groupDao.find(name);
+        if (g == null)
+            return StatusCode.ILLEGAL_INPUT;
+
+        return aliasService.modifyAlias(g.getId(), Alias.GROUP, alias.split(SunsiteConstant.SEPARATOR));
+    }
+
+    @Override
     @Transactional(propagation = Propagation.REQUIRED,
             isolation = Isolation.DEFAULT)
     public StatusCode delete(String name) {
-        Group g = groupMapper.find(name);
+        Group g = groupDao.find(name);
         if (g == null)
             return StatusCode.DELETE_FAILED;
 
-        List<CollectionInfo> collectionList = collectionMapper.findAllInfoByGroup(name, 0, Integer.MAX_VALUE);
+        List<CollectionInfo> collectionList = collectionDao.findAllInfoByGroup(name, 0, Integer.MAX_VALUE);
         for (CollectionInfo collection : collectionList) {
             collectionService.delete(collection.getSequence());
         }
-        groupMapper.delete(name);
+        groupDao.delete(name);
 
         return StatusCode.OJBK;
     }

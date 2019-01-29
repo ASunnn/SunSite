@@ -141,11 +141,13 @@ public class FileUtils {
      * @return 当且仅当重命名成功时返回true
      */
     public static boolean rename(File srcFile, String newName) {
-        File newFile = new File(newName);
+        String parentPath = srcFile.getParent() + File.separator;
+
+        File newFile = new File(parentPath + newName);
         if (newFile.exists())
             return false;
 
-        return srcFile.renameTo(new File(newName));
+        return srcFile.renameTo(newFile);
     }
 
     /**

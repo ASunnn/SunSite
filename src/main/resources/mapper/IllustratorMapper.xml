@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="sunnn.sunsite.dao.IllustratorMapper">
+<mapper namespace="sunnn.sunsite.dao.IllustratorDao">
 
     <select id="find" parameterType="java.lang.String" resultType="sunnn.sunsite.entity.Illustrator">
         SELECT *
@@ -31,6 +31,12 @@
         FROM illustrator
     </select>
 
+    <update id="update">
+        UPDATE illustrator
+        SET `name` = #{newIllustrator}
+        WHERE `name` = #{oldIllustrator}
+    </update>
+
     <delete id="delete">
         DELETE FROM illustrator WHERE `name` = #{name}
     </delete>
@@ -40,7 +46,7 @@
     <insert id="insertAllArtwork" parameterType="java.util.List">
         INSERT INTO artwork (illustrator, sequence)
         VALUES
-        <foreach collection="list" item="a" separator=",">
+        <foreach collection="artworks" item="a" separator=",">
             (#{a.illustrator}, #{a.sequence})
         </foreach>
     </insert>
@@ -81,7 +87,7 @@
         WHERE i.id = a.illustrator AND i.`name` = #{illustrator}
     </select>
 
-    <update id="update">
+    <update id="updateArtwork">
         UPDATE artwork
         SET illustrator = #{newIllustrator}
         WHERE illustrator = #{oldIllustrator}

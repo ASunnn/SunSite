@@ -9,13 +9,13 @@ import javax.validation.constraints.NotBlank;
 @Getter
 @Setter
 @ToString
-@Deprecated
-public class ChangeName {
+public class ModifyIllustrator {
 
     @NotBlank
-    private String oldName;
+    private String illustrator;
 
     @NotBlank
     private String newName;
 
+    private String aliases;
 }
