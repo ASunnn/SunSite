@@ -12,6 +12,7 @@ import sunnn.sunsite.dto.PictureBase;
 import sunnn.sunsite.dto.response.PictureInfoResponse;
 import sunnn.sunsite.dto.response.CollectionInfoResponse;
 import sunnn.sunsite.dto.response.PictureListResponse;
+import sunnn.sunsite.entity.Collection;
 import sunnn.sunsite.entity.Pic;
 import sunnn.sunsite.entity.Illustrator;
 import sunnn.sunsite.entity.Picture;
@@ -72,28 +73,24 @@ public class GalleryServiceImpl implements GalleryService {
     }
 
     @Override
-    public CollectionInfoResponse getPictureListInCollection(long collection, int page) {
-        CollectionBase baseInfo = collectionDao.findBaseInfo(collection);
-        if (baseInfo == null || isIllegalPageParam(page))
-            return new CollectionInfoResponse(StatusCode.ILLEGAL_INPUT);
+    public PictureListResponse getPictureListInCollection(long cId, int page) {
+        Collection c = collectionDao.find(cId);
+        if (c == null || isIllegalPageParam(page))
+            return new PictureListResponse(StatusCode.ILLEGAL_INPUT);
 
         int size = SunsiteConstant.PAGE_SIZE;
         int skip = page * size;
 
-        List<PictureBase> pictureList = pictureDao.findAllBaseInfoByCollection(collection, skip, size);
+        List<PictureBase> pictureList = pictureDao.findAllBaseInfoByCollection(cId, skip, size);
         if (pictureList.isEmpty())
-            return new CollectionInfoResponse(StatusCode.NO_DATA)
-                    .setGroup(baseInfo.getGroup())
-                    .setCollection(baseInfo.getCollection());
+            return new PictureListResponse(StatusCode.NO_DATA);
 
-        int count = pictureDao.countByCollection(collection);
+        int count = pictureDao.countByCollection(cId);
         int pageCount = (int) Math.ceil((double) count / SunsiteConstant.PAGE_SIZE);
 
-        return new CollectionInfoResponse(StatusCode.OJBK)
+        return new PictureListResponse(StatusCode.OJBK)
                 .setPageCount(pageCount)
-                .convertTo(pictureList)
-                .setGroup(baseInfo.getGroup())
-                .setCollection(baseInfo.getCollection());
+                .convertTo(pictureList);
     }
 
     @Override

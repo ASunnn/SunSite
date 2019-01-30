@@ -31,6 +31,9 @@
             margin:0;
         }
         /* 图片列表 */
+        .info {
+            margin: 10px;
+        }
         .pictureList {
             display: inline-block;
             text-align: center;
@@ -97,23 +100,33 @@
             var illustrator = r[r.length-1];
             document.title = decodeURIComponent(illustrator) + " | Illustrator";
 
+            getIllustratorInfo(illustrator);
             getPictureList(0);
         };
     </script>
     <!-- 图片列表 -->
     <script>
-        $(function () {
-            $("#page").click(function () {
-                var page = document.getElementById("next");
-                getPictureList(page.innerHTML);
+        function getIllustratorInfo(illustrator) {
+            $.get("/illustrator/info?n=" + illustrator, function (data) {
+                var theme = document.getElementById("theme");
+                theme.innerText = data.illustrator;
+
+                var header = document.getElementById("header");
+                var a = document.createElement("p");
+                a.setAttribute("class", "info");
+                a.innerText = data.alias;
+                header.appendChild(a);
+
+                $('#modifyAlias').val(data.alias);
+                $('#modifyName').val(data.illustrator);
             });
-        });
+        }
 
         function getPictureList(page) {
             var r = window.location.href.split("/");
             var illustrator = r[r.length-1];
 
-            $.get("/illustrator/info?n=" + illustrator + "&p=" + page, function (data) {
+            $.get("/illustrator/detail?n=" + illustrator + "&p=" + page, function (data) {
                 pictureListHandler(data, page);
             });
         }
@@ -134,13 +147,13 @@
                     var nextButton = document.createElement("h3");
                     nextButton.setAttribute("id", "next");
                     nextButton.setAttribute("class", "next");
-                    nextButton.innerHTML = page;
+                    nextButton.innerText = page;
 
                     var pageElement = document.getElementById("page");
                     pageElement.appendChild(nextButton);
                 } else {    // 正常情况page+1，更新
                     var nextButton = document.getElementById("next");
-                    nextButton.innerHTML = page;
+                    nextButton.innerText = page;
                 }
             } else if (data.code == 4) {
                 var nextButton = document.getElementById("next");
@@ -190,6 +203,13 @@
             // collectionElement.setAttribute("style", "display: block");
             // divElement.appendChild(collectionElement);
         }
+        
+        $(function () {
+            $("#page").click(function () {
+                var page = document.getElementById("next");
+                getPictureList(page.innerText);
+            });
+        });
     </script>
     <!-- 下载、删除 -->
     <script>
@@ -261,6 +281,8 @@
                     alert(data.msg);
                     if (data.code == 0) 
                         window.location.href = "/illustrator/show/" + encodeURIComponent(newName);
+                    else
+                        window.location.reload();
                 }).fail(function () {
                     alert("error");
                     window.location.href = "/error";
@@ -293,7 +315,11 @@
             </li>
         </ul>
     </div>
+    <hr style="border-color:black" />
     <div id="content" style="margin:auto; width:1800px;">
+        <div id="header">
+            <p id="theme" class="info" style="font-weight:bold; font-size:larger;"></p>
+        </div>
         <div id="pictureList">
         </div>
         <div id="page">
@@ -314,6 +340,7 @@
             </ul>
         </div>
     </div>
+    <hr style="border-color:black" />
     <div id="modifyContent" class="modifyContent" style="display: none">
         <form id="modifyInfoForm">
             <label for="alias">Aliases</label>

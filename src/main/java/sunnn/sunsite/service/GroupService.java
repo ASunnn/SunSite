@@ -1,5 +1,6 @@
 package sunnn.sunsite.service;
 
+import sunnn.sunsite.dto.response.GroupInfoResponse;
 import sunnn.sunsite.dto.response.GroupListResponse;
 import sunnn.sunsite.entity.Group;
 import sunnn.sunsite.exception.IllegalFileRequestException;
@@ -24,6 +25,14 @@ public interface GroupService {
      * @return 社团列表
      */
     GroupListResponse getGroupList(int page);
+
+    /**
+     * 获取社团信息
+     *
+     * @param name 社团名
+     * @return 社团信息
+     */
+    GroupInfoResponse getGroupInfo(String name);
 
     /**
      * 下载整个社团图片

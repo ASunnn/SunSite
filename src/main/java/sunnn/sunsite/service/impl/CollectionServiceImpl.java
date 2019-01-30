@@ -12,6 +12,7 @@ import sunnn.sunsite.dao.PicDao;
 import sunnn.sunsite.dao.PictureDao;
 import sunnn.sunsite.dto.CollectionBase;
 import sunnn.sunsite.dto.CollectionInfo;
+import sunnn.sunsite.dto.response.CollectionInfoResponse;
 import sunnn.sunsite.dto.response.CollectionListResponse;
 import sunnn.sunsite.entity.*;
 import sunnn.sunsite.exception.IllegalFileRequestException;
@@ -172,6 +173,18 @@ public class CollectionServiceImpl implements CollectionService {
         return new CollectionListResponse(StatusCode.OJBK)
                 .setPageCount(pageCount)
                 .convertTo(collectionList);
+    }
+
+    @Override
+    public CollectionInfoResponse getCollectionInfo(long sequence) {
+        CollectionBase baseInfo = collectionDao.findBaseInfo(sequence);
+        if (baseInfo == null)
+            return new CollectionInfoResponse(StatusCode.ILLEGAL_INPUT);
+
+        return new CollectionInfoResponse(StatusCode.OJBK)
+                .setGroup(baseInfo.getGroup())
+                .setCollection(baseInfo.getCollection())
+                .setType(baseInfo.getType());
     }
 
     @Override

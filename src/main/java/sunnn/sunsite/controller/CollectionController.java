@@ -14,6 +14,7 @@ import sunnn.sunsite.dto.request.ModifyCollection;
 import sunnn.sunsite.dto.response.BaseResponse;
 import sunnn.sunsite.dto.response.CollectionListResponse;
 import sunnn.sunsite.dto.response.CollectionInfoResponse;
+import sunnn.sunsite.dto.response.PictureListResponse;
 import sunnn.sunsite.exception.IllegalFileRequestException;
 import sunnn.sunsite.service.CollectionService;
 import sunnn.sunsite.service.GalleryService;
@@ -50,7 +51,13 @@ public class CollectionController {
 
     @GetMapping(value = "/info")
     @ResponseBody
-    public CollectionInfoResponse collectionDetail(@RequestParam("seq") long sequence, @RequestParam("p") int page) {
+    public CollectionInfoResponse collectionInfo(@RequestParam("seq") long sequence) {
+        return collectionService.getCollectionInfo(sequence);
+    }
+
+    @GetMapping(value = "/detail")
+    @ResponseBody
+    public PictureListResponse collectionDetail(@RequestParam("seq") long sequence, @RequestParam("p") int page) {
         return galleryService.getPictureListInCollection(sequence, page);
     }
 

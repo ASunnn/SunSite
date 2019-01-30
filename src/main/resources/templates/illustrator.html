@@ -77,14 +77,14 @@
                     var nextButton = document.createElement("h3");
                     nextButton.setAttribute("id", "next");
                     nextButton.setAttribute("class", "next");
-                    nextButton.innerHTML = page;
+                    nextButton.innerText = page;
                     nextButton.setAttribute("isFilter", isFilter);
 
                     var pageElement = document.getElementById("page");
                     pageElement.appendChild(nextButton);
                 } else {    // 正常情况page+1，更新
                     var nextButton = document.getElementById("next");
-                    nextButton.innerHTML = page;
+                    nextButton.innerText = page;
                 }
             } else if (data.code == 4) {
                 var nextButton = document.getElementById("next");
@@ -107,12 +107,12 @@
             var illustratorTd = document.createElement("td");
             var illustratorLink = document.createElement("a");
             illustratorLink.setAttribute("href", "/illustrator/show/" + encodeURIComponent(illustrator));
-            illustratorLink.innerHTML = illustrator;
+            illustratorLink.innerText = illustrator;
             illustratorTd.appendChild(illustratorLink);
             trElement.appendChild(illustratorTd);
 
             var postTd = document.createElement("td");
-            postTd.innerHTML = post;
+            postTd.innerText = post;
             trElement.appendChild(postTd);
         }
     </script>
@@ -122,7 +122,7 @@
             $("#page").click(function () {
                 var page = document.getElementById("next");
                 if (page.getAttribute("isFilter") == 0)
-                    getIllustratorList(page.innerHTML);
+                    getIllustratorList(page.innerText);
             });
         });
     </script>
@@ -151,6 +151,7 @@
             </li>
         </ul>
     </div>
+    <hr style="border-color:black" />
     <div id="content" style="margin:auto; width: 1800px;">
         <table width="100%" id="contentTable" class="contentTable">
             <thead>

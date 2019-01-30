@@ -13,6 +13,7 @@ import sunnn.sunsite.dao.PicDao;
 import sunnn.sunsite.dao.PictureDao;
 import sunnn.sunsite.dto.CollectionInfo;
 import sunnn.sunsite.dto.GroupInfo;
+import sunnn.sunsite.dto.response.GroupInfoResponse;
 import sunnn.sunsite.dto.response.GroupListResponse;
 import sunnn.sunsite.entity.Alias;
 import sunnn.sunsite.entity.Group;
@@ -103,6 +104,26 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    public GroupInfoResponse getGroupInfo(String name) {
+        Group g = groupDao.find(name);
+        if (g == null)
+            return new GroupInfoResponse(StatusCode.ILLEGAL_INPUT);
+
+        String[] aliases = aliasService.getAlias(g.getId(), Alias.GROUP);
+
+        StringBuilder alias = new StringBuilder();
+        if (aliases.length > 0) {
+            for (String a : aliases)
+                alias.append(a).append(SunsiteConstant.SEPARATOR);
+            alias.deleteCharAt(alias.length() - 1);
+        }
+
+        return new GroupInfoResponse(StatusCode.OJBK)
+                .setGroup(g.getName())
+                .setAlias(alias.toString());
+    }
+
+    @Override
     public File download(String name) throws IllegalFileRequestException {
         Group g = groupDao.find(name);
         if (g == null)
@@ -185,9 +206,9 @@ public class GroupServiceImpl implements GroupService {
                 typeSet.add(collection.getType());
 
                 String path = SunSiteProperties.savePath
-                    + collection.getType()
-                    + File.separator
-                    + oldName;
+                        + collection.getType()
+                        + File.separator
+                        + oldName;
                 boolean result = FileUtils.rename(new File(path), newName);
                 if (!result)
                     return StatusCode.MODIFY_FAILED;

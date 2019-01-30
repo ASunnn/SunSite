@@ -65,18 +65,21 @@
             var type = r[r.length-1];
             document.title = decodeURIComponent(type) + " | Type";
 
-            getCollectionList(type, 0);
+            getCollectionList(0);
         };
     </script>
 
     <script>
-        function getCollectionList(type, page) {
-            $.get("/type/info?n=" + type + "&p=" + page, function (data) {
-                collectionListHandler(data, page, 0);
+        function getCollectionList(page) {
+            var r = window.location.href.split("/");
+            var type = r[r.length-1];
+
+            $.get("/type/detail?n=" + type + "&p=" + page, function (data) {
+                collectionListHandler(data, page);
             });
         }
 
-        function collectionListHandler(data, page, isFilter) {
+        function collectionListHandler(data, page) {
             if (data.code == 0) {
                 for (i = 0; i < data.collectionList.length; ++i) {
                     setCollection(data.collectionList[i]);
@@ -92,14 +95,13 @@
                     var nextButton = document.createElement("h3");
                     nextButton.setAttribute("id", "next");
                     nextButton.setAttribute("class", "next");
-                    nextButton.innerHTML = page;
-                    nextButton.setAttribute("isFilter", isFilter);
+                    nextButton.innerText = page;
 
                     var pageElement = document.getElementById("page");
                     pageElement.appendChild(nextButton);
                 } else {    // 正常情况page+1，更新
                     var nextButton = document.getElementById("next");
-                    nextButton.innerHTML = page;
+                    nextButton.innerText = page;
                 }
             } else if (data.code == 4) 
                 alert(data.msg);
@@ -122,22 +124,29 @@
             var collectionTd = document.createElement("td");
             var collectionLink = document.createElement("a");
             collectionLink.setAttribute("href", "/collection/show/" + encodeURIComponent(sequence));
-            collectionLink.innerHTML = collection;
+            collectionLink.innerText = collection;
             collectionTd.appendChild(collectionLink);
             trElement.appendChild(collectionTd);
 
             var postTd = document.createElement("td");
-            postTd.innerHTML = post;
+            postTd.innerText = post;
             trElement.appendChild(postTd);
 
             var lastUpdateTd = document.createElement("td");
-            lastUpdateTd.innerHTML = lastUpdate;
+            lastUpdateTd.innerText = lastUpdate;
             trElement.appendChild(lastUpdateTd);
 
             var typeTd = document.createElement("td");
-            typeTd.innerHTML = type;
+            typeTd.innerText = type;
             trElement.appendChild(typeTd);
         }
+        
+        $(function () {
+            $("#page").click(function () {
+                var page = document.getElementById("next");
+                getCollectionList(page.innerText);
+            });
+        });
     </script>
 
     <!-- 下载、删除 -->
@@ -176,19 +185,6 @@
                 });
             });
         });
-
-        $(function () {
-            $("#page").click(function () {
-                var page = document.getElementById("next");
-                if (page.getAttribute("isFilter") == 0) {
-                    var r = window.location.href.split("/");
-                    var type = decodeURIComponent(r[r.length-1]);
-                    getCollectionList(type, page.innerHTML);
-                }
-                // else
-                //     getPictureListWithFilter(page.innerHTML);
-            });
-        });
     </script>
 </head>
 
@@ -215,6 +211,7 @@
             </li>
         </ul>
     </div>
+    <hr style="border-color:black" />
     <div id="content" style="margin:auto; width: 1800px;">
         <table width="100%" id="contentTable" class="contentTable">
             <thead>

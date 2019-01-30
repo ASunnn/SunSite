@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import sunnn.sunsite.dto.request.DeleteRequest;
 import sunnn.sunsite.dto.request.ModifyIllustrator;
 import sunnn.sunsite.dto.response.BaseResponse;
+import sunnn.sunsite.dto.response.IllustratorInfoResponse;
 import sunnn.sunsite.dto.response.IllustratorListResponse;
 import sunnn.sunsite.dto.response.PictureListResponse;
 import sunnn.sunsite.exception.IllegalFileRequestException;
@@ -44,6 +45,12 @@ public class IllustratorController {
 
     @GetMapping(value = "/info")
     @ResponseBody
+    public IllustratorInfoResponse collectionInfo(@RequestParam("n") String illustrator) {
+        return illustratorService.getIllustratorInfo(illustrator);
+    }
+
+    @GetMapping(value = "/detail")
+    @ResponseBody
     public PictureListResponse illustratorDetail(@RequestParam("n") String illustrator, @RequestParam("p") int page) {
         return galleryService.getPictureListByiIllustrator(illustrator, page);
     }
@@ -72,7 +79,7 @@ public class IllustratorController {
         else if (!modifyName.equals(StatusCode.OJBK))
             return new BaseResponse(modifyAlias);
         else
-            return new BaseResponse(modifyName.OJBK);
+            return new BaseResponse(StatusCode.OJBK);
     }
 
 

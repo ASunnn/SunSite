@@ -1,5 +1,6 @@
 package sunnn.sunsite.service;
 
+import sunnn.sunsite.dto.response.IllustratorInfoResponse;
 import sunnn.sunsite.dto.response.IllustratorListResponse;
 import sunnn.sunsite.entity.Illustrator;
 import sunnn.sunsite.exception.IllegalFileRequestException;
@@ -26,6 +27,14 @@ public interface IllustratorService {
     IllustratorListResponse getIllustratorList(int page);
 
     /**
+     * 获取画师信息
+     *
+     * @param name 画师名
+     * @return 画师信息
+     */
+    IllustratorInfoResponse getIllustratorInfo(String name);
+
+    /**
      * 下载画师的所有图片
      *
      * @param name 画师名
@@ -45,7 +54,7 @@ public interface IllustratorService {
     /**
      * 修改别名
      *
-     * @param name 要修改的画师
+     * @param name  要修改的画师
      * @param alias 别名列表
      * @return 修改结果
      */

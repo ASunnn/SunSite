@@ -32,6 +32,9 @@
             margin:0;
         }
         /* 内容 */
+        .info {
+            margin: 10px;
+        }
         table {
             text-align: center;
             width: 1500px;
@@ -81,13 +84,30 @@
             var group = r[r.length-1];
             document.title = decodeURIComponent(group) + " | Group";
 
+            getGroupInfo(group);
             getCollectionList(group);
         };
     </script>
     <!-- 画集列表 -->
     <script>
-        function getCollectionList(group) {
+        function getGroupInfo(group) {
             $.get("/group/info?n=" + group, function (data) {
+                var theme = document.getElementById("theme");
+                theme.innerText = data.group;
+
+                var header = document.getElementById("header");
+                var a = document.createElement("p");
+                a.setAttribute("class", "info");
+                a.innerText = data.alias;
+                header.appendChild(a);
+
+                $('#modifyAlias').val(data.alias);
+                $('#modifyName').val(data.group);
+            });
+        }
+
+        function getCollectionList(group) {
+            $.get("/group/detail?n=" + group, function (data) {
                 collectionListHandler(data);
             });
         }
@@ -118,20 +138,20 @@
             var collectionTd = document.createElement("td");
             var collectionLink = document.createElement("a");
             collectionLink.setAttribute("href", "/collection/show/" + encodeURIComponent(sequence));
-            collectionLink.innerHTML = collection;
+            collectionLink.innerText = collection;
             collectionTd.appendChild(collectionLink);
             trElement.appendChild(collectionTd);
 
             var postTd = document.createElement("td");
-            postTd.innerHTML = post;
+            postTd.innerText = post;
             trElement.appendChild(postTd);
 
             var lastUpdateTd = document.createElement("td");
-            lastUpdateTd.innerHTML = lastUpdate;
+            lastUpdateTd.innerText = lastUpdate;
             trElement.appendChild(lastUpdateTd);
 
             var typeTd = document.createElement("td");
-            typeTd.innerHTML = type;
+            typeTd.innerText = type;
             trElement.appendChild(typeTd);
         }
     </script>
@@ -205,6 +225,8 @@
                     alert(data.msg);
                     if (data.code == 0) 
                         window.location.href = "/group/show/" + encodeURIComponent(newName);
+                    else
+                        window.location.reload();
                 }).fail(function () {
                     alert("error");
                     window.location.href = "/error";
@@ -237,7 +259,11 @@
             </li>
         </ul>
     </div>
+    <hr style="border-color:black" />
     <div id="content" style="margin:auto; width: 1800px;">
+        <div id="header">
+            <p id="theme" class="info" style="font-weight:bold; font-size:larger;"></p>
+        </div>
         <table width="100%" id="contentTable" class="contentTable">
             <thead>
                 <tr>
@@ -266,6 +292,7 @@
             </ul>
         </div>
     </div>
+    <hr style="border-color:black" />
     <div id="modifyContent" class="modifyContent" style="display: none">
         <form id="modifyInfoForm">
             <label for="alias">Aliases</label>

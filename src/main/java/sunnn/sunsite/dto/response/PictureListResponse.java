@@ -33,6 +33,7 @@ public class PictureListResponse extends BaseResponse implements Convertible<Pic
         for (int i = 0; i < entity.size(); ++i) {
             PictureListInfo info = new PictureListInfo();
             info.sequence = String.valueOf(entity.get(i).getSequence());
+            info.name = entity.get(i).getName();
             info.group = entity.get(i).getGroup();
             info.cId = String.valueOf(entity.get(i).getCId());
             info.collection = entity.get(i).getCollection();
@@ -49,6 +50,8 @@ public class PictureListResponse extends BaseResponse implements Convertible<Pic
 class PictureListInfo {
 
     String sequence;
+
+    String name;
 
     String group;
 

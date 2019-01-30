@@ -1,7 +1,6 @@
 package sunnn.sunsite.service;
 
 import sunnn.sunsite.dto.response.PictureInfoResponse;
-import sunnn.sunsite.dto.response.CollectionInfoResponse;
 import sunnn.sunsite.dto.response.PictureListResponse;
 import sunnn.sunsite.exception.IllegalFileRequestException;
 
@@ -23,7 +22,7 @@ public interface GalleryService {
      * @param page 页码
      * @return 图片列表
      */
-    CollectionInfoResponse getPictureListInCollection(long collection, int page);
+    PictureListResponse getPictureListInCollection(long cId, int page);
 
     /**
      * 获取一个画师的图片

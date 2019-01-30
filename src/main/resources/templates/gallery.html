@@ -220,7 +220,7 @@
             illustratorUl.appendChild(emptyIllustratorLi);
             for (i = 0; i < data.illustrators.length; ++i) {
                 let illustrators = document.createElement("li");
-                illustrator.innerHTML = data.illustrators[i];
+                illustrator.innerText = data.illustrators[i];
                 illustratorUl.appendChild(illustrator);
             }
 
@@ -231,7 +231,7 @@
             collectionUl.appendChild(emptyCollectionLi);
             for (i = 0; i < data.collections.length; ++i) {
                 let collection = document.createElement("li");
-                collection.innerHTML = data.collections[i];
+                collection.innerText = data.collections[i];
                 collectionUl.appendChild(collection);
             }
 
@@ -242,7 +242,7 @@
             typeUl.appendChild(emptyTypeLi);
             for (i = 0; i < data.types.length; ++i) {
                 let type = document.createElement("li");
-                type.innerHTML = data.types[i];
+                type.innerText = data.types[i];
                 typeUl.appendChild(type);
             }
         }
@@ -258,7 +258,7 @@
             $("#page").click(function () {
                 var page = document.getElementById("next");
                 if (page.getAttribute("isFilter") == 0)
-                    getPictureList(page.innerHTML);
+                    getPictureList(page.innerText);
                 // else
                 //     getPictureListWithFilter(page.innerHTML);
             });
@@ -325,14 +325,14 @@
                     var nextButton = document.createElement("h3");
                     nextButton.setAttribute("id", "next");
                     nextButton.setAttribute("class", "next");
-                    nextButton.innerHTML = page;
+                    nextButton.innerText = page;
                     nextButton.setAttribute("isFilter", isFilter);
 
                     var pageElement = document.getElementById("page");
                     pageElement.appendChild(nextButton);
                 } else {    // 正常情况page+1，更新
                     var nextButton = document.getElementById("next");
-                    nextButton.innerHTML = page;
+                    nextButton.innerText = page;
                 }
             } else if (data.code == 4) {
                 var nextButton = document.getElementById("next");
@@ -413,6 +413,7 @@
             </li>
         </ul>
     </div>
+    <hr style="border-color:black" />
     <div id="content" style="margin:auto; width: 1800px;">
         <!--<div class="filters">
             <div class="filter">

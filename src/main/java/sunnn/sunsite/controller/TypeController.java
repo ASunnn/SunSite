@@ -40,9 +40,9 @@ public class TypeController {
         return typeService.getTypeList();
     }
 
-    @GetMapping(value = "/info")
+    @GetMapping(value = "/detail")
     @ResponseBody
-    public CollectionListResponse groupDetail(@RequestParam("n") String type, @RequestParam("p") int page) {
+    public CollectionListResponse typeDetail(@RequestParam("n") String type, @RequestParam("p") int page) {
         return collectionService.getCollectionListByType(type, page);
     }
 

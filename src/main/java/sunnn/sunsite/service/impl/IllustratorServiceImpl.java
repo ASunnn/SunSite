@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import sunnn.sunsite.dao.IllustratorDao;
 import sunnn.sunsite.dto.IllustratorInfo;
+import sunnn.sunsite.dto.response.IllustratorInfoResponse;
 import sunnn.sunsite.dto.response.IllustratorListResponse;
 import sunnn.sunsite.entity.Alias;
 import sunnn.sunsite.entity.Illustrator;
@@ -73,6 +74,26 @@ public class IllustratorServiceImpl implements IllustratorService {
         return new IllustratorListResponse(StatusCode.OJBK)
                 .setPageCount(pageCount)
                 .convertTo(illustratorList);
+    }
+
+    @Override
+    public IllustratorInfoResponse getIllustratorInfo(String name) {
+        Illustrator i = illustratorDao.find(name);
+        if (i == null)
+            return new IllustratorInfoResponse(StatusCode.ILLEGAL_INPUT);
+
+        String[] aliases = aliasService.getAlias(i.getId(), Alias.ILLUSTRATOR);
+
+        StringBuilder alias = new StringBuilder();
+        if (aliases.length > 0) {
+            for (String a : aliases)
+                alias.append(a).append(SunsiteConstant.SEPARATOR);
+            alias.deleteCharAt(alias.length() - 1);
+        }
+
+        return new IllustratorInfoResponse(StatusCode.OJBK)
+                .setIllustrator(i.getName())
+                .setAlias(alias.toString());
     }
 
     @Override

@@ -1,6 +1,7 @@
 package sunnn.sunsite.service;
 
 import sunnn.sunsite.dto.CollectionBase;
+import sunnn.sunsite.dto.response.CollectionInfoResponse;
 import sunnn.sunsite.dto.response.CollectionListResponse;
 import sunnn.sunsite.exception.IllegalFileRequestException;
 import sunnn.sunsite.util.StatusCode;
@@ -34,6 +35,14 @@ public interface CollectionService {
      * 获取一个类型的画集列表
      */
     CollectionListResponse getCollectionListByType(String type, int page);
+
+    /**
+     * 获取一个画集的信息
+     *
+     * @param sequence 画集序列号
+     * @return 画集信息
+     */
+    CollectionInfoResponse getCollectionInfo(long sequence);
 
     /**
      * 下载整个画集

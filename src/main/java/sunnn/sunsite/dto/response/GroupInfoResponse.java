@@ -4,25 +4,19 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
-import sunnn.sunsite.dto.Convertible;
-import sunnn.sunsite.dto.PictureBase;
 import sunnn.sunsite.util.StatusCode;
-
-import java.util.List;
 
 @Getter
 @Setter
 @Accessors(chain = true)
 @ToString
-public class CollectionInfoResponse extends BaseResponse {
-
-    private String collection;
+public class GroupInfoResponse extends BaseResponse {
 
     private String group;
 
-    private String type;
+    private String alias;
 
-    public CollectionInfoResponse(StatusCode statusCode) {
+    public GroupInfoResponse(StatusCode statusCode) {
         super(statusCode);
     }
 }

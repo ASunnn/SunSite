@@ -60,12 +60,12 @@
                         var typeTd = document.createElement("td");
                         var typeLink = document.createElement("a");
                         typeLink.setAttribute("href", "/type/show/" + encodeURIComponent(type));
-                        typeLink.innerHTML = type;
+                        typeLink.innerText = type;
                         typeTd.appendChild(typeLink);
                         trElement.appendChild(typeTd);
 
                         var lastUpdateTd = document.createElement("td");
-                        lastUpdateTd.innerHTML = lastUpdate;
+                        lastUpdateTd.innerText = lastUpdate;
                         trElement.appendChild(lastUpdateTd);
                     }
                 } else if (data.code == 4) {
@@ -100,6 +100,7 @@
             </li>
         </ul>
     </div>
+    <hr style="border-color:black" />
     <div id="content" style="margin:auto; width: 1800px;">
         <table width="100%" id="contentTable" class="contentTable">
             <thead>

@@ -10,9 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import sunnn.sunsite.dto.request.DeleteRequest;
 import sunnn.sunsite.dto.request.ModifyGroup;
-import sunnn.sunsite.dto.response.BaseResponse;
-import sunnn.sunsite.dto.response.CollectionListResponse;
-import sunnn.sunsite.dto.response.GroupListResponse;
+import sunnn.sunsite.dto.response.*;
 import sunnn.sunsite.exception.IllegalFileRequestException;
 import sunnn.sunsite.service.CollectionService;
 import sunnn.sunsite.service.GroupService;
@@ -43,6 +41,12 @@ public class GroupController {
     }
 
     @GetMapping(value = "/info")
+    @ResponseBody
+    public GroupInfoResponse groupInfo(@RequestParam("n") String group) {
+        return groupService.getGroupInfo(group);
+    }
+
+    @GetMapping(value = "/detail")
     @ResponseBody
     public CollectionListResponse groupDetail(@RequestParam("n") String group) {
         return collectionService.getCollectionListByGroup(group);
