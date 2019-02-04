@@ -28,8 +28,8 @@
         }
         ul, li {
             list-style-type:none;
-            padding:0;
-            margin:0;
+            padding: 0;
+            margin: 0;
         }
         /* 内容 */
         .info {
@@ -125,7 +125,7 @@
         
         function setCollection(data) {
             var sequence = data.sequence;
-            var collection = data.group + " - " + data.collection;
+            var collection = data.collection;
             var post = data.post;
             var lastUpdate = data.lastUpdate;
             var type = data.type;
@@ -203,6 +203,9 @@
 
         $(function () {
             $("#submit").click(function () {
+                var button = this;
+                $(button).attr('disabled', 'disabled');
+
                 var r = window.location.href.split("/");
                 var group = decodeURIComponent(r[r.length-1]);
 

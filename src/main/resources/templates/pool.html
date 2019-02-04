@@ -27,8 +27,8 @@
         }
         ul, li {
             list-style-type:none;
-            padding:0;
-            margin:0;
+            padding: 0;
+            margin: 0;
         }
         /* 图片列表 */
         .info {
@@ -107,10 +107,19 @@
             var sequence = r[r.length-1];
 
             $.get("/collection/info?seq=" + sequence, function (data) {
-                document.title = data.group + " - " + data.collection + " | Collection";
+                document.title = data.collection + " | Collection";
 
                 var theme = document.getElementById("theme");
                 theme.innerText = data.collection;
+
+                var header = document.getElementById("header");
+                var g = document.createElement("p");
+                g.setAttribute("class", "info");
+                var link = document.createElement("a");
+                link.setAttribute("href", "/group/show/" + encodeURIComponent(data.group));
+                link.innerText = data.group;
+                g.appendChild(link);
+                header.appendChild(g);
 
                 $('#modifyName').val(data.collection);
             });
@@ -247,6 +256,9 @@
 
         $(function () {
             $("#submit").click(function () {
+                var button = this;
+                $(button).attr('disabled', 'disabled');
+                
                 var r = window.location.href.split("/");
                 var sequence = r[r.length-1];
 

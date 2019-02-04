@@ -77,7 +77,7 @@ public class IllustratorController {
         if (!modifyAlias.equals(StatusCode.OJBK))
             return new BaseResponse(modifyAlias);
         else if (!modifyName.equals(StatusCode.OJBK))
-            return new BaseResponse(modifyAlias);
+            return new BaseResponse(modifyName);
         else
             return new BaseResponse(StatusCode.OJBK);
     }

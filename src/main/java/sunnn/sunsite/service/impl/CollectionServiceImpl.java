@@ -97,7 +97,7 @@ public class CollectionServiceImpl implements CollectionService {
         long cId = MD5s.getMD5Sequence(md5Source);
 
         if (collectionDao.find(cId) != null) {
-            log.warn("Duplicate Collection : " + md5Source);
+            log.warn("Duplicate Collection : " + info.getGroup() + " - " + info.getCollection());
             log.warn("Duplicate Sequence : " + cId);
             return StatusCode.DUPLICATE_INPUT;
         }

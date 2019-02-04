@@ -28,8 +28,8 @@
         }
         ul, li {
             list-style-type:none;
-            padding:0;
-            margin:0;
+            padding: 0;
+            margin: 0;
         }
         /* 工具 */
         .toolContent {
@@ -111,7 +111,8 @@
         
         function setCollection(data) {
             var sequence = data.sequence;
-            var collection = data.group + " - " + data.collection;
+            var group = data.group;
+            var collection = data.collection;
             var post = data.post;
             var lastUpdate = data.lastUpdate;
             var type = data.type;
@@ -127,6 +128,13 @@
             collectionLink.innerText = collection;
             collectionTd.appendChild(collectionLink);
             trElement.appendChild(collectionTd);
+
+            var groupTd = document.createElement("td");
+            var groupLink = document.createElement("a");
+            groupLink.setAttribute("href", "/group/show/" + encodeURIComponent(group));
+            groupLink.innerText = group;
+            groupTd.appendChild(groupLink);
+            trElement.appendChild(groupTd);
 
             var postTd = document.createElement("td");
             postTd.innerText = post;
@@ -216,7 +224,8 @@
         <table width="100%" id="contentTable" class="contentTable">
             <thead>
                 <tr>
-                    <th width="60%">Collection</th>
+                    <th width="50%">Collection</th>
+                    <th width="*">Group</th>
                     <th width="*">Post</th>
                     <th width="*">LastUpdate</th>
                     <th width="*">Type</th>
