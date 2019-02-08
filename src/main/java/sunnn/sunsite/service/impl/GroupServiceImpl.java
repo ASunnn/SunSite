@@ -186,6 +186,7 @@ public class GroupServiceImpl implements GroupService {
     @Transactional(propagation = Propagation.REQUIRES_NEW,
             isolation = Isolation.DEFAULT)
     public StatusCode modifyName(String oldName, String newName) {
+        newName = newName.trim();
         // 校验
         if (oldName.equals(newName))
             return StatusCode.OJBK;

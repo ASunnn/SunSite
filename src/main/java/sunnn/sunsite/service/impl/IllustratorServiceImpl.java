@@ -155,6 +155,8 @@ public class IllustratorServiceImpl implements IllustratorService {
     @Transactional(propagation = Propagation.REQUIRES_NEW,
             isolation = Isolation.DEFAULT)
     public StatusCode modifyName(String oldName, String newName) {
+        newName = newName.trim();
+
         if (oldName.equals(newName))
             return StatusCode.OJBK;
 

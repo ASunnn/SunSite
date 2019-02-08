@@ -78,26 +78,29 @@ public class CollectionServiceImpl implements CollectionService {
     @Transactional(propagation = Propagation.REQUIRED,
             isolation = Isolation.DEFAULT)
     public StatusCode createCollection(CollectionBase info) {
+        String c = info.getCollection().trim();
+        String g = info.getGroup().trim();
+        String t = info.getType().trim();
         /*
             非法字符校验
          */
-        if (FileUtils.fileNameMatcher(info.getCollection())
-                || FileUtils.fileNameMatcher(info.getGroup())
-                || FileUtils.fileNameMatcher(info.getType()))
+        if (FileUtils.fileNameMatcher(c)
+                || FileUtils.fileNameMatcher(g)
+                || FileUtils.fileNameMatcher(t))
             return StatusCode.ILLEGAL_INPUT;
         /*
             处理type和group
          */
-        Group group = groupService.createGroup(info.getGroup());
-        Type type = typeService.createType(info.getType());
+        Group group = groupService.createGroup(g);
+        Type type = typeService.createType(t);
         /*
             生成序列号
          */
-        String md5Source = info.getGroup() + info.getCollection();
+        String md5Source = g + c;
         long cId = MD5s.getMD5Sequence(md5Source);
 
         if (collectionDao.find(cId) != null) {
-            log.warn("Duplicate Collection : " + info.getGroup() + " - " + info.getCollection());
+            log.warn("Duplicate Collection : " + g + " - " + c);
             log.warn("Duplicate Sequence : " + cId);
             return StatusCode.DUPLICATE_INPUT;
         }
@@ -106,22 +109,22 @@ public class CollectionServiceImpl implements CollectionService {
          */
         // 创建目录
         String path = SunSiteProperties.savePath
-                + info.getType()
+                + t
                 + File.separator
-                + info.getGroup()
+                + g
                 + File.separator
-                + info.getCollection();
+                + c;
         FileUtils.createPath(path);
 
-        Collection c = new Collection()
+        Collection collection = new Collection()
                 .setCId(cId)
-                .setName(info.getCollection())
+                .setName(c)
                 .setGroup(group.getId())
                 .setType(type.getId())
                 .setCreateTime(new Timestamp(System.currentTimeMillis()));
-        collectionDao.insert(c);
+        collectionDao.insert(collection);
 
-        updateTask.submit(c.getCId());
+        updateTask.submit(collection.getCId());
         return StatusCode.OJBK;
     }
 
@@ -212,7 +215,7 @@ public class CollectionServiceImpl implements CollectionService {
                 + tempCode
                 + File.separator
                 + info.getGroup()
-                + "-"
+                + " - "
                 + info.getCollection()
                 + ".zip";
         try {
@@ -235,6 +238,7 @@ public class CollectionServiceImpl implements CollectionService {
     @Transactional(propagation = Propagation.REQUIRES_NEW,
             isolation = Isolation.DEFAULT)
     public StatusCode modifyName(long sequence, String newName) {
+        newName = newName.trim();
         // 校验
         Collection c = collectionDao.find(sequence);
         if (FileUtils.fileNameMatcher(newName)

@@ -52,7 +52,7 @@ public class ShiroConfiguration {
     }
 
     @Bean
-    public SunRealm myShiroRealm() {
+    public SunRealm shiroRealm() {
         return new SunRealm();
     }
 }

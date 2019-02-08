@@ -38,6 +38,8 @@ public class AliasServiceImpl implements AliasService {
         String[] aliasRecord = getAlias(origin, kind);
 
         HashSet<String> aliasSet = new HashSet<>();
+        for (int i = 0; i < aliases.length; ++i)
+            aliases[i] = aliases[i].trim();
         Collections.addAll(aliasSet, aliases);
 
         for (String a : aliasRecord) {
@@ -51,15 +53,17 @@ public class AliasServiceImpl implements AliasService {
             }
         }
 
-        if (!aliasSet.isEmpty()) {
-            List<Alias> aliasList = new ArrayList<>();
-            for (String a : aliasSet)
+        List<Alias> aliasList = new ArrayList<>();
+        for (String a : aliasSet) {
+            if (!a.isEmpty()) {
                 aliasList.add(new Alias()
                         .setAlias(a)
                         .setOrigin(origin)
                         .setKind(kind));
-            aliasDao.insertAllAlias(aliasList);
+            }
         }
+        if (!aliasList.isEmpty())
+            aliasDao.insertAllAlias(aliasList);
         return StatusCode.OJBK;
     }
 

@@ -112,16 +112,7 @@ public class PictureServiceImpl implements PictureService {
         if (c == null)
             return StatusCode.ILLEGAL_INPUT;
 
-        String[] illustratorInfo;
-        if (info.getIllustrator() != null && !info.getIllustrator().isEmpty())
-            illustratorInfo = info.getIllustrator().split(SunsiteConstant.SEPARATOR);
-        else
-            illustratorInfo = new String[]{Illustrator.DEFAULT_VALUE};
-
-        List<Illustrator> illustrators = new ArrayList<>();
-        for (String i : illustratorInfo) {
-            illustrators.add(illustratorService.createIllustrator(i.trim()));
-        }
+        List<Illustrator> illustrators = illustratorHandler(info.getIllustrator());
         /*
             进行文件的保存
          */
@@ -220,6 +211,23 @@ public class PictureServiceImpl implements PictureService {
             picture.setVOrH(0);
 
         return picture;
+    }
+
+    private List<Illustrator> illustratorHandler(String illustrator) {
+        String[] illustratorInfo;
+        if (illustrator != null && !illustrator.isEmpty())
+            illustratorInfo = illustrator.split(SunsiteConstant.SEPARATOR);
+        else
+            illustratorInfo = new String[]{Illustrator.DEFAULT_VALUE};
+
+        List<Illustrator> illustrators = new ArrayList<>();
+        for (String i : illustratorInfo) {
+            String iTrim = i.trim();
+            if (!iTrim.isEmpty())
+                illustrators.add(illustratorService.createIllustrator(iTrim));
+        }
+
+        return illustrators;
     }
 
     @Override
