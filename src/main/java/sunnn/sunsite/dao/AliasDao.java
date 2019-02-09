@@ -11,5 +11,5 @@ public interface AliasDao {
 
     void deleteAlias(Alias alias);
 
-    List<String> getAllAliasByOrigin(@Param("origin") int origin, @Param("kind") int kind);
+    List<String> getAllAliasByOrigin(@Param("kind") int kind, @Param("origin") int origin);
 }

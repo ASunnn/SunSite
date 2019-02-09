@@ -27,6 +27,15 @@ public interface IllustratorService {
     IllustratorListResponse getIllustratorList(int page);
 
     /**
+     * 查询画师
+     *
+     * @param query 查询条件
+     * @param page  页码
+     * @return 画师列表
+     */
+    IllustratorListResponse getIllustratorList(String query, int page);
+
+    /**
      * 获取画师信息
      *
      * @param name 画师名

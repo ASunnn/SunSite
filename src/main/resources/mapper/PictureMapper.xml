@@ -64,7 +64,7 @@
     </update>
 
     <select id="countByCollection" resultType="java.lang.Integer">
-        SELECT COUNT( * ) AS c
+        SELECT COUNT(*) AS c
         FROM picture
         WHERE collection = #{collection}
     </select>

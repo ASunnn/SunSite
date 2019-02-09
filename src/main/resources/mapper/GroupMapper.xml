@@ -13,7 +13,7 @@
         SELECT
             g.`name` AS `group`,
             g.lastUpdate,
-            COUNT( p.sequence ) AS post
+            COUNT(p.sequence) AS post
         FROM
             `group` AS g
             LEFT JOIN collection AS c ON g.id = c.`group`
@@ -22,6 +22,33 @@
             g.id
         ORDER BY
 	        lastUpdate DESC
+        LIMIT #{skip}, #{limit}
+    </select>
+
+    <select id="findAllInfoByName" resultType="sunnn.sunsite.dto.GroupInfo">
+        SELECT
+            g.`name` AS `group`,
+            g.lastUpdate,
+            COUNT(p.sequence) AS post
+        FROM
+            `group` AS g
+            LEFT JOIN collection AS c ON g.id = c.`group`
+            LEFT JOIN picture AS p ON c.cId = p.collection
+        WHERE
+            g.`name` IN (
+            SELECT DISTINCT
+                g.`name`
+            FROM
+                `group` AS g
+                LEFT JOIN alias AS a ON g.id = a.origin
+            WHERE
+                (kind = 1 OR kind IS NULL)
+                AND (g.`name` LIKE CONCAT('%', #{query}, '%') OR a.alias LIKE CONCAT('%', #{query}, '%'))
+            )
+        GROUP BY
+            g.id
+        ORDER BY
+            lastUpdate DESC
         LIMIT #{skip}, #{limit}
     </select>
 
@@ -43,8 +70,19 @@
     </update>
 
     <select id="count" resultType="java.lang.Integer">
-        SELECT COUNT( * ) AS c
+        SELECT COUNT(*) AS c
         FROM `group`
+    </select>
+
+    <select id="countByName" resultType="java.lang.Integer">
+        SELECT DISTINCT
+         	COUNT(*) AS c
+        FROM
+            `group` AS g
+            LEFT JOIN alias AS a ON g.id = a.origin
+        WHERE
+            (kind = 1 OR kind IS NULL)
+            AND (g.`name` LIKE CONCAT('%', #{query}, '%') OR a.alias LIKE CONCAT('%', #{query}, '%'))
     </select>
 
     <delete id="delete">

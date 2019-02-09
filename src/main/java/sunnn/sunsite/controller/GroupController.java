@@ -36,8 +36,11 @@ public class GroupController {
 
     @GetMapping(value = "/list")
     @ResponseBody
-    public GroupListResponse groupList(@RequestParam("p") int page) {
-        return groupService.getGroupList(page);
+    public GroupListResponse groupList(@RequestParam("p") int page, @RequestParam(value = "query", required = false) String query) {
+        if (query == null || query.isEmpty())
+            return groupService.getGroupList(page);
+        else
+            return groupService.getGroupList(query, page);
     }
 
     @GetMapping(value = "/info")

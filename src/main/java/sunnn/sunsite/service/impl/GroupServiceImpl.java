@@ -104,6 +104,26 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    public GroupListResponse getGroupList(String query, int page) {
+        if (isIllegalPageParam(page))
+            return new GroupListResponse(StatusCode.ILLEGAL_INPUT);
+
+        int size = SunsiteConstant.PAGE_SIZE;
+        int skip = page * size;
+
+        List<GroupInfo> collectionList = groupDao.findAllInfoByName(query, skip, size);
+        if (collectionList.isEmpty())
+            return new GroupListResponse(StatusCode.NO_DATA);
+
+        int count = groupDao.countByName(query);
+        int pageCount = (int) Math.ceil((double) count / SunsiteConstant.PAGE_SIZE);
+
+        return new GroupListResponse(StatusCode.OJBK)
+                .setPageCount(pageCount)
+                .convertTo(collectionList);
+    }
+
+    @Override
     public GroupInfoResponse getGroupInfo(String name) {
         Group g = groupDao.find(name);
         if (g == null)

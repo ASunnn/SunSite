@@ -105,7 +105,7 @@ public class PictureIndexTask {
                 }
                 return mid;
             } else {
-                for (int i = pictures.size() - 2; i > mid; --i) {
+                for (int i = pictures.size() - 2; i >= mid; --i) {
                     if (pictures.get(i).getIndex() != Integer.MAX_VALUE)
                         return i + 1;
                 }

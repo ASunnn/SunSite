@@ -39,13 +39,16 @@ public class IllustratorController {
 
     @GetMapping(value = "/list")
     @ResponseBody
-    public IllustratorListResponse illustratorList(@RequestParam("p") int page) {
-        return illustratorService.getIllustratorList(page);
+    public IllustratorListResponse illustratorList(@RequestParam("p") int page, @RequestParam(value = "query", required = false) String query) {
+        if (query == null || query.isEmpty())
+            return illustratorService.getIllustratorList(page);
+        else
+            return illustratorService.getIllustratorList(query.trim(), page);
     }
 
     @GetMapping(value = "/info")
     @ResponseBody
-    public IllustratorInfoResponse collectionInfo(@RequestParam("n") String illustrator) {
+    public IllustratorInfoResponse illustratorInfo(@RequestParam("n") String illustrator) {
         return illustratorService.getIllustratorInfo(illustrator);
     }
 

@@ -22,7 +22,7 @@
     <select id="getAllAliasByOrigin" resultType="java.lang.String">
         SELECT alias FROM alias
         WHERE
-	        alias.origin = #{origin}
-	        AND alias.kind = #{kind}
+	        alias.kind = #{kind}
+	        AND alias.origin = #{origin}
     </select>
 </mapper>

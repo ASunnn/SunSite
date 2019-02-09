@@ -27,6 +27,15 @@ public interface GroupService {
     GroupListResponse getGroupList(int page);
 
     /**
+     * 查询社团
+     *
+     * @param query 查询条件
+     * @param page 页码
+     * @return 社团列表
+     */
+    GroupListResponse getGroupList(String query, int page);
+
+    /**
      * 获取社团信息
      *
      * @param name 社团名

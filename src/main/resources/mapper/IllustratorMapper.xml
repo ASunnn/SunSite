@@ -12,12 +12,39 @@
     <select id="findAllInfo" resultType="sunnn.sunsite.dto.IllustratorInfo">
         SELECT
             i.`name` AS illustrator,
-            COUNT( a.illustrator ) AS post
+            COUNT(a.illustrator) AS post
         FROM
             illustrator AS i
             LEFT JOIN artwork AS a ON i.id = a.illustrator
         GROUP BY
             i.id
+        ORDER BY
+            post DESC
+        LIMIT #{skip}, #{limit}
+    </select>
+
+    <select id="findAllInfoByName" resultType="sunnn.sunsite.dto.IllustratorInfo">
+        SELECT
+            i.`name` AS illustrator,
+            COUNT(a.illustrator) AS post
+        FROM
+            illustrator AS i
+            LEFT JOIN artwork AS a ON i.id = a.illustrator
+        WHERE
+            i.`name` IN (
+            SELECT DISTINCT
+                i.`name`
+            FROM
+                `illustrator` AS i
+                LEFT JOIN alias AS a ON i.id = a.origin
+            WHERE
+                (kind = 0 OR kind IS NULL)
+                AND (i.`name` LIKE CONCAT('%', #{query}, '%') OR a.alias LIKE CONCAT('%', #{query}, '%'))
+            )
+        GROUP BY
+            i.id
+        ORDER BY
+            post DESC
         LIMIT #{skip}, #{limit}
     </select>
     
@@ -27,8 +54,19 @@
     </insert>
 
     <select id="count" resultType="java.lang.Integer">
-        SELECT COUNT( * ) AS c
+        SELECT COUNT(*) AS c
         FROM illustrator
+    </select>
+
+    <select id="countByName" resultType="java.lang.Integer">
+        SELECT
+            COUNT(*) AS c
+        FROM
+            `illustrator` AS i
+            LEFT JOIN alias AS a ON i.id = a.origin
+        WHERE
+            ( kind = 0 OR kind IS NULL )
+            AND ( i.`name` LIKE CONCAT('%', #{query}, '%') OR a.alias LIKE CONCAT('%', #{query}, '%'));
     </select>
 
     <update id="update">
@@ -82,7 +120,7 @@
     </select>
 
     <select id="countByIllustrator" parameterType="java.lang.String" resultType="java.lang.Integer">
-        SELECT COUNT( * ) AS c
+        SELECT COUNT(*) AS c
         FROM illustrator AS i, artwork AS a
         WHERE i.id = a.illustrator AND i.`name` = #{illustrator}
     </select>

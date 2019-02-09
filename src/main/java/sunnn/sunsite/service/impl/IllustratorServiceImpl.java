@@ -77,6 +77,26 @@ public class IllustratorServiceImpl implements IllustratorService {
     }
 
     @Override
+    public IllustratorListResponse getIllustratorList(String query, int page) {
+        if (isIllegalPageParam(page))
+            return new IllustratorListResponse(StatusCode.ILLEGAL_INPUT);
+
+        int size = SunsiteConstant.PAGE_SIZE;
+        int skip = page * size;
+
+        List<IllustratorInfo> illustratorList = illustratorDao.findAllInfoByName(query, skip, size);
+        if (illustratorList.isEmpty())
+            return new IllustratorListResponse(StatusCode.NO_DATA);
+
+        int count = illustratorDao.countByName(query);
+        int pageCount = (int) Math.ceil((double) count / SunsiteConstant.PAGE_SIZE);
+
+        return new IllustratorListResponse(StatusCode.OJBK)
+                .setPageCount(pageCount)
+                .convertTo(illustratorList);
+    }
+
+    @Override
     public IllustratorInfoResponse getIllustratorInfo(String name) {
         Illustrator i = illustratorDao.find(name);
         if (i == null)

@@ -16,11 +16,17 @@ public interface CollectionDao {
 
     CollectionBase findBaseInfo(long cId);
 
+    @Deprecated
+    List<CollectionBase> findAllBaseInfoByFilter();
+
     List<CollectionInfo> findAllInfo(@Param("skip") int skip, @Param("limit") int limit);
 
     List<CollectionInfo> findAllInfoByGroup(@Param("group") String group, @Param("skip") int skip, @Param("limit") int limit);
 
     List<CollectionInfo> findAllInfoByType(@Param("type") String type, @Param("skip") int skip, @Param("limit") int limit);
+
+    @Deprecated
+    List<CollectionInfo> findAllInfoByFilter(@Param("skip") int skip, @Param("limit") int limit);
 
     void insert(Collection collection);
 
