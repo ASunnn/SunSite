@@ -168,29 +168,25 @@ public class FileUtils {
     }
 
     private static boolean doCopyPath(File srcFile, String destPath) throws IOException {
-        if (srcFile.isDirectory()) {
-            File destFile = new File(destPath);
+        File destFile = new File(destPath);
 
-            if (destFile.isFile())
-                return false;
-            if (!createPath(destFile))
-                return false;
+        if (destFile.isFile())
+            return false;
+        if (!createPath(destFile))
+            return false;
 
-            File[] files = srcFile.listFiles();
-            if (files == null)
-                return false;
+        File[] files = srcFile.listFiles();
+        if (files == null)
+            return false;
 
-            boolean flag = true;
-            for (File f : files) {
-                if (f.isDirectory())
-                    flag = doCopyPath(f, destPath + File.separator + f.getName());
-                else
-                    flag = copyFile(f, destPath);
-            }
-
-            return flag;
-        } else
-            return copyFile(srcFile, destPath);
+        boolean flag = true;
+        for (File f : files) {
+            if (f.isDirectory())
+                flag = doCopyPath(f, destPath + File.separator + f.getName());
+            else
+                flag = copyFile(f, destPath);
+        }
+        return flag;
     }
 
     /**
