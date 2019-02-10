@@ -77,7 +77,7 @@
         GROUP BY
             c.cId
         ORDER BY
-            lastUpdate DESC
+            collection DESC
         LIMIT #{skip}, #{limit}
     </select>
 

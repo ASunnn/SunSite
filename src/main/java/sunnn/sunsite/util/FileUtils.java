@@ -182,8 +182,10 @@ public class FileUtils {
 
             boolean flag = true;
             for (File f : files) {
-                if (!doCopyPath(f, destPath + File.separator + f.getName()))
-                    flag = false;
+                if (f.isDirectory())
+                    flag = doCopyPath(f, destPath + File.separator + f.getName());
+                else
+                    flag = copyFile(f, destPath);
             }
 
             return flag;
