@@ -77,7 +77,7 @@
         GROUP BY
             c.cId
         ORDER BY
-            collection DESC
+            collection
         LIMIT #{skip}, #{limit}
     </select>
 

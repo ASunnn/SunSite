@@ -158,6 +158,10 @@ public class GroupServiceImpl implements GroupService {
         String path = SunSiteProperties.tempPath
                 + tempCode
                 + File.separator
+                /* ---- 防止扫描器扫描到 ---- */
+                + tempCode
+                + File.separator
+                /* ---- 防止扫描器扫描到 ---- */
                 + name;
         String zipPath = SunSiteProperties.tempPath
                 + tempCode
