@@ -36,10 +36,10 @@
                 i.`name`
             FROM
                 `illustrator` AS i
-                LEFT JOIN alias AS a ON i.id = a.origin
+                LEFT JOIN alias AS a ON (i.id = a.origin AND a.kind = 0)
             WHERE
-                (kind = 0 OR kind IS NULL)
-                AND (i.`name` LIKE CONCAT('%', #{query}, '%') OR a.alias LIKE CONCAT('%', #{query}, '%'))
+--                 (kind = 0 OR kind IS NULL)
+                (i.`name` LIKE CONCAT('%', #{query}, '%') OR a.alias LIKE CONCAT('%', #{query}, '%'))
             )
         GROUP BY
             i.id
@@ -63,10 +63,10 @@
             COUNT(*) AS c
         FROM
             `illustrator` AS i
-            LEFT JOIN alias AS a ON i.id = a.origin
+            LEFT JOIN alias AS a ON (i.id = a.origin AND a.kind = 0)
         WHERE
-            ( kind = 0 OR kind IS NULL )
-            AND ( i.`name` LIKE CONCAT('%', #{query}, '%') OR a.alias LIKE CONCAT('%', #{query}, '%'));
+--             ( kind = 0 OR kind IS NULL )
+            (i.`name` LIKE CONCAT('%', #{query}, '%') OR a.alias LIKE CONCAT('%', #{query}, '%'));
     </select>
 
     <update id="update">
