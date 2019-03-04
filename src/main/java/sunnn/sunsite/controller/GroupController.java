@@ -40,7 +40,7 @@ public class GroupController {
         if (query == null || query.isEmpty())
             return groupService.getGroupList(page);
         else
-            return groupService.getGroupList(query, page);
+            return groupService.getGroupList(query.trim(), page);
     }
 
     @GetMapping(value = "/info")

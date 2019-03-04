@@ -46,6 +46,7 @@
             height: 990px;
             object-fit: contain;
             margin: auto;
+            background-color: dimgrey;
         }
         .info {
             float: left;
@@ -76,7 +77,7 @@
         /* 通用 */
         a {
             text-decoration: none;
-            color: #000;
+            color: lightgrey;
         }
     </style>
 
@@ -105,6 +106,8 @@
             var prev = data.prev;
             var next = data.next;
             var illustrators = data.illustrator;
+            var width = data.width;
+            var height = data.height;
 
             document.title = name;
 
@@ -154,6 +157,10 @@
             collectionLink.setAttribute("href", "/collection/show/" + encodeURIComponent(cId));
             collectionLink.appendChild(collectionElement);
             collectionDiv.appendChild(collectionLink);
+
+            var sizeDiv = document.getElementById("size");
+            sizeDiv.innerText = width + " × " + height;
+
             var prevElement = document.getElementById("prev");
             if (prev == -1)
                 prevElement.setAttribute("disable", "disable");
@@ -164,7 +171,7 @@
             if (next == -1)
                 nextElement.setAttribute("disable", "disable");
             else
-                    nextElement.setAttribute("onclick", "window.location.href='/gallery/show/" + next + "'");
+                nextElement.setAttribute("onclick", "window.location.href='/gallery/show/" + next + "'");
 
             var image = document.createElement("img");
             image.src = "/p/" + data.sequence;
@@ -225,7 +232,7 @@
     </script>
 </head>
 
-<body>
+<body style="background-color:#333333; color:lightgrey">
     <!-- <div class="menu">
         <ul>
             <li class="menuContent" style="text-align:center; font-size:50px">
@@ -264,6 +271,9 @@
             <div id="collection">
                 <p class="infoTitle">Collection</p>
             </div>
+            <br />
+            <br />
+            <p id="size"></p>
         </div>
         <div id="tool" class="tool">
             <button id="prev" style="float:left; margin-right:20px;">← prev</button>

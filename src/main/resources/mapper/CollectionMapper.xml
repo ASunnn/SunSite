@@ -55,7 +55,8 @@
         GROUP BY
             c.cId
         ORDER BY
-            lastUpdate DESC
+            c.lastUpdate DESC,
+            g.`name`
         LIMIT #{skip}, #{limit}
     </select>
 
@@ -99,7 +100,8 @@
         GROUP BY
             c.cId
         ORDER BY
-            lastUpdate DESC
+            c.lastUpdate DESC,
+            g.`name`
         LIMIT #{skip}, #{limit}
     </select>
 

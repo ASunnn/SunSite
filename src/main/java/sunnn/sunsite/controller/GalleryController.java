@@ -35,8 +35,7 @@ public class GalleryController {
 
     @GetMapping(value = "/list")
     @ResponseBody
-    public PictureListResponse pictureList(@RequestParam("p") int page,
-                                           HttpServletRequest request, HttpServletResponse response) {
+    public PictureListResponse pictureList(@RequestParam("p") int page) {
         return galleryService.getPictureList(page);
     }
 
@@ -50,19 +49,12 @@ public class GalleryController {
     @ResponseBody
     public FileUploadResponse upload(@RequestParam("file") MultipartFile[] files) {
         // notice:RequestParam里的值需要与页面内的id一致
-        /*
-            检查是否为空上传
-         */
         if (files.length == 0)
             return new FileUploadResponse(StatusCode.ILLEGAL_INPUT);
-        /*
-            生成唯一的上传id：当前时间 + 用户id
-         */
+
         String uploadCode = String.valueOf(System.currentTimeMillis())
                 + SecurityUtils.getSubject().getSession().getId();
-        /*
-            对上传的文件进行逐个处理
-         */
+
         for (MultipartFile file : files) {
             StatusCode code = pictureService.uploadPicture(file, uploadCode);
             // 非法文件，直接返回错误

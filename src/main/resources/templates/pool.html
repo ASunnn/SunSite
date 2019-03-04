@@ -40,7 +40,7 @@
             width: 280px;
             height: 295px;
             margin: 10px;
-            background-color: #f4f4f4;
+            background-color: dimgrey;
         }
         .imageDiv {
             width: 250px; 
@@ -54,6 +54,12 @@
         .next {
             text-align: center;
             margin: 30px;
+        }
+        .floatBlock {
+            position: absolute;
+            opacity: 0.5;
+            background-color: #f4f4f4;
+            z-index: -1;
         }
         /* 工具 */
         .toolContent {
@@ -73,7 +79,7 @@
             margin-bottom:20px;
             width:1800px;
             text-align:center;
-            background-color: #fafafa;
+            /* background-color: #fafafa; */
         }
         .modifyInput {
             width: 200px;
@@ -86,10 +92,13 @@
             margin: auto;
             text-align: right;
         }
+        input {
+            background-color: lightgrey;
+        }
         /* 通用 */
         a {
             text-decoration: none;
-            color: #000;
+            color: lightgrey;
         }
     </style>
 
@@ -114,6 +123,7 @@
 
                 var header = document.getElementById("header");
                 var g = document.createElement("p");
+                g.setAttribute("id", "group");
                 g.setAttribute("class", "info");
                 var link = document.createElement("a");
                 link.setAttribute("href", "/group/show/" + encodeURIComponent(data.group));
@@ -285,9 +295,90 @@
             });
         });
     </script>
+    <!-- 上传 -->
+    <script>
+        function uploadEvent(setZIndex) {
+            var floatBlock = document.getElementById("floatBlock");
+            
+            var pictureList = document.getElementById("pictureList");
+            var count = pictureList.childElementCount - 1;
+            var height = Math.ceil(count / 6) * 315;
+            
+            floatBlock.style.width = "1800px";
+            floatBlock.style.height = height + "px";
+            floatBlock.style.display = "block";
+            if (setZIndex)
+                floatBlock.style.zIndex = 256;
+        }
+
+        function overEvent() {
+            var floatBlock = document.getElementById("floatBlock");
+            floatBlock.style.display = "none";
+            floatBlock.style.zIndex = -1;
+        }
+
+        function uploadFile(fileList) {
+            var formData = new FormData();
+            for (i = 0; i < fileList.length; ++i) {
+                formData.append("file", fileList[i]);
+            }
+            
+            $.ajax({
+                method: 'post',
+                url: "/gallery/upload",
+                data: formData,
+                cache: false,   //上传文件无需缓存
+                processData: false, //用于对data参数进行序列化处理 这里必须false
+                contentType: false //必须
+            }).done(function (data) {
+                alert(data.msg);
+                // overEvent();
+                if (data.code == 0) {
+                    var group = document.getElementById("group").childNodes[0].innerText;
+                    uploadInfo(prompt("Illustrator : ", group), data.uploadCode);
+                } else {
+                    window.location.reload();
+                }
+            }).fail(function () {
+                alert("error");
+                window.location.href = "./error";
+            });
+        }
+
+        function uploadInfo(illustrator, uploadCode) {
+            if (illustrator == null) {
+                overEvent();
+                return;
+            }
+            
+            var group = document.getElementById("group").childNodes[0].innerText;
+            var collection = document.getElementById("theme").innerText;
+
+            var data = {
+                "illustrator": illustrator,
+                "group" : group,
+                "collection": collection,
+                "uploadCode": uploadCode
+            };
+
+            $.ajax({
+                method: 'post',
+                url: "/gallery/uploadInfo",
+                    data: JSON.stringify(data),
+                dataType: "JSON",
+                contentType: "application/json"
+            }).done(function (data) {
+                alert(data.msg);
+                window.location.reload();
+            }).fail(function () {
+                alert("error");
+                    window.location.href = "/error";
+            });
+        }
+    </script>
 </head>
 
-<body>
+<body style="background-color:#333333; color:lightgrey">
     <div class="menu">
         <ul>
             <li class="menuContent" style="text-align:center; font-size:50px">
@@ -316,6 +407,7 @@
             <p id="theme" class="info" style="font-weight:bold; font-size:larger;"></p>
         </div>
         <div id="pictureList">
+            <div id="floatBlock" class="floatBlock" style="display:none"></div>
         </div>
         <div id="page">
         </div>
@@ -344,5 +436,29 @@
             <input id="submit" type="button" value="sumbit!">
         </form>
     </div>
+    <script>
+        var uploadArea = document.getElementById("pictureList")
+	    uploadArea.addEventListener("dragenter", function (e) {
+			e.preventDefault();
+		    // e.stopPropagation();
+            // uploadEvent();
+    	})
+        uploadArea.addEventListener("dragleave", function (e) {
+		    e.preventDefault();
+		    // e.stopPropagation();
+            overEvent();
+    	})
+		uploadArea.addEventListener("dragover", function (e) {
+	    	e.preventDefault();
+			// e.stopPropagation();
+            uploadEvent(false);
+	    })
+	    uploadArea.addEventListener("drop", function (e) {
+			e.preventDefault();
+		    // e.stopPropagation();
+            uploadEvent(true);
+            uploadFile(this.files || e.dataTransfer.files);
+        })
+    </script>
 </body>
 </html>

@@ -21,7 +21,8 @@
         GROUP BY
             g.id
         ORDER BY
-	        lastUpdate DESC
+            g.lastUpdate DESC,
+	        g.`name`
         LIMIT #{skip}, #{limit}
     </select>
 
@@ -48,7 +49,8 @@
         GROUP BY
             g.id
         ORDER BY
-            lastUpdate DESC
+            g.lastUpdate DESC,
+	        g.`name`
         LIMIT #{skip}, #{limit}
     </select>
 

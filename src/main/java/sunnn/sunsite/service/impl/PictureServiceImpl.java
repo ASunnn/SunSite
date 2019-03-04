@@ -108,7 +108,7 @@ public class PictureServiceImpl implements PictureService {
         /*
             图片信息处理
          */
-        Collection c = collectionDao.findByInfo(info.getCollection(), info.getGroup());
+        Collection c = collectionDao.findByInfo(info.getCollection().trim(), info.getGroup().trim());
         if (c == null)
             return StatusCode.ILLEGAL_INPUT;
 
