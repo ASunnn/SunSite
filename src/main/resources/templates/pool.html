@@ -331,12 +331,12 @@
                 processData: false, //用于对data参数进行序列化处理 这里必须false
                 contentType: false //必须
             }).done(function (data) {
-                alert(data.msg);
                 // overEvent();
                 if (data.code == 0) {
                     var group = document.getElementById("group").childNodes[0].innerText;
                     uploadInfo(prompt("Illustrator : ", group), data.uploadCode);
                 } else {
+                    alert(data.msg);
                     window.location.reload();
                 }
             }).fail(function () {
