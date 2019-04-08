@@ -6,37 +6,88 @@ import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import sunnn.sunsite.dto.response.BaseResponse;
+import sunnn.sunsite.util.StatusCode;
 import sunnn.sunsite.util.SunSiteProperties;
 
 @Controller
 public class VerifyController {
 
     /**
-     * 登录认证
+     * 登录
      *
-     * @param passCode 密码
+     * @param passCode 登录信息
      * @return 若认证成功，请求转发至主页，否则至错误页面
      */
-    @RequestMapping(value = "/verify", method = RequestMethod.GET)
-    public String login(@RequestParam(value = "code", defaultValue = "") String passCode) {
+    @PostMapping(value = "/login")
+    @ResponseBody
+    public BaseResponse login(@RequestParam("code") String passCode) {
 //        String md5Code = MD5s.getMD5(passCode);
 //        if (md5Code == null)    // 注意MD5工具里的异常处理
 //            return "redirect:/error";
         UsernamePasswordToken token = new UsernamePasswordToken("", passCode);
+        token.setRememberMe(true);
         Subject subject = SecurityUtils.getSubject();
         try {
             subject.login(token);
         } catch (AuthenticationException e) {
-            return "redirect:/error";
+            return new BaseResponse(StatusCode.VERIFY_FAILED);
         }
+        System.out.println(token.isRememberMe());
+        System.out.println(subject.isRemembered());
+        System.out.println(subject.isAuthenticated());
+        System.out.println();
 
         Session session = subject.getSession();
         session.setTimeout(SunSiteProperties.sessionTimeout);
-        return "redirect:/gallery";
+        return new BaseResponse(StatusCode.OJBK);
     }
+
+
+
+    /**
+     * 认证
+     *
+     * @return 若认证成功，请求转发至主页，否则需要登录
+     */
+    @GetMapping(value = "/verify")
+    @ResponseBody
+    public BaseResponse verify() {
+//        UsernamePasswordToken token = new UsernamePasswordToken("", passCode);
+        Subject subject = SecurityUtils.getSubject();
+        System.out.println(subject.isRemembered());
+        System.out.println(subject.isAuthenticated());
+        System.out.println();
+
+        if (subject.isAuthenticated() || subject.isRemembered())
+            return new BaseResponse(StatusCode.OJBK);
+        return new BaseResponse(StatusCode.VERIFY_FAILED);
+    }
+
+//    /**
+//     * 登录认证
+//     *
+//     * @param passCode 密码
+//     * @return 若认证成功，请求转发至主页，否则至错误页面
+//     */
+//    @RequestMapping(value = "/verify", method = RequestMethod.GET)
+//    public String login(@RequestParam(value = "code", defaultValue = "") String passCode) {
+////        String md5Code = MD5s.getMD5(passCode);
+////        if (md5Code == null)    // 注意MD5工具里的异常处理
+////            return "redirect:/error";
+//        UsernamePasswordToken token = new UsernamePasswordToken("", passCode);
+//        Subject subject = SecurityUtils.getSubject();
+//        try {
+//            subject.login(token);
+//        } catch (AuthenticationException e) {
+//            return "redirect:/error";
+//        }
+//
+//        Session session = subject.getSession();
+//        session.setTimeout(SunSiteProperties.sessionTimeout);
+//        return "redirect:/gallery";
+//    }
 
     /**
      * 拦截器拦截非法访问后，通过此controller转发至错误页面

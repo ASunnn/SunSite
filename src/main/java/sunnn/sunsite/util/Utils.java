@@ -1,14 +1,20 @@
 package sunnn.sunsite.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import sunnn.sunsite.exception.UnSupportSystemException;
+
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.FileImageInputStream;
 import java.awt.*;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 public class Utils {
+
+    private static Logger log = LoggerFactory.getLogger(Utils.class);
 
     public static boolean isIllegalPageParam(int page) {
         return page < 0;
@@ -57,5 +63,87 @@ public class Utils {
             }
         }
         return result;
+    }
+
+    /**
+     * 根据不同系统获取配置文件路径
+     */
+    public static String getPropertiesPath() throws UnSupportSystemException {
+        String sys = System.getProperty("os.name");
+
+        if (sys.contains("Windows")) {
+            return "C:\\ProgramData\\sunsite\\";
+        } else if (sys.contains("Linux"))
+            return "";
+
+        throw new UnSupportSystemException(sys);
+    }
+
+    @Deprecated
+    public static String readDataFromFile(int line) {
+//        InputStreamReader is;
+//        try {
+//            is = new InputStreamReader(new FileInputStream(new File(getDataFilePath())));
+//        } catch (FileNotFoundException e) {
+//            return null;
+//        }
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(getDataFilePath()));
+            while (--line > 0) {
+                reader.readLine();
+            }
+            String data = reader.readLine();
+            reader.close();
+
+            return data;
+        } catch (IOException e) {
+            log.error("Read Data File Error : ", e);
+        }
+        return null;
+    }
+
+    @Deprecated
+    public static void writeDataToFile(String data, int line) {
+        ArrayList<String> content = new ArrayList<>();
+        String filePath = getDataFilePath();
+
+        // 读取
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(filePath));
+            String s;
+            while ((s = reader.readLine()) != null) {
+                content.add(s);
+            }
+            reader.close();
+        } catch (IOException ignored) {
+        }
+
+        // 覆盖
+        if (content.size() < line)
+            line = content.size();
+        content.set(line - 1, data);
+
+        // 写入
+        if (filePath.isEmpty())
+            return;
+        try {
+            BufferedWriter outputStream = new BufferedWriter(new FileWriter(filePath));
+            for (String c : content) {
+                outputStream.write(c);
+                outputStream.newLine();
+            }
+            outputStream.close();
+        } catch (IOException e) {
+            log.error("Write Data File Error : ", e);
+        }
+    }
+
+    @Deprecated
+    private static String getDataFilePath() {
+        try {
+            return Utils.getPropertiesPath() + SunsiteConstant.DATA_FILE;
+        } catch (UnSupportSystemException ignored) {
+        }
+        return "";
     }
 }

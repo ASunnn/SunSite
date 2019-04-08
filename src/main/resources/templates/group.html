@@ -32,7 +32,7 @@
             margin: 0;
         }
         /* 过滤器 */
-        .filters {
+        .filter {
             width: 1800px;
             margin: auto;
             height: 30px;
@@ -162,15 +162,47 @@
             });
         });
 
+        // filter.onkeydown = function(e) {
+        //     var key = e.which;
+        //
+        //     if(key == 37) {
+        //         if (prev == -1)
+        //             alert("No More");
+        //         else
+        //             window.location.href = "/gallery/show/" + prev;
+        //
+        //     }
+        //     if(key == 39) {
+        //         if (next == -1)
+        //             alert("No More");
+        //         else
+        //             window.location.href = "/gallery/show/" + next;
+        //     }
+        // };
+
+        // $('#filterInfo').on('keyup', function(e) {
+        //     var key = e.which;
+        //     alert(key);
+        //     if (key == 13) {
+        //         if (filterInfo.length == 0) {
+        //             $('#inFilter').val("");
+        //             getGroupList(0);
+        //         } else {
+        //             $('#inFilter').val(filterInfo);
+        //             getGroupListWithFilter(0, filterInfo);
+        //         }
+        //     }
+        // });
+
         $(function () {
             $("#page").click(function () {
                 var page = document.getElementById("next");
 
                 var query = $('#inFilter').val();
                 if (query.length == 0) 
-                getGroupList(page.innerText);
+                    getGroupList(page.innerText);
                 else 
-                getGroupListWithFilter(page.innerText, query);
+                    getGroupListWithFilter(page.innerText, query);
             });
         });
     </script>
@@ -200,7 +232,7 @@
         </ul>
     </div>
     <hr style="border-color:black" />
-    <div class="filters">
+    <div id="filter" class="filter">
         <input style="margin-left: 20px; height:20px;" type="text" id="filterInfo", autocomplete="off"/>
         <input type="hidden" id="inFilter" value="" />
         <button id="getFilter" style="margin-left:30px;">GET!</button>
@@ -220,6 +252,26 @@
         <div id="page">
         </div>
     </div>
+    
+    <script>
+        filterInfo.addEventListener("keydown", function (e) {
+            var key = e.which;
+            // alert(key);
+            if (key == 13) {
+                var info = $('#filterInfo').val();
+
+                clear();
+
+                if (info.length == 0) {
+                    $('#inFilter').val("");
+                    getGroupList(0);
+                } else {
+                    $('#inFilter').val(info);
+                    getGroupListWithFilter(0, info);
+                }
+            }
+        });
+    </script>
 </body>
 </html>
         

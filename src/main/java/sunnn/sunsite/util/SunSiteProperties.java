@@ -16,6 +16,8 @@ public class SunSiteProperties {
 
     public static long sessionTimeout = 1200000;
 
+    public static int loginTimeout = 86400 * 5;
+
     public static String missPicture = "";
 
     public static boolean scanAutoFill = false;
@@ -58,6 +60,10 @@ public class SunSiteProperties {
 
     public static void setSessionTimeout(long sessionTimeout) {
         SunSiteProperties.sessionTimeout = sessionTimeout * 60000;
+    }
+
+    public static void setLoginTimeout(int loginTimeout) {
+        SunSiteProperties.loginTimeout = loginTimeout * 3600;
     }
 
     public static void setMissPicture(String missPicture) {

@@ -9,7 +9,8 @@ public enum StatusCode {
     NO_DATA(1 << 2),
     UPLOAD_TIMEOUT(1 << 3),
     DELETE_FAILED(1 << 4),
-    MODIFY_FAILED(1 << 5);
+    MODIFY_FAILED(1 << 5),
+    VERIFY_FAILED(1 << 6);
 
     private int code;
 

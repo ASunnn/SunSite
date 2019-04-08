@@ -171,6 +171,7 @@
             var pictureList = document.getElementById("pictureList");
 
             var sequence = data.sequence;
+            var name = data.name;
             var group = data.group;
             var cId = data.cid;
             var collection = data.collection;
@@ -185,6 +186,7 @@
 
             var image = document.createElement("img");
             image.src = "/m/" + sequence;
+            image.title = name + "  [" + group + " - " + collection + "]";
 
             var imageLink = document.createElement("a");
             imageLink.setAttribute("href", "/gallery/show/" + sequence);

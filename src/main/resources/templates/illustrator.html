@@ -32,7 +32,7 @@
             margin: 0;
         }
         /* 过滤器 */
-        .filters {
+        .filter {
             width: 1800px;
             margin: auto;
             height: 30px;
@@ -194,7 +194,7 @@
         </ul>
     </div>
     <hr style="border-color:black" />
-    <div class="filters">
+    <div class="filter">
         <input style="margin-left: 20px; height:20px;" type="text" id="filterInfo", autocomplete="off"/>
         <input type="hidden" id="inFilter" value="" />
         <button id="getFilter" style="margin-left:30px;">GET!</button>
@@ -213,5 +213,25 @@
         <div id="page">
         </div>
     </div>
+
+    <script>
+        filterInfo.addEventListener("keydown", function (e) {
+            var key = e.which;
+            // alert(key);
+            if (key == 13) {
+                var info = $('#filterInfo').val();
+
+                clear();
+
+                if (info.length == 0) {
+                    $('#inFilter').val("");
+                    getIllustratorList(0);
+                } else {
+                    $('#inFilter').val(info);
+                    getIllustratorListWithFilter(0, info);
+                }
+            }
+        });
+    </script>
 </body>
 </html>

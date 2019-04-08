@@ -143,115 +143,115 @@
             getPictureList(0);
         };
 
-        function getCookie(collection) {
-            var reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
-            var cookie = document.cookie.match(reg);
-            if (cookie)
-                return cookie[2];
-            else
-                return "";
-        }
+        // function getCookie(collection) {
+        //     var reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+        //     var cookie = document.cookie.match(reg);
+        //     if (cookie)
+        //         return cookie[2];
+        //     else
+        //         return "";
+        // }
     </script>
-    <!-- 页面变换 -->
-    <script>
-        $(document).ready(function () {
-            $(".selectBox input").click(function () {
-                var thisinput = $(this);
-                var thisul = $(this).parent().find("ul");
-                if (thisul.css("display") == "none") {
-                    //显示出来滚动条 
-                    if (thisul.height() > 200) {
-                        thisul.css({ height: "200" + "px", "overflow-y": "scroll" })
-                    };
-                    thisul.fadeIn("100");
-                    thisul.hover(function () { }, function () { thisul.fadeOut("100"); });
-                    //连续多个事件 
-                    thisul.find("li").click(function () {
-                        thisinput.val($(this).text());
-                        thisul.fadeOut("100");
-                        getGalleryInfo();
-                    }).hover(
-                        function () {
-                             $(this).addClass("hover"); 
-                        }, 
-                        function () { 
-                            $(this).removeClass("hover"); 
-                        }
-                    );
-                }
-                else {
-                    thisul.fadeOut("fast");
-                }
-            })
-        }); 
-    </script>
-    <!-- 图库信息 -->
-    <script>
-        function getGalleryInfo() {
-            var illustrators = $('#illustrators').val();
-            var collection = $('#collections').val();
-            var type = $('#types').val();
+    <!--&lt;!&ndash; 页面变换 &ndash;&gt;-->
+    <!--<script>-->
+        <!--$(document).ready(function () {-->
+            <!--$(".selectBox input").click(function () {-->
+                <!--var thisinput = $(this);-->
+                <!--var thisul = $(this).parent().find("ul");-->
+                <!--if (thisul.css("display") == "none") {-->
+                    <!--//显示出来滚动条 -->
+                    <!--if (thisul.height() > 200) {-->
+                        <!--thisul.css({ height: "200" + "px", "overflow-y": "scroll" })-->
+                    <!--};-->
+                    <!--thisul.fadeIn("100");-->
+                    <!--thisul.hover(function () { }, function () { thisul.fadeOut("100"); });-->
+                    <!--//连续多个事件 -->
+                    <!--thisul.find("li").click(function () {-->
+                        <!--thisinput.val($(this).text());-->
+                        <!--thisul.fadeOut("100");-->
+                        <!--getGalleryInfo();-->
+                    <!--}).hover(-->
+                        <!--function () {-->
+                             <!--$(this).addClass("hover"); -->
+                        <!--}, -->
+                        <!--function () { -->
+                            <!--$(this).removeClass("hover"); -->
+                        <!--}-->
+                    <!--);-->
+                <!--}-->
+                <!--else {-->
+                    <!--thisul.fadeOut("fast");-->
+                <!--}-->
+            <!--})-->
+        <!--}); -->
+    <!--</script>-->
+    <!--&lt;!&ndash; 图库信息 &ndash;&gt;-->
+    <!--<script>-->
+        <!--function getGalleryInfo() {-->
+            <!--var illustrators = $('#illustrators').val();-->
+            <!--var collection = $('#collections').val();-->
+            <!--var type = $('#types').val();-->
 
-            var data = {
-                "illustrator": illustrator,
-                "collection": collection,
-                "type": type
-            };
+            <!--var data = {-->
+                <!--"illustrator": illustrator,-->
+                <!--"collection": collection,-->
+                <!--"type": type-->
+            <!--};-->
 
-            $.ajax({
-                method: 'post',
-                url: "/gallery/galleryInfo",
-                data: JSON.stringify(data),
-                dataType: "JSON",
-                contentType: "application/json"
-            }).done(function (data) {
-                setGalleryInfo(data);
-            }).fail(function () {
-                alert("error");
-                window.location.href = "/error";
-            });
-        }
-        
-        function setGalleryInfo(data) {
-            var illustratorUl = document.getElementById("illustratorList");
-            deleteGalleryInfo(illustratorUl);
+            <!--$.ajax({-->
+                <!--method: 'post',-->
+                <!--url: "/gallery/galleryInfo",-->
+                <!--data: JSON.stringify(data),-->
+                <!--dataType: "JSON",-->
+                <!--contentType: "application/json"-->
+            <!--}).done(function (data) {-->
+                <!--setGalleryInfo(data);-->
+            <!--}).fail(function () {-->
+                <!--alert("error");-->
+                <!--window.location.href = "/error";-->
+            <!--});-->
+        <!--}-->
+        <!---->
+        <!--function setGalleryInfo(data) {-->
+            <!--var illustratorUl = document.getElementById("illustratorList");-->
+            <!--deleteGalleryInfo(illustratorUl);-->
 
-            var emptyIllustratorLi = document.createElement("li");
-            illustratorUl.appendChild(emptyIllustratorLi);
-            for (i = 0; i < data.illustrators.length; ++i) {
-                let illustrators = document.createElement("li");
-                illustrator.innerText = data.illustrators[i];
-                illustratorUl.appendChild(illustrator);
-            }
+            <!--var emptyIllustratorLi = document.createElement("li");-->
+            <!--illustratorUl.appendChild(emptyIllustratorLi);-->
+            <!--for (i = 0; i < data.illustrators.length; ++i) {-->
+                <!--let illustrators = document.createElement("li");-->
+                <!--illustrator.innerText = data.illustrators[i];-->
+                <!--illustratorUl.appendChild(illustrator);-->
+            <!--}-->
 
-            var collectionUl = document.getElementById("collectionList");
-            deleteGalleryInfo(collectionUl);
+            <!--var collectionUl = document.getElementById("collectionList");-->
+            <!--deleteGalleryInfo(collectionUl);-->
 
-            var emptyCollectionLi = document.createElement("li");
-            collectionUl.appendChild(emptyCollectionLi);
-            for (i = 0; i < data.collections.length; ++i) {
-                let collection = document.createElement("li");
-                collection.innerText = data.collections[i];
-                collectionUl.appendChild(collection);
-            }
+            <!--var emptyCollectionLi = document.createElement("li");-->
+            <!--collectionUl.appendChild(emptyCollectionLi);-->
+            <!--for (i = 0; i < data.collections.length; ++i) {-->
+                <!--let collection = document.createElement("li");-->
+                <!--collection.innerText = data.collections[i];-->
+                <!--collectionUl.appendChild(collection);-->
+            <!--}-->
 
-            var typeUl = document.getElementById("typeList");
-            deleteGalleryInfo(typeUl);
+            <!--var typeUl = document.getElementById("typeList");-->
+            <!--deleteGalleryInfo(typeUl);-->
 
-            var emptyTypeLi = document.createElement("li");
-            typeUl.appendChild(emptyTypeLi);
-            for (i = 0; i < data.types.length; ++i) {
-                let type = document.createElement("li");
-                type.innerText = data.types[i];
-                typeUl.appendChild(type);
-            }
-        }
+            <!--var emptyTypeLi = document.createElement("li");-->
+            <!--typeUl.appendChild(emptyTypeLi);-->
+            <!--for (i = 0; i < data.types.length; ++i) {-->
+                <!--let type = document.createElement("li");-->
+                <!--type.innerText = data.types[i];-->
+                <!--typeUl.appendChild(type);-->
+            <!--}-->
+        <!--}-->
 
-        function deleteGalleryInfo(div) {
-            while(div.hasChildNodes()) 
-                div.removeChild(div.firstChild);
-        }
-    </script>
+        <!--function deleteGalleryInfo(div) {-->
+            <!--while(div.hasChildNodes()) -->
+                <!--div.removeChild(div.firstChild);-->
+        <!--}-->
+    <!--</script>-->
     <!-- 图片列表 -->
     <script>
         $(function () {
@@ -347,6 +347,7 @@
             var pictureList = document.getElementById("pictureList");
 
             var sequence = data.sequence;
+            var name = data.name;
             var group = data.group;
             var cId = data.cid;
             var collection = data.collection;
@@ -361,6 +362,7 @@
 
             var image = document.createElement("img");
             image.src = "/m/" + sequence;
+            image.title = name + "  [" + group + " - " + collection + "]";
 
             var imageLink = document.createElement("a");
             imageLink.setAttribute("href", "/gallery/show/" + sequence);

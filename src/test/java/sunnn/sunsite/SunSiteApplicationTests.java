@@ -1,5 +1,6 @@
 package sunnn.sunsite;
 
+import org.apache.shiro.codec.Base64;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

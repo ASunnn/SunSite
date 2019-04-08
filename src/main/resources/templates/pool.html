@@ -364,7 +364,7 @@
             $.ajax({
                 method: 'post',
                 url: "/gallery/uploadInfo",
-                    data: JSON.stringify(data),
+                data: JSON.stringify(data),
                 dataType: "JSON",
                 contentType: "application/json"
             }).done(function (data) {
@@ -372,7 +372,7 @@
                 window.location.reload();
             }).fail(function () {
                 alert("error");
-                    window.location.href = "/error";
+                window.location.href = "/error";
             });
         }
     </script>

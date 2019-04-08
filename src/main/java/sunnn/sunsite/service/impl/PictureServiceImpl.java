@@ -99,23 +99,19 @@ public class PictureServiceImpl implements PictureService {
     @Transactional(propagation = Propagation.REQUIRED,
             isolation = Isolation.DEFAULT)
     public StatusCode uploadInfoAndSave(UploadPictureInfo info) {
-        /*
-            获取上传的文件
-         */
+        // 获取上传的文件
         List<File> files = fileCache.getFile(info.getUploadCode());
         if (files == null)
             return StatusCode.UPLOAD_TIMEOUT;
-        /*
-            图片信息处理
-         */
+
+        // 图片信息处理
         Collection c = collectionDao.findByInfo(info.getCollection().trim(), info.getGroup().trim());
         if (c == null)
             return StatusCode.ILLEGAL_INPUT;
 
         List<Illustrator> illustrators = illustratorHandler(info.getIllustrator());
-        /*
-            进行文件的保存
-         */
+
+        // 进行文件的保存
         for (File file : files) {
             // 生成图片系统信息
             Pic pictureData = generateInfo(file, c);

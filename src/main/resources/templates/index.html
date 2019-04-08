@@ -4,8 +4,33 @@
     <meta charset="UTF-8">
     <title>SunSite</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.9.0.min.js"></script>
+
+    <script>
+        window.onload = function () {
+            $.get("/verify", function (data) {
+                if (data.code == 0)
+                    window.location.href = "/gallery";
+                else {
+                    var passCode = prompt("PassCode : ");
+                    if (passCode != null)
+                        login(passCode);
+                }
+            });
+        };
+
+        function login(passCode) {
+            $.post("/login", {"code": passCode},
+                function(data){
+                    if (data.code == 0)
+                        window.location.href = "/gallery";
+                    else
+                        alert("Error PassCode")
+                }, "JSON");
+        }
+    </script>
 </head>
 <body style="background-color:#333333; color:lightgrey">
-    <h1 align="center">SunSite 1.5.1</h1>
+    <h1 align="center">SunSite 1.6.0</h1>
 </body>
 </html>

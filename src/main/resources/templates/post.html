@@ -93,7 +93,7 @@
                 } else {
                     setPage(data);
                     
-                keyEvent(data.prev, data.next);
+                    keyEvent(data.prev, data.next);
                 }
             });
         };
@@ -180,23 +180,17 @@
         }
 
         function keyEvent(prev, next) {
-            document.onkeydown=function(e){
-                // var isie = (document.all) ? true : false;
+            document.onkeydown = function(e) {
                 var key = e.which;
-                // if(isie) {
-                //     key = window.event.keyCode;
-                // } else {
-                //     key = e.which;
-                // }
 
-                if(key==37) { 
+                if(key == 37) { 
                     if (prev == -1)
                         alert("No More");
                     else
                         window.location.href = "/gallery/show/" + prev;
                     
                 }
-                if(key==39) {
+                if(key == 39) {
                     if (next == -1)
                         alert("No More");
                     else

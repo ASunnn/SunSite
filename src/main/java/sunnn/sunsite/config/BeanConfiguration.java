@@ -10,9 +10,7 @@ import org.springframework.stereotype.Component;
 import sunnn.sunsite.exception.IllegalPropertiesException;
 import sunnn.sunsite.exception.UnSupportSystemException;
 import sunnn.sunsite.filter.RequestFilter;
-import sunnn.sunsite.util.FileCache;
-import sunnn.sunsite.util.InputDataScanner;
-import sunnn.sunsite.util.SunSiteProperties;
+import sunnn.sunsite.util.*;
 
 import javax.servlet.MultipartConfigElement;
 import java.io.File;
@@ -47,14 +45,7 @@ public class BeanConfiguration {
     }
 
     private String getPropertiesFilePath() throws UnSupportSystemException {
-        String sys = System.getProperty("os.name");
-
-        if (sys.contains("Windows")) {
-            return "C:\\ProgramData\\sunsite\\sunsite.properties";
-        } else if (sys.contains("Linux"))
-            return "";
-
-        throw new UnSupportSystemException(sys);
+        return Utils.getPropertiesPath() + SunsiteConstant.PROPERTIES_FILE;
     }
 
     private void parseSunsiteProperties(Properties properties) throws IllegalPropertiesException {
@@ -86,6 +77,10 @@ public class BeanConfiguration {
         String sessionTimeout = properties.getProperty("sessionTimeout");
         if (sessionTimeout != null)
             SunSiteProperties.setSessionTimeout(Integer.valueOf(sessionTimeout));
+
+        String loginTimeout = properties.getProperty("loginTimeout");
+        if (sessionTimeout != null)
+            SunSiteProperties.setLoginTimeout(Integer.valueOf(loginTimeout));
 
         String missPicture = properties.getProperty("missPicture");
         if (missPicture != null)
