@@ -17,7 +17,9 @@
     <select id="findAll" resultType="sunnn.sunsite.entity.Pic">
         SELECT *
         FROM pic
-        ORDER BY uploadTime DESC
+        ORDER BY
+            uploadTime DESC,
+            `name`
         LIMIT #{skip}, #{limit}
     </select>
 

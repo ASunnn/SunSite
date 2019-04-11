@@ -1,5 +1,7 @@
 package sunnn.sunsite.task;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import sunnn.sunsite.dao.PictureDao;
 import sunnn.sunsite.entity.Picture;
@@ -17,6 +19,8 @@ import static java.lang.Character.UnicodeBlock.of;
 @Component
 public class PictureIndexTask {
 
+    private static Logger log = LoggerFactory.getLogger(PictureIndexTask.class);
+
     @Resource
     private PictureDao dao;
 
@@ -25,6 +29,7 @@ public class PictureIndexTask {
     public void submit(long collection) {
         Task t = new Task(collection);
 
+        log.warn("Submit task");
         executor.submit(t);
     }
 
@@ -53,9 +58,13 @@ public class PictureIndexTask {
 
         @Override
         public void run() {
+            log.warn("Task - Run");
+
             List<Picture> pictures = dao.findAllByCollection(collection);
+            log.warn("Task - Picture list size = " + pictures.size());
 
             int startIndex = getStartIndex(pictures);
+            log.warn("Task - Start ArrayIndex = " + startIndex);
             if (startIndex == -1)
                 return;
 
@@ -63,19 +72,25 @@ public class PictureIndexTask {
             // 插入新记录
             for (int i = startIndex; i < pictures.size(); ++i)
                 queue.add(pictures.get(i));
+            log.warn("Task - Insert " + queue.size() + " new record to PriorityQueue");
 
             int newIndex = Integer.MAX_VALUE;
             // 将已有记录从后往前插入，寻找第一个需要修改index的
             for (int i = startIndex - 1; i >= 0; --i) {
                 queue.add(pictures.get(i));
                 newIndex = queue.peek().getIndex();
-                if (newIndex != Integer.MAX_VALUE)
+                if (newIndex != Integer.MAX_VALUE) {
+                    log.warn("Task - Find right ArrayIndex : " + i);
                     break;  // 找到了
+                }
             }
+            log.warn("Task - The origin RecordIndex is " + newIndex);
 
             // 更新index
             if (newIndex == Integer.MAX_VALUE)
                 newIndex = 1;
+            log.warn("Task - The right RecordIndex is " + newIndex);
+            log.warn("Task - Now the size of PriorityQueue is " + queue.size());
             while (!queue.isEmpty()) {
                 Picture p = queue.poll();
                 dao.updateIndex(newIndex++, p.getSequence());

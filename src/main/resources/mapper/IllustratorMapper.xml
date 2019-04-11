@@ -115,7 +115,8 @@
             AND a.sequence = p.sequence
             AND i.`name` = #{illustrator}
         ORDER BY
-            p.uploadTime DESC
+            p.uploadTime DESC,
+            p.`name`
         LIMIT #{skip}, #{limit}
     </select>
 
