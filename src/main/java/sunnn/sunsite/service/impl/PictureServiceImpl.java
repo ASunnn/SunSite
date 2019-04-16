@@ -148,8 +148,7 @@ public class PictureServiceImpl implements PictureService {
                     SunSiteProperties.savePath + pictureData.getPath(), pictureData.getName(), pictureData.getThumbnailName());
         }
         // 设置index更新任务
-        log.warn("Invoke task");
-        indexTask.submit(c.getCId());
+        indexTask.submit(c.getCId(), pictureDao.countByCollection(c.getCId()));
         // 设置时间戳更新任务
         updateTask.submit(c.getCId());
 

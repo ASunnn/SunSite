@@ -34,10 +34,6 @@ public class VerifyController {
         } catch (AuthenticationException e) {
             return new BaseResponse(StatusCode.VERIFY_FAILED);
         }
-        System.out.println(token.isRememberMe());
-        System.out.println(subject.isRemembered());
-        System.out.println(subject.isAuthenticated());
-        System.out.println();
 
         Session session = subject.getSession();
         session.setTimeout(SunSiteProperties.sessionTimeout);
@@ -56,9 +52,6 @@ public class VerifyController {
     public BaseResponse verify() {
 //        UsernamePasswordToken token = new UsernamePasswordToken("", passCode);
         Subject subject = SecurityUtils.getSubject();
-        System.out.println(subject.isRemembered());
-        System.out.println(subject.isAuthenticated());
-        System.out.println();
 
         if (subject.isAuthenticated() || subject.isRemembered())
             return new BaseResponse(StatusCode.OJBK);
