@@ -68,6 +68,7 @@ public class ShiroConfiguration {
         filterChainDefinitionMap.put("/verify", "anon");
         filterChainDefinitionMap.put("/error", "anon");
         filterChainDefinitionMap.put("/favicon.ico", "anon");   //我能怎么办也很绝望啊
+        filterChainDefinitionMap.put("/jquery-1.9.0.min.js", "anon");
         filterChainDefinitionMap.put("/**", "user");
 //        filterChainDefinitionMap.put("/**", "authc");
 //        filterChainDefinitionMap.put("/index", "logout");
