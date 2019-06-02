@@ -4,6 +4,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.nio.channels.FileChannel;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.regex.Pattern;
 
 /**
@@ -215,6 +217,14 @@ public class FileUtils {
     }
 
     /**
+     * 检查路径或文件是否存在
+     */
+    public static boolean isExists(String path) {
+        File file = new File(path);
+        return  file.exists();
+    }
+
+    /**
      * 检测文件名中是否含有操作系统不支持的非法字符
      * 不支持匹配整个路径
      *
@@ -228,4 +238,25 @@ public class FileUtils {
         return Pattern.compile("[\\\\/:*?\"<>|]").matcher(key).find();
     }
 
+    public static String generateHashcode(File file) {
+        MessageDigest digest = null;
+        try {
+            digest = MessageDigest.getInstance("MD5");
+        } catch (NoSuchAlgorithmException ignored) {
+        }
+
+        try {
+            InputStream is = new FileInputStream(file);
+            byte[] buffer = new byte[1024];
+            int count;
+            while ((count = is.read(buffer)) > 0) {
+                digest.update(buffer, 0, count);
+            }
+            is.close();
+        } catch (IOException e) {
+            return null;
+        }
+
+        return MD5s.byteToString(digest.digest());
+    }
 }

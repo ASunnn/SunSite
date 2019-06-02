@@ -1,8 +1,5 @@
 package sunnn.sunsite.util;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -12,8 +9,6 @@ import java.security.NoSuchAlgorithmException;
  * @author ASun
  */
 public class MD5s {
-
-    private static Logger log = LoggerFactory.getLogger(MD5s.class);
 
     private static final char hexDigits[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
 
@@ -48,7 +43,6 @@ public class MD5s {
         try {
             encoder = MessageDigest.getInstance("MD5");
         } catch (NoSuchAlgorithmException e) {
-            log.error("Error At Get MD5 : " + e);
             return null;
         }
         encoder.update(src.getBytes());
@@ -61,14 +55,14 @@ public class MD5s {
      * @param code MD5序列
      * @return 转换之后的字符串
      */
-    private static String byteToString(byte[] code) {
+    public static String byteToString(byte[] code) {
         if (code == null)
             return null;
 
         StringBuilder res = new StringBuilder();
-        for (byte aCode : code) {
-            int num = up(aCode);
-            res.append(hexDigits[num / 16]).append(hexDigits[num % 16]);
+        for (byte num : code) {
+//            int num = up(aCode);
+            res.append(hexDigits[(num >> 4) & 0x0f]).append(hexDigits[num & 0x0f]);
         }
         return res.toString();
     }
@@ -79,7 +73,7 @@ public class MD5s {
      * @param code MD5序列
      * @return 转换之后的整形数字
      */
-    private static long byteToLong(byte[] code) {
+    public static long byteToLong(byte[] code) {
         if (code == null)
             return -1;
         long res = 0;
@@ -90,6 +84,7 @@ public class MD5s {
         return res & Long.MAX_VALUE;
     }
 
+    @Deprecated
     private static int up(byte code) {  //code + 256是会返回int的噢
         return code < 0 ? code + 256 : code;
     }
