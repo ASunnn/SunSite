@@ -29,9 +29,14 @@
     </select>
 
     <update id="updateName">
-        UPDATE pic
-        SET `name` = #{name}, sequence = #{newSequence}
-        WHERE sequence = #{sequence}
+        UPDATE
+            pic
+        SET
+            `name` = #{name},
+            thumbnailName = #{thumbnailName},
+            sequence = #{newSequence}
+        WHERE
+            sequence = #{sequence}
     </update>
 
     <update id="updatePath">

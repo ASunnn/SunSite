@@ -26,14 +26,14 @@ CREATE TABLE `artwork`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `collection`;
 CREATE TABLE `collection`  (
-  `cId` bigint(20) NOT NULL AUTO_INCREMENT,
+  `cId` bigint(20) NOT NULL,
   `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `group` int(11) NOT NULL,
   `type` int(11) NOT NULL,
   `createTime` datetime(0) NOT NULL,
   `lastUpdate` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP(0),
   PRIMARY KEY (`cId`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for group
@@ -70,7 +70,8 @@ CREATE TABLE `pic`  (
   `uploadTime` datetime(0) NULL DEFAULT NULL,
   `thumbnailName` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `path` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  PRIMARY KEY (`sequence`) USING BTREE
+  PRIMARY KEY (`sequence`) USING BTREE,
+  INDEX `uploadTime`(`uploadTime`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -82,7 +83,18 @@ CREATE TABLE `picture`  (
   `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `collection` bigint(20) NOT NULL,
   `index` int(11) NOT NULL,
-  PRIMARY KEY (`sequence`) USING BTREE
+  PRIMARY KEY (`sequence`) USING BTREE,
+  INDEX `collection`(`collection`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for sys
+-- ----------------------------
+DROP TABLE IF EXISTS `sys`;
+CREATE TABLE `sys`  (
+  `version` int(11) NOT NULL,
+  `msgBox` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL,
+  PRIMARY KEY (`version`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------

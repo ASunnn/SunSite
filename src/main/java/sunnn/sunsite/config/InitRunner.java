@@ -9,9 +9,11 @@ import org.springframework.stereotype.Component;
 import sunnn.sunsite.dao.*;
 import sunnn.sunsite.dto.CollectionInfo;
 import sunnn.sunsite.dto.PictureBase;
+import sunnn.sunsite.dto.response.ModifyResultResponse;
 import sunnn.sunsite.entity.Pic;
 import sunnn.sunsite.entity.Picture;
 import sunnn.sunsite.service.CollectionService;
+import sunnn.sunsite.service.MessageBoxService;
 import sunnn.sunsite.service.PictureService;
 import sunnn.sunsite.util.*;
 
@@ -32,6 +34,8 @@ public class InitRunner implements ApplicationRunner {
 
     private final CollectionService collectionService;
 
+    private final MessageBoxService messageBoxService;
+
     @Resource
     private PicDao picDao;
 
@@ -48,16 +52,17 @@ public class InitRunner implements ApplicationRunner {
     private SysDao sysDao;
 
     @Autowired
-    public InitRunner(PictureService pictureService, CollectionService collectionService) {
+    public InitRunner(PictureService pictureService, CollectionService collectionService, MessageBoxService messageBoxService) {
         this.pictureService = pictureService;
         this.collectionService = collectionService;
+        this.messageBoxService = messageBoxService;
     }
 
     @Override
     public void run(ApplicationArguments args) {
         deleteTempPath();
 
-//        checkPatch();
+        checkPatch();
     }
 
     private void deleteTempPath() {
@@ -101,9 +106,25 @@ public class InitRunner implements ApplicationRunner {
         }
 
         private void patch200() {
-            /*
-                画集
-             */
+            String collectionMsg = collectionReview();
+            String pictureMsg = pictureReview();
+
+            // 处理推送消息
+            StringBuilder msg = new StringBuilder();
+            if (!collectionMsg.isEmpty())
+                msg.append("Naming Collection conflict : ")
+                        .append(collectionMsg);
+            if (!pictureMsg.isEmpty())
+                msg.append("  Naming Picture conflict : ")
+                        .append(pictureMsg);
+            if (msg.length() == 0)
+                msg.append("Update Sequence Complete");
+            messageBoxService.pushMessage(msg.toString());
+        }
+
+        private String collectionReview() {
+            StringBuilder collectionMsg = new StringBuilder();
+
             int count = collectionDao.count();
             int pageCount = (int) Math.ceil((double) count / SunsiteConstant.PAGE_SIZE);
 
@@ -120,24 +141,21 @@ public class InitRunner implements ApplicationRunner {
                         continue;
 
                     if (collectionDao.find(newCId) != null) { // 有冲突
-                        log.warn("Naming Collection conflict : "
-                                + cInfo.getGroup() + " - " + cInfo.getCollection());
-//                        int renameCount = 1;
-//                        int r;
-//
-//                        do {
-//                            String newName = cInfo.getCollection() + "-" + (renameCount++);
-//                            ModifyResultResponse res = collectionService.modifyName(cInfo.getSequence(), newName);
-//                            r = res.getCode();
-//                        } while (r != StatusCode.OJBK.getCode());
-//
-//                        log.warn("Naming Collection conflict : "
-//                                + cInfo.getGroup() + " - " + cInfo.getCollection()
-//                                + " To "
-//                                + cInfo.getGroup() + " - " + cInfo.getCollection() + "-" + renameCount);
+                        int renameCount = 1;
+                        int r;
+                        do {
+                            String newName = cInfo.getCollection() + "-" + (renameCount++);
+                            ModifyResultResponse res = collectionService.modifyName(cInfo.getSequence(), newName);
+                            r = res.getCode();
+                        } while (r != StatusCode.OJBK.getCode());
+
+                        collectionMsg.append(" [")
+                                .append(cInfo.getGroup())
+                                .append(" - ")
+                                .append(cInfo.getCollection())
+                                .append("] ");
                         continue;
                     }
-                    log.warn("Update " + cInfo.getGroup() + " - " + cInfo.getCollection());
                     // cId不同需要更新
                     collectionDao.updateCId(cInfo.getSequence(), newCId);
                     // 更新关联图片
@@ -148,11 +166,14 @@ public class InitRunner implements ApplicationRunner {
                     }
                 }
             }
-            /*
-                图片
-             */
-            count = picDao.count();
-            pageCount = (int) Math.ceil((double) count / SunsiteConstant.PAGE_SIZE);
+            return collectionMsg.toString();
+        }
+
+        private String pictureReview() {
+            StringBuilder pictureMsg = new StringBuilder();
+
+            int count = picDao.count();
+            int pageCount = (int) Math.ceil((double) count / SunsiteConstant.PAGE_SIZE);
 
             for (int page = 0; page < pageCount; ++page) {
                 List<Pic> pictures =
@@ -168,35 +189,31 @@ public class InitRunner implements ApplicationRunner {
                         continue;
 
                     if (picDao.find(newSequence) != null) {
-                        log.error("Naming Picture conflict : "
-                                + pBase.getGroup() + " - " + pBase.getCollection() + " - " + p.getName());
-//                        int renameCount = 1;
-//                        int r;
-//
-//                        do {
-//                            String newName = (renameCount++) + "-" + p.getName();
-//                            ModifyResultResponse res = pictureService.modifyPicture(p.getSequence(), newName);
-//                            r = res.getCode();
-//                        } while (r != StatusCode.OJBK.getCode());
-//
-//                        log.warn("Naming Picture conflict : "
-//                                + pBase.getGroup() + " - " + pBase.getCollection() + " - " + p.getName()
-//                                + " To "
-//                                + pBase.getGroup() + " - " + pBase.getCollection() + " - " + renameCount + "-" + p.getName());
+                        int renameCount = 1;
+                        int r;
+                        do {
+                            String newName = (renameCount++) + "-" + p.getName();
+                            ModifyResultResponse res = pictureService.modifyPicture(p.getSequence(), newName);
+                            r = res.getCode();
+                        } while (r != StatusCode.OJBK.getCode());
+
+                        pictureMsg.append(" [")
+                                .append(pBase.getGroup())
+                                .append(" - ")
+                                .append(pBase.getCollection())
+                                .append(" - ")
+                                .append(p.getName())
+                                .append("] ");
                         continue;
                     }
-                    log.warn("Update " + pBase.getGroup() + " - " + pBase.getCollection() + " - " + p.getName());
                     // 直接使用已有接口来更新序列号
-                    picDao.updateName(pBase.getSequence(), newSequence, pBase.getName());
+                    picDao.updateName(p.getSequence(), newSequence, p.getName(), p.getThumbnailName());
                     pictureDao.updateName(pBase.getSequence(), newSequence, pBase.getName());
                     // 更新artwork表的序列号关联
                     illustratorDao.updatePicture(pBase.getSequence(), newSequence);
                 }
             }
-        }
-
-        private void nameConflict() {
-
+            return pictureMsg.toString();
         }
     }
 }

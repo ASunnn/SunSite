@@ -1,5 +1,6 @@
 package sunnn.sunsite.util;
 
+import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -42,10 +43,10 @@ public class MD5s {
         MessageDigest encoder;
         try {
             encoder = MessageDigest.getInstance("MD5");
-        } catch (NoSuchAlgorithmException e) {
+            encoder.update(src.getBytes("UTF-8"));
+        } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
             return null;
         }
-        encoder.update(src.getBytes());
         return encoder.digest();
     }
 

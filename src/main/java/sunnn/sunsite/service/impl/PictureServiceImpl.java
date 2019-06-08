@@ -25,8 +25,6 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -242,53 +240,24 @@ public class PictureServiceImpl implements PictureService {
         if (picDao.find(newSequence) != null)
             return new ModifyResultResponse(StatusCode.MODIFY_FAILED, sequence);
 
+        String thumbnailName = Pic.THUMBNAIL_PREFIX + newName;
         // 文件操作
         String path = SunSiteProperties.savePath + pic.getPath() + pic.getName();
         if (!FileUtils.rename(new File(path), newName))
             return new ModifyResultResponse(StatusCode.MODIFY_FAILED, sequence);
+        String thumbPath = SunSiteProperties.savePath + pic.getPath() + pic.getThumbnailName();
+        if (!FileUtils.rename(new File(thumbPath), thumbnailName))
+            return new ModifyResultResponse(StatusCode.MODIFY_FAILED, sequence);
 
         // 更新数据库和index
         pictureDao.updateName(pic.getSequence(), newSequence, newName);
-        picDao.updateName(pic.getSequence(), newSequence, newName);
+        picDao.updateName(pic.getSequence(), newSequence, newName, thumbnailName);
         illustratorDao.updatePicture(pic.getSequence(), newSequence);
 
         indexTask.submit(picture.getCollection(), pictureDao.countByCollection(picture.getCollection()));
 
         return new ModifyResultResponse(StatusCode.OJBK, newSequence);
     }
-
-//    /**
-//     * @return  修改成功：3
-//     *             失败：1
-//     */
-//    private int modifyCollection(Picture picture, Collection newCollection) {
-//        Pic pic = picDao.find(picture.getSequence());
-//        CollectionBase baseInfo = collectionDao.findBaseInfo(newCollection.getCId());
-//
-//        // 查重
-//        String md5Source = baseInfo.getGroup() + baseInfo.getCollection() + picture.getName();
-//        long newSequence = MD5s.getMD5Sequence(md5Source);
-//
-//        if (picDao.find(newSequence) != null)
-//            return 1;
-//
-//        // 文件操作
-//        String oldPath = SunSiteProperties.savePath + pic.getPath() + pic.getName();
-//        String newPath = baseInfo.getType() // 新的路径，待会直接用来存数据库
-//                + File.separator
-//                + baseInfo.getGroup()
-//                + File.separator
-//                + baseInfo.getCollection()
-//                + File.separator;
-//        if (!FileUtils.moveFile(new File(oldPath), SunSiteProperties.savePath + newPath))
-//            return 1;
-//
-//        // 更新数据库
-//        pictureDao.updateCollection(pic.getSequence(), newSequence, newCollection.getCId());
-//        picDao.updatePath(pic.getSequence(), newSequence, newPath);
-//
-//        return 3;
-//    }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW,
