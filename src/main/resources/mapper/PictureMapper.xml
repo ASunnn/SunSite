@@ -57,6 +57,23 @@
         LIMIT #{skip}, #{limit}
     </select>
 
+    <update id="updateCollection">
+        UPDATE
+            picture
+        SET sequence = #{newSequence}, collection = #{collection}
+        WHERE sequence = #{sequence}
+    </update>
+
+    <update id="updateName">
+        UPDATE
+            picture
+        SET
+            `name` = #{name},
+            sequence = #{newSequence},
+            `index` = 0x7fffffff
+        WHERE sequence = #{sequence}
+    </update>
+
     <update id="updateIndex">
         UPDATE picture
         SET `index` = #{index}

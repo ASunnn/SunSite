@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="sunnn.sunsite.dao.SysDao">
+
+    <insert id="insert">
+        INSERT INTO sys
+        VALUES (#{version}, #{msg})
+    </insert>
+
+    <select id="selectVersion" resultType="java.lang.Integer">
+        -- 防止数据库中没有记录的时候直接返回null造成异常
+        SELECT IFNULL(SUM(version), -1) AS version FROM sys LIMIT 0, 1
+    </select>
+
+    <select id="selectMsg" resultType="java.lang.String">
+        SELECT msgBox FROM sys LIMIT 0, 1
+    </select>
+
+    <update id="updateVersion">
+        UPDATE sys
+        SET version = #{newVersion}
+        WHERE version = #{version}
+    </update>
+
+    <update id="updateMsgBox">
+        UPDATE sys
+        SET msgBox = #{msg}
+        WHERE version = #{version}
+    </update>
+</mapper>

@@ -1,117 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Type | Sunsite</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Type | SunSite</title>
+
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <script src="/jquery-1.9.0.min.js"></script>
 
-    <style>
-        /* 标题菜单 */
-        .menu {
-            margin-left: auto;
-            margin-right: auto;
-            width: 1800px;
-            height: 70px;
-            margin-top: 15px;
-            margin-bottom: 15px;
-        }
-        .menuContent {
-            text-align: center;
-            float: left;
-            width: 200px;
-            height: 70px;
-        }
-        .menuLink {
-            position: relative;
-            top: 40px;
-        }
-        ul, li {
-            list-style-type:none;
-            padding: 0;
-            margin: 0;
-        }
+    <link href="/default.css" rel="stylesheet">
+</head>
 
-        /* 其他 */
-        table {
-            text-align: center;
-            width: 1500px;
-            margin: 20px;
-        }
-        a {
-            text-decoration: none;
-            color: lightgrey;
-        }
-    </style>
+<body>
+    <nav id="menu" class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/create">SunSite</a>
+            </div>
+
+            <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="/gallery">Gallery</a></li>
+                    <li><a href="/illustrator">Illustrator</a></li>
+                    <li><a href="/group">Group</a></li>
+                    <li><a href="/collection">Collection</a></li>
+                    <li class="active"><a href="/type">Type</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div id="content" class="row">
+        </div>
+    </div>
+
+    <script src="/jquery-2.0.3.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
 
     <script>
         window.onload = function () {
             $.get("/type/list", function (data) {
-                if (data.code == 0) {
+                if (data.code === 0) {
+                    var content = document.getElementById("content");
+
                     for (i = 0; i < data.typeList.length; ++i) {
-                        var type = data.typeList[i].type;
-                        var lastUpdate = data.typeList[i].lastUpdate;
+                        let type = data.typeList[i].type;;
 
-                        var tableBody = document.getElementById("tableBody");
-                        
-                        var trElement = document.createElement("tr");
-                        tableBody.appendChild(trElement);
+                        let typeItem = document.createElement("div");
+                        typeItem.setAttribute("class", "col-sm-12 col-md-6 col-lg-6");
 
-                        var typeTd = document.createElement("td");
-                        var typeLink = document.createElement("a");
-                        typeLink.setAttribute("href", "/type/show/" + encodeURIComponent(type));
-                        typeLink.innerText = type;
-                        typeTd.appendChild(typeLink);
-                        trElement.appendChild(typeTd);
+                        let pane = document.createElement("div");
+                        pane.setAttribute("class", "jumbotron");
 
-                        var lastUpdateTd = document.createElement("td");
-                        lastUpdateTd.innerText = lastUpdate;
-                        trElement.appendChild(lastUpdateTd);
+                        let link = document.createElement("a");
+                        link.setAttribute("href", "/type/show/" + encodeURIComponent(type));
+
+                        let name = document.createElement("h1");
+                        name.innerText = type;
+
+                        let lastUpdate = document.createElement("h4");
+                        lastUpdate.innerText = data.typeList[i].lastUpdate;
+
+                        link.appendChild(name);
+                        pane.appendChild(link);
+                        pane.appendChild(document.createElement("br"));
+                        pane.appendChild(lastUpdate);
+                        typeItem.appendChild(pane);
+
+                        content.appendChild(typeItem);
                     }
-                } else if (data.code == 4) {
+                } else if (data.code === 4) {
                     alert(data.msg);
                 } else
                     window.location.href = "/error";
             });
         };
     </script>
-</head>
-
-<body style="background-color:#333333; color:lightgrey">
-    <div class="menu">
-        <ul>
-            <li class="menuContent" style="text-align:center; font-size:50px">
-                SunSite
-            </li>
-            <li class="menuContent">
-                <a class="menuLink" href="/gallery">Gallery</a>
-            </li>
-            <li class="menuContent">
-                <a class="menuLink" href="/illustrator">Illustrator</a>
-            </li>
-            <li class="menuContent">
-                <a class="menuLink" href="/group">Group</a>
-            </li>
-            <li class="menuContent">
-                <a class="menuLink" href="/collection">Collection</a>
-            </li>
-            <li class="menuContent">
-                <a class="menuLink" href="/type">Type</a>
-            </li>
-        </ul>
-    </div>
-    <hr style="border-color:black" />
-    <div id="content" style="margin:auto; width: 1800px;">
-        <table width="100%" id="contentTable" class="contentTable">
-            <thead>
-                <tr>
-                    <th width="50%">Type</th>
-                    <th width="*">LastUpdate</th>
-                </tr>
-            </thead>
-            <tbody id="tableBody">
-            </tbody>
-        </table>
-    </div>
 </body>
 </html>

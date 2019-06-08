@@ -18,6 +18,10 @@ public interface PictureDao {
 
     List<PictureBase> findAllBaseInfoByCollection(@Param("collection") long collection, @Param("skip") int skip, @Param("limit") int limit);
 
+    void updateCollection(@Param("sequence") long sequence, @Param("newSequence") long newSequence, @Param("collection") long collection);
+
+    void updateName(@Param("sequence") long sequence, @Param("newSequence") long newSequence, @Param("name") String name);
+
     void updateIndex(@Param("index") int index, @Param("sequence") long sequence);
 
     int countByCollection(long collection);

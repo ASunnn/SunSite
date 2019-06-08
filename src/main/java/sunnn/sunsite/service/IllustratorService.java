@@ -44,6 +44,11 @@ public interface IllustratorService {
     IllustratorInfoResponse getIllustratorInfo(String name);
 
     /**
+     * 获取画师预览
+     */
+    File getIllustratorThumbnail(String name);
+
+    /**
      * 下载画师的所有图片
      *
      * @param name 画师名

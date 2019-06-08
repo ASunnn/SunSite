@@ -1,102 +1,92 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <title>Loading...</title>
+
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <script src="/jquery-1.9.0.min.js"></script>
-    <style>
-        /* 标题菜单 */
-        .menu {
-            margin-left: auto;
-            margin-right: auto;
-            width: 1800px;
-            height: 70px;
-            margin-top: 15px;
-            margin-bottom: 15px;
-        }
-        .menuContent {
-            text-align: center;
-            float: left;
-            width: 200px;
-            height: 70px;
-        }
-        .menuLink {
-            position: relative;
-            top: 40px;
-        }
-        ul, li {
-            list-style-type:none;
-            padding: 0;
-            margin: 0;
-        }
-        /* 图片列表 */
-        .info {
-            margin: 10px;
-        }
-        .pictureList {
-            display: inline-block;
-            text-align: center;
-            width: 280px;
-            height: 250px;
-            /* height: 295px; */
-            margin: 10px;
-            background-color: dimgrey;
-        }
-        .imageDiv {
-            width: 250px; 
-            height: 250px; 
-            margin: auto; 
-        }
-        img {
-            display: block;
-            margin: auto;
-        }
-        .next {
-            text-align: center;
-            margin: 30px;
-        }
-        /* 工具 */
-        .toolContent {
-            text-align: center;
-            float: left;
-            width: 200px;
-            height: 40px;
-        }
-        .separator {
-            float: left;
-            width: 2px;
-        }
-        /* 修改表单 */ 
-        .modifyContent {
-            margin:auto;
-            margin-top:20px;
-            margin-bottom:20px;
-            width:1800px;
-            text-align:center;
-            /* background-color: #fafafa; */
-        }
-        .modifyInput {
-            width: 200px;
-            height: 20px;
-        }
-        label {
-            display: inline-block;
-            width: 100px;
-            height: 30px;
-            margin: auto;
-            text-align: right;
-        }
-        input {
-            background-color: lightgrey;
-        }
-        /* 通用 */
-        a {
-            text-decoration: none;
-            color: lightgrey;
-        }
-    </style>
-    <!-- 初始化 -->
+
+    <link href="/default.css" rel="stylesheet">
+</head>
+
+<body>
+    <nav id="menu" class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/gallery">SunSite</a>
+            </div>
+
+            <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="/gallery">Gallery</a></li>
+                    <li class="active"><a href="/illustrator">Illustrator</a></li>
+                    <li><a href="/group">Group</a></li>
+                    <li><a href="/collection">Collection</a></li>
+                    <li><a href="/type">Type</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div id="header" class="row">
+            <div id="illustrator" class="col-sm-12 col-md-12 col-lg-12">
+            </div>
+            <div id="alias" class="col-sm-12 col-md-12 col-lg-12">
+            </div>
+        </div>
+
+        <div id="pictureList" class="row">
+        </div>
+    </div>
+
+    <div id="page">
+        <ul class="pager">
+            <li id="pageItem" class="disabled"><a id="pageLink">1</a></li>
+        </ul>
+    </div>
+
+    <nav id="tool" class="navbar navbar-inverse" style="margin-bottom: 0;">
+        <div class="container">
+            <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li><button class="toolBarButton" id="modify" type="button" data-toggle="modal" data-target="#modifyIllustrator">Modify</button></li>
+                    <li><button class="toolBarButton" id="download" type="button">Download</button></li>
+                    <li><button class="toolBarButton" id="delete" type="button">Delete</button></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="modal fade" id="modifyIllustrator" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <!--<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>-->
+                    <h4 class="modal-title">Modify</h4>
+                </div>
+                <div class="modal-body">
+                    <label for="modifyAlias">Aliases</label>
+                    <input type="text" name="alias" id="modifyAlias" autocomplete="off">
+                    <br/>
+                    <label for="modifyName">Name</label>
+                    <input type="text" name="name" id="modifyName" autocomplete="off">
+                </div>
+                <div class="modal-footer">
+                    <data-togglebutton type="button" class="btn btn-default" data-dismiss="modal">Close</data-togglebutton>
+                    <button type="button" id="save" class="btn btn-primary">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/jquery-2.0.3.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+
     <script>
         window.onload = function () {
             var r = window.location.href.split("/");
@@ -106,19 +96,19 @@
             getIllustratorInfo(illustrator);
             getPictureList(0);
         };
-    </script>
-    <!-- 图片列表 -->
-    <script>
+
         function getIllustratorInfo(illustrator) {
             $.get("/illustrator/info?n=" + illustrator, function (data) {
-                var theme = document.getElementById("theme");
-                theme.innerText = data.illustrator;
+                var illustrator = document.getElementById("illustrator");
+                var i = document.createElement("h3");
+                i.innerText = data.illustrator;
+                illustrator.appendChild(i);
 
-                var header = document.getElementById("header");
+                var alias = document.getElementById("alias");
                 var a = document.createElement("p");
                 a.setAttribute("class", "info");
                 a.innerText = data.alias;
-                header.appendChild(a);
+                alias.appendChild(a);
 
                 $('#modifyAlias').val(data.alias);
                 $('#modifyName').val(data.illustrator);
@@ -135,33 +125,31 @@
         }
 
         function pictureListHandler(data, page) {
-            if (data.code == 0) {
+            if (data.code === 0) {
                 for (i = 0; i < data.pictureList.length; ++i) {
                     setPicture(data.pictureList[i]);
                 }
 
                 page = page - 0 + 1;
                 if (page >= data.pageCount) {   // 如果页数到顶了，就要删除页码
-                    if (page > 1) { // page=1时就是初始化的时候，创都没创建
-                        var nextButton = document.getElementById("next");
-                        nextButton.remove();
-                    }
-                } else if (page == 1) { // page=1即初始化，这时候创建页码
-                    var nextButton = document.createElement("h3");
-                    nextButton.setAttribute("id", "next");
-                    nextButton.setAttribute("class", "next");
-                    nextButton.innerText = page;
+                    if (page > 1) { // page=1时就是初始化的时候，已经默认创建好了
+                        let pageButton = document.getElementById("pageItem");
+                        pageButton.setAttribute("class", "disabled");
 
-                    var pageElement = document.getElementById("page");
-                    pageElement.appendChild(nextButton);
+                        let pageLink = document.getElementById("pageLink");
+                        pageLink.innerText = page;
+                    }
+                } else if (page === 1) { // page=1即初始化，这时候创建页码
+                    let pageButton = document.getElementById("pageItem");
+                    pageButton.setAttribute("class", "");
                 } else {    // 正常情况page+1，更新
-                    var nextButton = document.getElementById("next");
-                    nextButton.innerText = page;
+                    let pageLink = document.getElementById("pageLink");
+                    pageLink.innerText = page;
                 }
-            } else if (data.code == 4) {
-                var nextButton = document.getElementById("next");
-                if (nextButton)
-                    nextButton.remove();
+            } else if (data.code === 4) {
+                let pageButton = document.getElementById("pageItem");
+                pageButton.setAttribute("class", "disabled");
+
                 alert(data.msg);
             } else
                 window.location.href = "/error";
@@ -176,13 +164,10 @@
             var cId = data.cid;
             var collection = data.collection;
 
-            var divElement = document.createElement("div");
-            divElement.setAttribute("class", "pictureList");
-            divElement.setAttribute("id", sequence);
-            pictureList.appendChild(divElement);
-
-            var imageDiv = document.createElement("div");
-            imageDiv.setAttribute("class", "imageDiv");
+            var imageElement = document.createElement("div");
+            imageElement.setAttribute("class", "col-sm-4 col-md-3 col-lg-2");
+            imageElement.setAttribute("id", sequence);
+            pictureList.appendChild(imageElement);
 
             var image = document.createElement("img");
             image.src = "/m/" + sequence;
@@ -191,43 +176,25 @@
             var imageLink = document.createElement("a");
             imageLink.setAttribute("href", "/gallery/show/" + sequence);
             imageLink.setAttribute("target", "_blank");
+            imageLink.setAttribute("class", "thumbnail");
+
             imageLink.appendChild(image);
-            imageDiv.appendChild(imageLink);
+            imageElement.appendChild(imageLink);
 
-            divElement.appendChild(imageDiv);
-
-            // var groupElement = document.createElement("a");
-            // groupElement.setAttribute("href", "/group/show/" + group);
-            // groupElement.innerHTML = group;
-            // groupElement.setAttribute("style", "display: block");
-            // divElement.appendChild(groupElement);
-
-            // var collectionElement = document.createElement("a");
-            // collectionElement.setAttribute("href", "/collection/show/" + cId);
-            // collectionElement.innerHTML = collection;
-            // collectionElement.setAttribute("style", "display: block");
-            // divElement.appendChild(collectionElement);
+            let h = imageElement.offsetWidth;
+            imageElement.setAttribute("style", "height: " + h + "px;");
+            imageLink.setAttribute("style", "height: " + h + "px;");
         }
-        
+
         $(function () {
-            $("#page").click(function () {
-                var page = document.getElementById("next");
+            $("#pageLink").click(function () {
+                var page = document.getElementById("pageLink");
                 getPictureList(page.innerText);
             });
         });
     </script>
-    <!-- 下载、删除 -->
+
     <script>
-        $(function () {
-            $("#modify").click(function () {
-                var modifyContent = document.getElementById("modifyContent");
-                if (modifyContent.style.display == "none")
-                    modifyContent.style.display = "block";
-                else
-                    modifyContent.style.display = "none";
-            });
-        });
-        
         $(function () {
             $("#download").click(function () {
                 var r = window.location.href.split("/");
@@ -236,16 +203,19 @@
                 window.location.href = "/illustrator/download/" + illustrator;
             });
         });
-        
+
         $(function () {
             $("#delete").click(function () {
+                var button = this;
+                $(button).attr('disabled', 'disabled');
+
                 var r = window.location.href.split("/");
                 var illustrator = decodeURIComponent(r[r.length-1]);
 
                 var data = {
                     "deleteInfo": illustrator
                 };
-    
+
                 $.ajax({
                     method: 'post',
                     url: "/illustrator/delete",
@@ -263,7 +233,7 @@
         });
 
         $(function () {
-            $("#submit").click(function () {
+            $("#save").click(function () {
                 var button = this;
                 $(button).attr('disabled', 'disabled');
 
@@ -277,7 +247,7 @@
                     "illustrator": illustrator,
                     "newName": newName,
                     "aliases": aliases
-                }
+                };
 
                 $.ajax({
                     method: 'post',
@@ -287,8 +257,8 @@
                     contentType: "application/json"
                 }).done(function (data) {
                     alert(data.msg);
-                    if (data.code == 0) 
-                        window.location.href = "/illustrator/show/" + encodeURIComponent(newName);
+                    if (data.newLinkInfo)
+                        window.location.href = "/illustrator/show/" + encodeURIComponent(data.newLinkInfo);
                     else
                         window.location.reload();
                 }).fail(function () {
@@ -298,68 +268,5 @@
             });
         });
     </script>
-</head>
-
-<body style="background-color:#333333; color:lightgrey">
-    <div class="menu">
-        <ul>
-            <li class="menuContent" style="text-align:center; font-size:50px">
-                SunSite
-            </li>
-            <li class="menuContent">
-                <a class="menuLink" href="/gallery">Gallery</a>
-            </li>
-            <li class="menuContent">
-                <a class="menuLink" href="/illustrator">Illustrator</a>
-            </li>
-            <li class="menuContent">
-                <a class="menuLink" href="/group">Group</a>
-            </li>
-            <li class="menuContent">
-                <a class="menuLink" href="/collection">Collection</a>
-            </li>
-            <li class="menuContent">
-                <a class="menuLink" href="/type">Type</a>
-            </li>
-        </ul>
-    </div>
-    <hr style="border-color:black" />
-    <div id="content" style="margin:auto; width:1800px;">
-        <div id="header">
-            <p id="theme" class="info" style="font-weight:bold; font-size:larger;"></p>
-        </div>
-        <div id="pictureList">
-        </div>
-        <div id="page">
-        </div>
-        <div id="tool">
-            <ul style="width:604px; height:40px; margin:auto;">
-                <li id="modify" class="toolContent">
-                    Modify
-                </li>
-                <li class="separator">|</li>
-                <li id="download" class="toolContent">
-                    Download
-                </li>
-                <li class="separator">|</li>
-                <li id="delete" class="toolContent">
-                    Delete
-                </li>
-            </ul>
-        </div>
-    </div>
-    <hr style="border-color:black" />
-    <div id="modifyContent" class="modifyContent" style="display: none">
-        <form id="modifyInfoForm">
-            <label for="alias">Aliases</label>
-            <input type="text" name="alias" id="modifyAlias" class="modifyInput", autocomplete="off"/>
-            <br />
-            <hr style="border-color:grey" />
-            <label for="name">Name</label>
-            <input type="text" name="name" id="modifyName" class="modifyInput", autocomplete="off"/>
-            <br />
-            <input id="submit" type="button" value="sumbit!">
-        </form>
-    </div>
 </body>
 </html>

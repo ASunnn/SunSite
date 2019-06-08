@@ -117,6 +117,26 @@ public class IllustratorServiceImpl implements IllustratorService {
     }
 
     @Override
+    public File getIllustratorThumbnail(String name) {
+        List<Pic> pictures = illustratorDao.findAllByIllustrator(name, 0, 1);
+
+        if (pictures != null && !pictures.isEmpty()) {
+            Pic pic = pictures.get(0);
+
+            File f = new File(
+                    SunSiteProperties.savePath + pic.getPath() + pic.getThumbnailName());
+            if (f.exists())
+                return f;
+        }
+
+        File f = new File(SunSiteProperties.missPicture);
+        if (f.exists())
+            return f;
+        log.warn("404.jpg Miss");
+        return null;
+    }
+
+    @Override
     public File download(String name) throws IllegalFileRequestException {
         Illustrator i = illustratorDao.find(name);
         if (i == null)
@@ -212,7 +232,7 @@ public class IllustratorServiceImpl implements IllustratorService {
         Illustrator newIllustrator = illustratorDao.find(Illustrator.DEFAULT_VALUE);
         if (newIllustrator == null)
             newIllustrator = createIllustrator(Illustrator.DEFAULT_VALUE);
-        illustratorDao.updateArtwork(i.getId(), newIllustrator.getId());
+        illustratorDao.updateIllustrator(i.getId(), newIllustrator.getId());
 
         return StatusCode.OJBK;
     }

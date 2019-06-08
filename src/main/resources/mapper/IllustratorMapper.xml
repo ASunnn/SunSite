@@ -126,10 +126,16 @@
         WHERE i.id = a.illustrator AND i.`name` = #{illustrator}
     </select>
 
-    <update id="updateArtwork">
+    <update id="updateIllustrator">
         UPDATE artwork
         SET illustrator = #{newIllustrator}
         WHERE illustrator = #{oldIllustrator}
+    </update>
+
+    <update id="updatePicture">
+        UPDATE artwork
+        SET sequence = #{newSequence}
+        WHERE sequence = #{oldSequence}
     </update>
 
     <delete id="deletePicture" parameterType="java.lang.Long">

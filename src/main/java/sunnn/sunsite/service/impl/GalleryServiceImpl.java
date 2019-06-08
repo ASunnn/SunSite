@@ -2,15 +2,12 @@ package sunnn.sunsite.service.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import sunnn.sunsite.dao.CollectionDao;
-import sunnn.sunsite.dao.IllustratorDao;
-import sunnn.sunsite.dao.PicDao;
-import sunnn.sunsite.dao.PictureDao;
-import sunnn.sunsite.dto.CollectionBase;
+import sunnn.sunsite.dao.*;
 import sunnn.sunsite.dto.PictureBase;
+import sunnn.sunsite.dto.response.MsgResponse;
 import sunnn.sunsite.dto.response.PictureInfoResponse;
-import sunnn.sunsite.dto.response.CollectionInfoResponse;
 import sunnn.sunsite.dto.response.PictureListResponse;
 import sunnn.sunsite.entity.Collection;
 import sunnn.sunsite.entity.Pic;
@@ -18,6 +15,7 @@ import sunnn.sunsite.entity.Illustrator;
 import sunnn.sunsite.entity.Picture;
 import sunnn.sunsite.exception.IllegalFileRequestException;
 import sunnn.sunsite.service.GalleryService;
+import sunnn.sunsite.service.MessageBoxService;
 import sunnn.sunsite.util.SunsiteConstant;
 import sunnn.sunsite.util.StatusCode;
 import sunnn.sunsite.util.SunSiteProperties;
@@ -45,6 +43,13 @@ public class GalleryServiceImpl implements GalleryService {
 
     @Resource
     private IllustratorDao illustratorDao;
+
+    private final MessageBoxService messageBoxService;
+
+    @Autowired
+    public GalleryServiceImpl(MessageBoxService messageBoxService) {
+        this.messageBoxService = messageBoxService;
+    }
 
     @Override
     public PictureListResponse getPictureList(int page) {
@@ -188,5 +193,15 @@ public class GalleryServiceImpl implements GalleryService {
         s[0] = index == 0 ? -1 : pictures.get(index - 1).getSequence();
         s[1] = index + 1 == pictures.size() ? -1 : pictures.get(index + 1).getSequence();
         return s;
+    }
+
+    @Override
+    public MsgResponse checkMsgBox() {
+        String msg = messageBoxService.getMessage();
+
+        if (msg == null)
+            return new MsgResponse(StatusCode.NO_DATA);
+
+        return new MsgResponse(StatusCode.OJBK).setMsg(msg);
     }
 }

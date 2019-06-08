@@ -38,7 +38,9 @@ public interface IllustratorDao {
 
     int countByIllustrator(String illustrator);
 
-    void updateArtwork(@Param("oldIllustrator") int oldIllustrator, @Param("newIllustrator") int newIllustrator);
+    void updateIllustrator(@Param("oldIllustrator") int oldIllustrator, @Param("newIllustrator") int newIllustrator);
+
+    void updatePicture(@Param("oldSequence") long oldSequence, @Param("newSequence") long newSequence);
 
     void deletePicture(long sequence);
 }

@@ -1,5 +1,6 @@
 package sunnn.sunsite.service;
 
+import sunnn.sunsite.dto.response.MsgResponse;
 import sunnn.sunsite.dto.response.PictureInfoResponse;
 import sunnn.sunsite.dto.response.PictureListResponse;
 import sunnn.sunsite.exception.IllegalFileRequestException;
@@ -58,4 +59,9 @@ public interface GalleryService {
      * @return 图片信息
      */
     PictureInfoResponse getPictureInfo(long sequence);
+
+    /**
+     * 检查通知
+     */
+    MsgResponse checkMsgBox();
 }

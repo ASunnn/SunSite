@@ -15,7 +15,9 @@ public interface PicDao {
 
     int count();
 
-    void updatePath(@Param("sequence") long sequence, @Param("path") String path);
+    void updateName(@Param("sequence") long sequence, @Param("newSequence") long newSequence, @Param("name") String name);
+
+    void updatePath(@Param("sequence") long sequence, @Param("newSequence") long newSequence, @Param("path") String path);
 
     void delete(long sequence);
 }

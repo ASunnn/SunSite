@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseBody;
+import sunnn.sunsite.dto.response.MsgResponse;
 import sunnn.sunsite.dto.response.PictureInfoResponse;
 import sunnn.sunsite.exception.IllegalFileRequestException;
 import sunnn.sunsite.service.GalleryService;
@@ -73,5 +75,11 @@ public class PictureController {
                 break;
         }
         return new ResponseEntity<>(FileUtils.readFileToByteArray(file), headers, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/check")
+    @ResponseBody
+    public MsgResponse checkMsgBox() {
+        return galleryService.checkMsgBox();
     }
 }

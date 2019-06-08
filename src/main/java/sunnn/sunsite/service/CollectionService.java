@@ -3,6 +3,7 @@ package sunnn.sunsite.service;
 import sunnn.sunsite.dto.CollectionBase;
 import sunnn.sunsite.dto.response.CollectionInfoResponse;
 import sunnn.sunsite.dto.response.CollectionListResponse;
+import sunnn.sunsite.dto.response.ModifyResultResponse;
 import sunnn.sunsite.exception.IllegalFileRequestException;
 import sunnn.sunsite.util.StatusCode;
 
@@ -45,6 +46,11 @@ public interface CollectionService {
     CollectionInfoResponse getCollectionInfo(long sequence);
 
     /**
+     * 获取画集预览
+     */
+    File getCollectionThumbnail(long sequence);
+
+    /**
      * 下载整个画集
      *
      * @param sequence 画集序列号
@@ -55,7 +61,7 @@ public interface CollectionService {
     /**
      * 修改画集名
      */
-    StatusCode modifyName(long sequence, String newName);
+    ModifyResultResponse modifyName(long sequence, String newName);
 
     /**
      * 删除一个画集

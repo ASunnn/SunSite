@@ -8,12 +8,15 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import sunnn.sunsite.dao.CollectionDao;
+import sunnn.sunsite.dao.IllustratorDao;
 import sunnn.sunsite.dao.PicDao;
 import sunnn.sunsite.dao.PictureDao;
 import sunnn.sunsite.dto.CollectionBase;
 import sunnn.sunsite.dto.CollectionInfo;
+import sunnn.sunsite.dto.PictureBase;
 import sunnn.sunsite.dto.response.CollectionInfoResponse;
 import sunnn.sunsite.dto.response.CollectionListResponse;
+import sunnn.sunsite.dto.response.ModifyResultResponse;
 import sunnn.sunsite.entity.*;
 import sunnn.sunsite.exception.IllegalFileRequestException;
 import sunnn.sunsite.service.CollectionService;
@@ -52,6 +55,9 @@ public class CollectionServiceImpl implements CollectionService {
 
     @Resource
     private PicDao picDao;
+
+    @Resource
+    private IllustratorDao illustratorDao;
 
     private final TimeUpdateTask updateTask;
 
@@ -191,6 +197,26 @@ public class CollectionServiceImpl implements CollectionService {
     }
 
     @Override
+    public File getCollectionThumbnail(long sequence) {
+        List<PictureBase> p = pictureDao.findAllBaseInfoByCollection(sequence, 0, 1);
+
+        if (p != null && !p.isEmpty()) {
+            Pic pic = picDao.find(p.get(0).getSequence());
+
+            File f = new File(
+                    SunSiteProperties.savePath + pic.getPath() + pic.getThumbnailName());
+            if (f.exists())
+                return f;
+        }
+
+        File f = new File(SunSiteProperties.missPicture);
+        if (f.exists())
+            return f;
+        log.warn("404.jpg Miss");
+        return null;
+    }
+
+    @Override
     public File download(long sequence) throws IllegalFileRequestException {
         Collection c = collectionDao.find(sequence);
         if (c == null)
@@ -237,18 +263,24 @@ public class CollectionServiceImpl implements CollectionService {
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW,
             isolation = Isolation.DEFAULT)
-    public StatusCode modifyName(long sequence, String newName) {
+    public ModifyResultResponse modifyName(long sequence, String newName) {
         newName = newName.trim();
         // 校验
         Collection c = collectionDao.find(sequence);
         if (FileUtils.fileNameMatcher(newName)
                 || c == null)
-            return StatusCode.ILLEGAL_INPUT;
+            return new ModifyResultResponse(StatusCode.ILLEGAL_INPUT, sequence);
 
         if (c.getName().equals(newName))
-            return StatusCode.OJBK;
+            return new ModifyResultResponse(StatusCode.OJBK, sequence);
 
+        // 查重
         CollectionBase baseInfo = collectionDao.findBaseInfo(sequence);
+        String md5Source = baseInfo.getGroup() + newName;
+        long newCId = MD5s.getMD5Sequence(md5Source);
+        if (collectionDao.find(newCId) != null)
+            return new ModifyResultResponse(StatusCode.MODIFY_FAILED, sequence);
+
         // 文件操作
         String path = SunSiteProperties.savePath
                 + baseInfo.getType()
@@ -258,28 +290,29 @@ public class CollectionServiceImpl implements CollectionService {
                 + baseInfo.getCollection();
         boolean result = FileUtils.rename(new File(path), newName);
         if (!result)
-            return StatusCode.MODIFY_FAILED;
+            return new ModifyResultResponse(StatusCode.MODIFY_FAILED, sequence);
 
         // 修改数据库
-        collectionDao.updateName(sequence, newName);
+        collectionDao.updateName(sequence, newCId, newName);
+
         List<Picture> pictureList = pictureDao.findAllByCollection(sequence);
+        // 生成新路径
+        String newPath = baseInfo.getType()
+                + File.separator
+                + baseInfo.getGroup()
+                + File.separator
+                + newName
+                + File.separator;
         for (Picture picture : pictureList) {
-            Pic p = picDao.find(picture.getSequence());
-
-            String[] elements = p.getPath().split("\\\\");
-            if (elements.length == 0)
-                elements = p.getPath().split("/");
-            String newPath = elements[0]
-                    + File.separator
-                    + elements[1]
-                    + File.separator
-                    + newName
-                    + File.separator;
-
-            picDao.updatePath(p.getSequence(), newPath);
+            md5Source = baseInfo.getGroup() + newName + picture.getName();
+            long newSequence = MD5s.getMD5Sequence(md5Source);
+            // 这里没有进行查重了
+            picDao.updatePath(picture.getSequence(), newSequence, newPath);
+            pictureDao.updateCollection(picture.getSequence(), newSequence, newCId);
+            illustratorDao.updatePicture(picture.getSequence(), newSequence);
         }
 
-        return StatusCode.OJBK;
+        return new ModifyResultResponse(StatusCode.OJBK, newCId);
     }
 
     @Override

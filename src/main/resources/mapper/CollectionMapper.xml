@@ -39,6 +39,28 @@
             AND c.type = t.id
     </select>
 
+    <select id="findRecentlyCollectionByGroup" parameterType="java.lang.String" resultType="sunnn.sunsite.dto.CollectionInfo">
+        SELECT
+            c.cId AS sequence,
+            g.`name` AS `group`,
+            c.`name` AS collection,
+            t.`name` AS type,
+            c.lastUpdate,
+            COUNT(p.sequence) AS post
+        FROM
+            collection AS c
+            LEFT JOIN picture AS p ON c.cId = p.collection
+            JOIN `group` AS g ON c.`group` = g.id
+            JOIN type AS t ON c.type = t.id
+        WHERE
+            g.`name` =  #{group}
+        GROUP BY
+            c.cId
+        ORDER BY
+            c.lastUpdate DESC
+        LIMIT 0, 1
+    </select>
+
     <select id="findAllInfo" resultType="sunnn.sunsite.dto.CollectionInfo">
         SELECT
             c.cId AS sequence,
@@ -116,9 +138,15 @@
         WHERE cId = #{cId}
     </update>
 
+    <update id="updateCId">
+        UPDATE collection
+        SET cId = #{newCId}
+        WHERE cId = #{cId}
+    </update>
+
     <update id="updateName">
         UPDATE collection
-        SET `name` = #{name}
+        SET `name` = #{name}, cId = #{newCId}
         WHERE cId = #{cId}
     </update>
 

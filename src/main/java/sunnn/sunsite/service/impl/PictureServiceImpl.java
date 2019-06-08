@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import sunnn.sunsite.dao.*;
 import sunnn.sunsite.dto.CollectionBase;
 import sunnn.sunsite.dto.request.UploadPictureInfo;
+import sunnn.sunsite.dto.response.ModifyResultResponse;
 import sunnn.sunsite.entity.*;
 import sunnn.sunsite.service.IllustratorService;
 import sunnn.sunsite.service.PictureService;
@@ -24,6 +25,8 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -66,22 +69,14 @@ public class PictureServiceImpl implements PictureService {
 
     @Override
     public StatusCode uploadPicture(MultipartFile file, String uploadCode) {
-        /*
-            检测文件是否为空
-         */
+        // 检测文件是否为空
         if (file == null || file.isEmpty())
             return StatusCode.ILLEGAL_INPUT;
-        /*
-            对文件名进行检查
-         */
+        // 对文件名进行检查
         String fileName = file.getOriginalFilename().toLowerCase();
-        Matcher extensionNameMatcher = Pattern.compile("\\.(jpg|jpeg|png)$")
-                .matcher(fileName);
-        if (!extensionNameMatcher.find() || FileUtils.fileNameMatcher(fileName))
+        if (!checkFileName(fileName))
             return StatusCode.ILLEGAL_INPUT;
-        /*
-            将图片放入缓存
-         */
+        // 将图片放入缓存
         try {
             //将MultipartFile转换为File
             File f = FileUtils.storeFile(file,
@@ -227,6 +222,97 @@ public class PictureServiceImpl implements PictureService {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW,
+            isolation = Isolation.DEFAULT)
+    public ModifyResultResponse modifyPicture(long sequence, String newName) {
+        // 合法性检查
+        Picture picture = pictureDao.find(sequence);
+        if (picture == null || !checkFileName(newName))
+            return new ModifyResultResponse(StatusCode.ILLEGAL_INPUT, sequence);
+        if (newName.equals(picture.getName()))
+            return new ModifyResultResponse(StatusCode.OJBK, sequence);
+
+        Pic pic = picDao.find(picture.getSequence());
+        CollectionBase baseInfo = collectionDao.findBaseInfo(picture.getCollection());
+
+        // 查重
+        String md5Source = baseInfo.getGroup() + baseInfo.getCollection() + newName;
+        long newSequence = MD5s.getMD5Sequence(md5Source);
+
+        if (picDao.find(newSequence) != null)
+            return new ModifyResultResponse(StatusCode.MODIFY_FAILED, sequence);
+
+        // 文件操作
+        String path = SunSiteProperties.savePath + pic.getPath() + pic.getName();
+        if (!FileUtils.rename(new File(path), newName))
+            return new ModifyResultResponse(StatusCode.MODIFY_FAILED, sequence);
+
+        // 更新数据库和index
+        pictureDao.updateName(pic.getSequence(), newSequence, newName);
+        picDao.updateName(pic.getSequence(), newSequence, newName);
+        illustratorDao.updatePicture(pic.getSequence(), newSequence);
+
+        indexTask.submit(picture.getCollection(), pictureDao.countByCollection(picture.getCollection()));
+
+        return new ModifyResultResponse(StatusCode.OJBK, newSequence);
+    }
+
+//    /**
+//     * @return  修改成功：3
+//     *             失败：1
+//     */
+//    private int modifyCollection(Picture picture, Collection newCollection) {
+//        Pic pic = picDao.find(picture.getSequence());
+//        CollectionBase baseInfo = collectionDao.findBaseInfo(newCollection.getCId());
+//
+//        // 查重
+//        String md5Source = baseInfo.getGroup() + baseInfo.getCollection() + picture.getName();
+//        long newSequence = MD5s.getMD5Sequence(md5Source);
+//
+//        if (picDao.find(newSequence) != null)
+//            return 1;
+//
+//        // 文件操作
+//        String oldPath = SunSiteProperties.savePath + pic.getPath() + pic.getName();
+//        String newPath = baseInfo.getType() // 新的路径，待会直接用来存数据库
+//                + File.separator
+//                + baseInfo.getGroup()
+//                + File.separator
+//                + baseInfo.getCollection()
+//                + File.separator;
+//        if (!FileUtils.moveFile(new File(oldPath), SunSiteProperties.savePath + newPath))
+//            return 1;
+//
+//        // 更新数据库
+//        pictureDao.updateCollection(pic.getSequence(), newSequence, newCollection.getCId());
+//        picDao.updatePath(pic.getSequence(), newSequence, newPath);
+//
+//        return 3;
+//    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW,
+            isolation = Isolation.DEFAULT)
+    public StatusCode modifyIllustrator(long sequence, String illustrators) {
+        Picture picture = pictureDao.find(sequence);
+        if (picture == null)
+            return StatusCode.ILLEGAL_INPUT;
+
+        List<Illustrator> newIllustratorList = illustratorHandler(illustrators);
+        illustratorDao.deletePicture(sequence);
+
+        List<Artwork> artworks = new ArrayList<>();
+        for (Illustrator i : newIllustratorList) {
+            artworks.add(new Artwork()
+                    .setIllustrator(i.getId())
+                    .setSequence(sequence));
+        }
+        illustratorDao.insertAllArtwork(artworks);
+
+        return StatusCode.OJBK;
+    }
+
+    @Override
     @Transactional
     public StatusCode delete(long sequence) {
         Pic p = picDao.find(sequence);
@@ -259,5 +345,17 @@ public class PictureServiceImpl implements PictureService {
         pictureDao.deleteAllByCollection(sequence);
 
         return StatusCode.OJBK;
+    }
+
+    /**
+     * 对文件名进行检查
+     *
+     * @return  true：合法
+     *          false：非法
+     */
+    private boolean checkFileName(String fileName) {
+        Matcher extensionNameMatcher = Pattern.compile("\\.(jpg|jpeg|png)$")
+                .matcher(fileName);
+        return extensionNameMatcher.find() && !FileUtils.fileNameMatcher(fileName);
     }
 }

@@ -6,17 +6,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import sunnn.sunsite.dto.request.DeleteRequest;
+import sunnn.sunsite.dto.request.ModifyPicture;
 import sunnn.sunsite.dto.request.UploadPictureInfo;
-import sunnn.sunsite.dto.response.BaseResponse;
-import sunnn.sunsite.dto.response.FileUploadResponse;
-import sunnn.sunsite.dto.response.PictureInfoResponse;
-import sunnn.sunsite.dto.response.PictureListResponse;
+import sunnn.sunsite.dto.response.*;
 import sunnn.sunsite.service.GalleryService;
 import sunnn.sunsite.service.PictureService;
 import sunnn.sunsite.util.StatusCode;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 @Controller
@@ -68,11 +64,22 @@ public class GalleryController {
     @PostMapping(value = "/uploadInfo")
     @ResponseBody
     public BaseResponse upload(@Valid @RequestBody UploadPictureInfo info) {
-        /*
-            保存上传
-         */
+        // 保存上传
         return new BaseResponse(
                 pictureService.uploadInfoAndSave(info));
+    }
+
+    @PostMapping(value = "/modify")
+    @ResponseBody
+    public BaseResponse modify(@Valid @RequestBody ModifyPicture modifyInfo) {
+        StatusCode modifyIllustrator = pictureService.modifyIllustrator(  // 这个修改必须在前
+                Long.valueOf(modifyInfo.getSequence()), modifyInfo.getIllustrators());
+        ModifyResultResponse modifyPicture = pictureService.modifyPicture(Long.valueOf(modifyInfo.getSequence()), modifyInfo.getName());
+
+        if (modifyPicture.getCode() == 0 && !modifyIllustrator.equals(StatusCode.OJBK))
+            modifyPicture.setCode(modifyIllustrator.getCode())
+                    .setMsg(modifyIllustrator.name());
+        return modifyPicture;
     }
 
     @PostMapping(value = "/delete")

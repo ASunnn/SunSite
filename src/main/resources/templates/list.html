@@ -1,63 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Loading...</title>
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <script src="/jquery-1.9.0.min.js"></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <style>
-        /* 标题菜单 */
-        .menu {
-            margin-left: auto;
-            margin-right: auto;
-            width: 1800px;
-            height: 70px;
-            margin-top: 15px;
-            margin-bottom: 15px;
-        }
-        .menuContent {
-            text-align: center;
-            float: left;
-            width: 200px;
-            height: 70px;
-        }
-        .menuLink {
-            position: relative;
-            top: 40px;
-        }
-        ul, li {
-            list-style-type:none;
-            padding: 0;
-            margin: 0;
-        }
-        /* 工具 */
-        .toolContent {
-            text-align: center;
-            float: left;
-            width: 200px;
-            height: 40px;
-        }
-        .separator {
-            float: left;
-            width: 2px;
-        }
-        /* 内容 */
-        .next {
-            text-align: center;
-            margin: 30px;
-        }
-        table {
-            text-align: center;
-            width: 1500px;
-            margin: 20px;
-        }
-        /* 通用 */
-        a {
-            text-decoration: none;
-            color: lightgrey;
-        }
-    </style>
+    <title>Loading...</title>
+
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+    <link href="/default.css" rel="stylesheet">
+</head>
+
+<body>
+    <nav id="menu" class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/create">SunSite</a>
+            </div>
+
+            <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="/gallery">Gallery</a></li>
+                    <li><a href="/illustrator">Illustrator</a></li>
+                    <li><a href="/group">Group</a></li>
+                    <li><a href="/collection">Collection</a></li>
+                    <li class="active"><a href="/type">Type</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container thumbSupport">
+        <table id="content" class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Collection</th>
+                    <th>Group</th>
+                    <th>Post</th>
+                    <th>LastUpdate</th>
+                    <th>Type</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+            </tbody>
+        </table>
+    </div>
+
+    <div id="page">
+        <ul class="pager">
+            <li id="pageItem" class="disabled"><a id="pageLink">1</a></li>
+        </ul>
+    </div>
+
+    <nav id="tool" class="navbar navbar-inverse" style="margin-bottom: 0;">
+        <div class="container">
+            <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li><button class="toolBarButton" id="download" type="button">Download</button></li>
+                    <li><button class="toolBarButton" id="delete" type="button">Delete</button></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <script src="/jquery-2.0.3.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
 
     <script>
         window.onload = function () {
@@ -67,9 +76,7 @@
 
             getCollectionList(0);
         };
-    </script>
 
-    <script>
         function getCollectionList(page) {
             var r = window.location.href.split("/");
             var type = r[r.length-1];
@@ -80,35 +87,35 @@
         }
 
         function collectionListHandler(data, page) {
-            if (data.code == 0) {
+            if (data.code === 0) {
                 for (i = 0; i < data.collectionList.length; ++i) {
                     setCollection(data.collectionList[i]);
                 }
 
                 page = page - 0 + 1;
                 if (page >= data.pageCount) {   // 如果页数到顶了，就要删除页码
-                    if (page > 1) { // page=1时就是初始化的时候，创都没创建
-                        var nextButton = document.getElementById("next");
-                        nextButton.remove();
-                    }
-                } else if (page == 1) { // page=1即初始化，这时候创建页码
-                    var nextButton = document.createElement("h3");
-                    nextButton.setAttribute("id", "next");
-                    nextButton.setAttribute("class", "next");
-                    nextButton.innerText = page;
+                    if (page > 1) { // page=1时就是初始化的时候，已经默认创建好了
+                        let pageButton = document.getElementById("pageItem");
+                        pageButton.setAttribute("class", "disabled");
 
-                    var pageElement = document.getElementById("page");
-                    pageElement.appendChild(nextButton);
+                        let pageLink = document.getElementById("pageLink");
+                        pageLink.innerText = page;
+                    }
+                } else if (page === 1) { // page=1即初始化，这时候创建页码
+                    let pageButton = document.getElementById("pageItem");
+                    pageButton.setAttribute("class", "");
                 } else {    // 正常情况page+1，更新
-                    var nextButton = document.getElementById("next");
-                    nextButton.innerText = page;
+                    let pageLink = document.getElementById("pageLink");
+                    pageLink.innerText = page;
                 }
-            } else if (data.code == 4) 
+            } else if (data.code === 4) {
+                let pageButton = document.getElementById("pageItem");
+                pageButton.setAttribute("class", "disabled");
                 alert(data.msg);
-            else
+            } else
                 window.location.href = "/error";
         }
-        
+
         function setCollection(data) {
             var sequence = data.sequence;
             var group = data.group;
@@ -118,7 +125,7 @@
             var type = data.type;
 
             var tableBody = document.getElementById("tableBody");
-            
+
             var trElement = document.createElement("tr");
             tableBody.appendChild(trElement);
 
@@ -147,17 +154,24 @@
             var typeTd = document.createElement("td");
             typeTd.innerText = type;
             trElement.appendChild(typeTd);
+
+            var img = document.createElement("img");
+            img.setAttribute("id", sequence);
+            img.setAttribute("style", "display: none");
+            img.setAttribute("src", "/collection/m/" + encodeURIComponent(sequence));
+            trElement.appendChild(img);
+
+            initEvent(collectionTd, sequence);
         }
-        
+
         $(function () {
-            $("#page").click(function () {
-                var page = document.getElementById("next");
+            $("#pageLink").click(function () {
+                var page = document.getElementById("pageLink");
                 getCollectionList(page.innerText);
             });
         });
     </script>
 
-    <!-- 下载、删除 -->
     <script>
         $(function () {
             $("#download").click(function () {
@@ -168,16 +182,19 @@
                 // window.location.href = "/type/download/" + type;
             });
         });
-        
+
         $(function () {
             $("#delete").click(function () {
+                var button = this;
+                $(button).attr('disabled', 'disabled');
+
                 var r = window.location.href.split("/");
                 var type = decodeURIComponent(r[r.length-1]);
 
                 var data = {
                     "deleteInfo": type
                 };
-    
+
                 $.ajax({
                     method: 'post',
                     url: "/type/delete",
@@ -194,59 +211,28 @@
             });
         });
     </script>
-</head>
 
-<body style="background-color:#333333; color:lightgrey">
-    <div class="menu">
-        <ul>
-            <li class="menuContent" style="text-align:center; font-size:50px">
-                SunSite
-            </li>
-            <li class="menuContent">
-                <a class="menuLink" href="/gallery">Gallery</a>
-            </li>
-            <li class="menuContent">
-                <a class="menuLink" href="/illustrator">Illustrator</a>
-            </li>
-            <li class="menuContent">
-                <a class="menuLink" href="/group">Group</a>
-            </li>
-            <li class="menuContent">
-                <a class="menuLink" href="/collection">Collection</a>
-            </li>
-            <li class="menuContent">
-                <a class="menuLink" href="/type">Type</a>
-            </li>
-        </ul>
-    </div>
-    <hr style="border-color:black" />
-    <div id="content" style="margin:auto; width: 1800px;">
-        <table width="100%" id="contentTable" class="contentTable">
-            <thead>
-                <tr>
-                    <th width="50%">Collection</th>
-                    <th width="*">Group</th>
-                    <th width="*">Post</th>
-                    <th width="*">LastUpdate</th>
-                    <th width="*">Type</th>
-                </tr>
-            </thead>
-            <tbody id="tableBody">
-            </tbody>
-        </table>
-        <div id="page">
-        </div>
-        <div class="tool">
-            <ul style="width:402px; height:40px; margin:auto;">
-                <li id="download" class="toolContent">
-                    Download
-                </li>
-                <li class="separator">|</li>
-                <li id="delete" class="toolContent">
-                    Delete
-                </li>
-            </ul>
-        </div>
-    </div>
+    <script>
+        function initEvent(tdElement, seq) {
+            tdElement.addEventListener("mouseover", function (e) {
+                let img = document.getElementById(seq);
+                let table = document.getElementById("content");
+
+                let topL = tdElement.offsetTop;
+                let space = table.offsetHeight;
+                if (topL > 250 && space - topL < 250)
+                    topL = space - img.height;
+
+                img.setAttribute("style", "position: absolute; " +
+                    "right: 0; top: " + topL + "px; " +
+                    "display: block; z-index: 99");
+            });
+
+            tdElement.addEventListener("mouseleave", function (e) {
+                let img = document.getElementById(seq);
+                img.setAttribute("style", "display: none");
+            });
+        }
+    </script>
 </body>
 </html>

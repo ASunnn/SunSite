@@ -11,10 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import sunnn.sunsite.dto.CollectionBase;
 import sunnn.sunsite.dto.request.DeleteRequest;
 import sunnn.sunsite.dto.request.ModifyCollection;
-import sunnn.sunsite.dto.response.BaseResponse;
-import sunnn.sunsite.dto.response.CollectionListResponse;
-import sunnn.sunsite.dto.response.CollectionInfoResponse;
-import sunnn.sunsite.dto.response.PictureListResponse;
+import sunnn.sunsite.dto.response.*;
 import sunnn.sunsite.exception.IllegalFileRequestException;
 import sunnn.sunsite.service.CollectionService;
 import sunnn.sunsite.service.GalleryService;
@@ -61,6 +58,16 @@ public class CollectionController {
         return galleryService.getPictureListInCollection(sequence, page);
     }
 
+    @GetMapping(value = "/m/{sequence}")
+    @ResponseBody
+    public ResponseEntity collectionThumbnail(@PathVariable("sequence") long sequence) throws IOException {
+        File file = collectionService.getCollectionThumbnail(sequence);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.IMAGE_JPEG);
+        return new ResponseEntity<>(FileUtils.readFileToByteArray(file), headers, HttpStatus.OK);
+    }
+
     @GetMapping(value = "/download/{sequence}")
     @ResponseBody
     public ResponseEntity downloadCollection(@PathVariable("sequence") long sequence) throws IllegalFileRequestException, IOException {
@@ -75,9 +82,8 @@ public class CollectionController {
 
     @PostMapping(value = "/modify")
     @ResponseBody
-    public BaseResponse modifyCollection(@Valid @RequestBody ModifyCollection modifyInfo) {
-        return new BaseResponse(
-                collectionService.modifyName(Long.valueOf(modifyInfo.getSequence()), modifyInfo.getNewName()));
+    public ModifyResultResponse modifyCollection(@Valid @RequestBody ModifyCollection modifyInfo) {
+        return collectionService.modifyName(Long.valueOf(modifyInfo.getSequence()), modifyInfo.getNewName());
     }
 
     @PostMapping(value = "/delete")

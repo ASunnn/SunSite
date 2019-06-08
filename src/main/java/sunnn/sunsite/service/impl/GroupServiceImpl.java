@@ -7,10 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import sunnn.sunsite.dao.CollectionDao;
-import sunnn.sunsite.dao.GroupDao;
-import sunnn.sunsite.dao.PicDao;
-import sunnn.sunsite.dao.PictureDao;
+import sunnn.sunsite.dao.*;
 import sunnn.sunsite.dto.CollectionInfo;
 import sunnn.sunsite.dto.GroupInfo;
 import sunnn.sunsite.dto.response.GroupInfoResponse;
@@ -57,6 +54,9 @@ public class GroupServiceImpl implements GroupService {
 
     @Resource
     private PicDao picDao;
+
+    @Resource
+    private IllustratorDao illustratorDao;
 
     @Autowired
     public GroupServiceImpl(FileCache fileCache, AliasService aliasService) {
@@ -144,6 +144,20 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    public File getGroupThumbnail(String name) {
+        CollectionInfo collectionInfo = collectionDao.findRecentlyCollectionByGroup(name);
+
+        if (collectionInfo != null)
+            return collectionService.getCollectionThumbnail(collectionInfo.getSequence());
+
+        File f = new File(SunSiteProperties.missPicture);
+        if (f.exists())
+            return f;
+        log.warn("404.jpg Miss");
+        return null;
+    }
+
+    @Override
     public File download(String name) throws IllegalFileRequestException {
         Group g = groupDao.find(name);
         if (g == null)
@@ -225,9 +239,9 @@ public class GroupServiceImpl implements GroupService {
         // 文件操作
         List<CollectionInfo> collectionList = collectionDao.findAllInfoByGroup(g.getName(), 0, Integer.MAX_VALUE);
         Set<String> typeSet = new HashSet<>();
-
+        // 将画集上一层的社团文件夹改名
         for (CollectionInfo collection : collectionList) {
-            if (!typeSet.contains(collection.getType())) {
+            if (!typeSet.contains(collection.getType())) {  // 一个类型的文件夹下的社团文件夹只要改一次就好了，这里使用HashSet操作
                 typeSet.add(collection.getType());
 
                 String path = SunSiteProperties.savePath
@@ -243,21 +257,29 @@ public class GroupServiceImpl implements GroupService {
         // 修改数据库
         groupDao.updateName(oldName, newName);
         for (CollectionInfo collection : collectionList) {
+            // 修改画集
+            String md5Source = newName + collection.getCollection();
+            long newCId = MD5s.getMD5Sequence(md5Source);
+            collectionDao.updateCId(collection.getSequence(), newCId);
+
+            // 修改画集下的图片
             List<Picture> pictureList = pictureDao.findAllByCollection(collection.getSequence());
+            // 生成新路径
+            String newPath = collection.getType()
+                    + File.separator
+                    + newName
+                    + File.separator
+                    + collection.getCollection()
+                    + File.separator;
             for (Picture picture : pictureList) {
                 Pic p = picDao.find(picture.getSequence());
+                // 修改序列号
+                String mSource = newName + collection.getCollection() + p.getName();
+                long newSequence = MD5s.getMD5Sequence(mSource);
 
-                String[] elements = p.getPath().split("\\\\");
-                if (elements.length == 0)
-                    elements = p.getPath().split("/");
-                String newPath = elements[0]
-                        + File.separator
-                        + newName
-                        + File.separator
-                        + elements[2]
-                        + File.separator;
-
-                picDao.updatePath(p.getSequence(), newPath);
+                pictureDao.updateCollection(p.getSequence(), newSequence, newCId);
+                picDao.updatePath(p.getSequence(), newSequence, newPath);
+                illustratorDao.updatePicture(p.getSequence(), newSequence);
             }
         }
 

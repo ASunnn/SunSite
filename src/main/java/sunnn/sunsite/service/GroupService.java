@@ -44,6 +44,11 @@ public interface GroupService {
     GroupInfoResponse getGroupInfo(String name);
 
     /**
+     * 获取社团预览
+     */
+    File getGroupThumbnail(String name);
+
+    /**
      * 下载整个社团图片
      *
      * @param name 社团名

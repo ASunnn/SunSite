@@ -10,10 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import sunnn.sunsite.dto.request.DeleteRequest;
 import sunnn.sunsite.dto.request.ModifyIllustrator;
-import sunnn.sunsite.dto.response.BaseResponse;
-import sunnn.sunsite.dto.response.IllustratorInfoResponse;
-import sunnn.sunsite.dto.response.IllustratorListResponse;
-import sunnn.sunsite.dto.response.PictureListResponse;
+import sunnn.sunsite.dto.response.*;
 import sunnn.sunsite.exception.IllegalFileRequestException;
 import sunnn.sunsite.service.GalleryService;
 import sunnn.sunsite.service.IllustratorService;
@@ -58,6 +55,16 @@ public class IllustratorController {
         return galleryService.getPictureListByiIllustrator(illustrator, page);
     }
 
+    @GetMapping(value = "/m/{name}")
+    @ResponseBody
+    public ResponseEntity illustratorThumbnail(@PathVariable("name") String name) throws IOException {
+        File file = illustratorService.getIllustratorThumbnail(name);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.IMAGE_JPEG);
+        return new ResponseEntity<>(FileUtils.readFileToByteArray(file), headers, HttpStatus.OK);
+    }
+
     @GetMapping(value = "/download/{name}")
     @ResponseBody
     public ResponseEntity downloadIllustrator(@PathVariable("name") String name) throws IllegalFileRequestException, IOException {
@@ -72,17 +79,21 @@ public class IllustratorController {
 
     @PostMapping(value = "/modify")
     @ResponseBody
-    public BaseResponse modifyGroup(@Valid @RequestBody ModifyIllustrator modifyInfo) {
+    public ModifyResultResponse modifyGroup(@Valid @RequestBody ModifyIllustrator modifyInfo) {
         StatusCode modifyAlias = illustratorService.modifyAlias(
                 modifyInfo.getIllustrator(), modifyInfo.getAliases());
         StatusCode modifyName = illustratorService.modifyName(modifyInfo.getIllustrator(), modifyInfo.getNewName());
 
+        String newLink = modifyName.equals(StatusCode.OJBK) ? modifyInfo.getNewName() : modifyInfo.getIllustrator();
+        ModifyResultResponse response;
         if (!modifyAlias.equals(StatusCode.OJBK))
-            return new BaseResponse(modifyAlias);
+            response = new ModifyResultResponse(modifyAlias);
         else if (!modifyName.equals(StatusCode.OJBK))
-            return new BaseResponse(modifyName);
+            response = new ModifyResultResponse(modifyName);
         else
-            return new BaseResponse(StatusCode.OJBK);
+            response = new ModifyResultResponse(StatusCode.OJBK);
+
+        return response.setNewLinkInfo(newLink);
     }
 
 

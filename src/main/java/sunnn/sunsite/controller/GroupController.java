@@ -55,6 +55,16 @@ public class GroupController {
         return collectionService.getCollectionListByGroup(group);
     }
 
+    @GetMapping(value = "/m/{name}")
+    @ResponseBody
+    public ResponseEntity groupThumbnail(@PathVariable("name") String name) throws IOException {
+        File file = groupService.getGroupThumbnail(name);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.IMAGE_JPEG);
+        return new ResponseEntity<>(FileUtils.readFileToByteArray(file), headers, HttpStatus.OK);
+    }
+
     @GetMapping(value = "/download/{name}")
     @ResponseBody
     public ResponseEntity downloadGroup(@PathVariable("name") String name) throws IllegalFileRequestException, IOException {
@@ -69,17 +79,21 @@ public class GroupController {
 
     @PostMapping(value = "/modify")
     @ResponseBody
-    public BaseResponse modifyGroup(@Valid @RequestBody ModifyGroup modifyInfo) {
+    public ModifyResultResponse modifyGroup(@Valid @RequestBody ModifyGroup modifyInfo) {
         StatusCode modifyAlias = groupService.modifyAlias(
                 modifyInfo.getGroup(), modifyInfo.getAliases());
         StatusCode modifyName = groupService.modifyName(modifyInfo.getGroup(), modifyInfo.getNewName());
 
+        String newLink = modifyName.equals(StatusCode.OJBK) ? modifyInfo.getNewName() : modifyInfo.getGroup();
+        ModifyResultResponse response;
         if (!modifyAlias.equals(StatusCode.OJBK))
-            return new BaseResponse(modifyAlias);
+            response = new ModifyResultResponse(modifyAlias);
         else if (!modifyName.equals(StatusCode.OJBK))
-            return new BaseResponse(modifyName);
+            response = new ModifyResultResponse(modifyName);
         else
-            return new BaseResponse(StatusCode.OJBK);
+            response = new ModifyResultResponse(StatusCode.OJBK);
+
+        return response.setNewLinkInfo(newLink);
     }
 
     @PostMapping(value = "/delete")

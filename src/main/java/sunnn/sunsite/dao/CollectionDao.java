@@ -16,6 +16,8 @@ public interface CollectionDao {
 
     CollectionBase findBaseInfo(long cId);
 
+    CollectionInfo findRecentlyCollectionByGroup(String group);
+
     @Deprecated
     List<CollectionBase> findAllBaseInfoByFilter();
 
@@ -32,7 +34,9 @@ public interface CollectionDao {
 
     void update(@Param("lastUpdate") Timestamp lastUpdate, @Param("cId") long cId);
 
-    void updateName(@Param("cId") long cId, @Param("name") String name);
+    void updateCId(@Param("cId") long cId, @Param("newCId") long newCId);
+
+    void updateName(@Param("cId") long cId, @Param("newCId") long newCId, @Param("name") String name);
 
     int count();
 

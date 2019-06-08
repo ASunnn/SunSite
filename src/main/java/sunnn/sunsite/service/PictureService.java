@@ -2,6 +2,7 @@ package sunnn.sunsite.service;
 
 import org.springframework.web.multipart.MultipartFile;
 import sunnn.sunsite.dto.request.UploadPictureInfo;
+import sunnn.sunsite.dto.response.ModifyResultResponse;
 import sunnn.sunsite.util.StatusCode;
 
 public interface PictureService {
@@ -21,6 +22,16 @@ public interface PictureService {
      * @return 保存结果
      */
     StatusCode uploadInfoAndSave(UploadPictureInfo info);
+
+    /**
+     * 修改图片信息（名字）
+     */
+    ModifyResultResponse modifyPicture(long sequence, String newName);
+
+    /**
+     * 修改图片绘师
+     */
+    StatusCode modifyIllustrator(long sequence, String illustrators);
 
     /**
      * 删除一个图片记录

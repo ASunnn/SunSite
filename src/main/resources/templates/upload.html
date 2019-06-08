@@ -2,57 +2,75 @@
 <html>
 
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <title>Upload | SunSite</title>
+
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <script src="/jquery-1.9.0.min.js"></script>
-    <style>
-        /* 标题菜单 */
-        .menu {
-            margin-left: auto;
-            margin-right: auto;
-            width: 1800px;
-            height: 70px;
-            margin-top: 15px;
-            margin-bottom: 15px;
-        }
-        .menuContent {
-            text-align: center;
-            float: left;
-            width: 200px;
-            height: 70px;
-        }
-        .menuLink {
-            position: relative;
-            top: 40px;
-        }
-        ul, li {
-            list-style-type:none;
-            padding: 0;
-            margin: 0;
-        }
-        /* 表单 */
-        .uploadInput {
-            height: 20px
-        }
-        label {
-            display: inline-block;
-            width: 100px;
-            height: 30px;
-            margin: auto;
-            text-align: right;
-        }
-        input {
-            background-color: lightgrey;
-            color: black;
-        }
-        /* 通用 */
-        a {
-            text-decoration: none;
-            color: lightgrey;
-        }
-    </style>
-    <!-- 页面变换 -->
+
+    <link href="/default.css" rel="stylesheet">
+</head>
+
+<body>
+    <nav id="menu" class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/gallery">SunSite</a>
+            </div>
+
+            <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="/gallery">Gallery</a></li>
+                    <li><a href="/illustrator">Illustrator</a></li>
+                    <li><a href="/group">Group</a></li>
+                    <li><a href="/collection">Collection</a></li>
+                    <li><a href="/type">Type</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div id="uploadFile">
+            <form id="uploadFileForm" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="file">File input</label>
+                    <input type="file" id="file" name="file" multiple="multiple" />
+                </div>
+                <button type="button" class="btn btn-default" id="submitFile">Submit</button>
+            </form>
+        </div>
+
+        <div id="uploadInfo" style="display: none">
+            <form>
+                <div class="form-group">
+                    <label for="illustrator">Illustrator</label>
+                    <input type="text" class="form-control" id="illustrator" placeholder="Illustrator" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label for="group">Group</label>
+                    <input type="text" class="form-control" id="group" placeholder="Group" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label for="collection">Collection</label>
+                    <input type="text" class="form-control" id="collection" placeholder="Collection" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label for="type">Type</label>
+                    <input type="text" class="form-control" id="type" placeholder="Type" autocomplete="off">
+                </div>
+                <input type="hidden" id="uploadCode" value="" />
+                <button type="button" class="btn btn-default" id="submitInfo">Submit</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="/jquery-2.0.3.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+
     <script>
         // function upload() {
         //     var content = document.getElementById("content");
@@ -72,13 +90,13 @@
             uploadInfo.style.display = "block";
         }
     </script>
-    <!-- 上传 -->
+
     <script>
         $(function () {
             $("#submitFile").click(function () {
                 var button = this;
                 $(button).attr('disabled', 'disabled');
-    
+
                 var formData = new FormData($('#uploadFileForm')[0]);
                 $.ajax({
                     method: 'post',
@@ -89,7 +107,7 @@
                     contentType: false //必须
                 }).done(function (data) {
                     alert(data.msg);
-                    if (data.code == 0) {
+                    if (data.code === 0) {
                         var uploadCode = document.getElementById("uploadCode");
                         uploadCode.value = data.uploadCode;
                         uploadInfo();
@@ -102,12 +120,12 @@
                 });
             });
         });
-        
+
         $(function () {
             $("#submitInfo").click(function () {
                 var button = this;
                 $(button).attr('disabled', 'disabled');
-    
+
                 var illustrator = $('#illustrator').val();
                 var group = $('#group').val();
                 var collection = $('#collection').val();
@@ -131,59 +149,10 @@
                     window.location.reload();
                 }).fail(function () {
                     alert("error");
-                        window.location.href = "/error";
+                    window.location.href = "/error";
                 });
             });
         });
     </script>
-</head>
-
-<body style="background-color:#333333; color:lightgrey">
-    <div class="menu">
-        <ul>
-            <li class="menuContent" style="text-align:center; font-size:50px">
-                SunSite
-            </li>
-            <li class="menuContent">
-                <a class="menuLink" href="/gallery">Gallery</a>
-            </li>
-            <li class="menuContent">
-                <a class="menuLink" href="/illustrator">Illustrator</a>
-            </li>
-            <li class="menuContent">
-                <a class="menuLink" href="/group">Group</a>
-            </li>
-            <li class="menuContent">
-                <a class="menuLink" href="/collection">Collection</a>
-            </li>
-            <li class="menuContent">
-                <a class="menuLink" href="/type">Type</a>
-            </li>
-        </ul>
-    </div>
-    <hr style="border-color:black" />
-    <div id="content">
-        <div id="uploadFile" style="text-align: center;">
-            <form id="uploadFileForm" enctype="multipart/form-data">
-                <input type="file" name="file" multiple="multiple" />
-                <input id="submitFile" type="button" value="sumbit!">
-            </form>
-        </div>
-        <div id="uploadInfo" style="text-align: center; display: none">
-            <form id="uploadInfoForm">
-                <input type="hidden" name="uploadCode" id="uploadCode" value="" />
-                <label for="illustrator">Illustrator</label>
-                <input type="text" name="illustrator" id="illustrator" class="uploadInput", autocomplete="off"/>
-                <br />
-                <label for="group">Group</label>
-                <input type="text" name="group" id="group" class="uploadInput", autocomplete="off"/>
-                <br />
-                <label for="collection">Collection</label>
-                <input type="text" name="collection" id="collection" class="uploadInput", autocomplete="off"/>
-                <br />
-                <input id="submitInfo" type="button" value="sumbit!">
-            </form>
-        </div>
-    </div>
 </body>
 </html>

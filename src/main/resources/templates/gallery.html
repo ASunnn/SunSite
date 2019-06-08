@@ -2,314 +2,106 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <title>SunSite</title>
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <script src="/jquery-1.9.0.min.js"></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <style>
-        /* 标题菜单 */
-        .menu {
-            margin-left: auto;
-            margin-right: auto;
-            width: 1800px;
-            height: 70px;
-            margin-top: 15px;
-            margin-bottom: 15px;
-        }
-        .menuContent {
-            text-align: center;
-            float: left;
-            width: 200px;
-            height: 70px;
-        }
-        .menuLink {
-            position: relative;
-            top: 40px;
-        }
-        ul, li {
-            list-style-type:none;
-            padding: 0;
-            margin: 0;
-        }
-        /* 过滤器 */
-        /* .filters {
-            width: 1800px;
-            height: 30px;
-            margin-left: auto;
-            margin-right: auto;
-            margin-top: 30px;
-            margin-bottom: 30px;
-        }
-        .filter {
-            width:320px; 
-            height:30px; 
-            float:left;
-        }
-        .labelElement {
-            width: 100px;
-            height: 30px; 
-            float:  left;
-        }
-        .selectBox {
-            width:200px;
-            position:relative;
-            padding:0;
-            font-size:12px;
-            float: right;
-        }
-        .selectBox input {
-            cursor:pointer;
-            /* display:block;
-            line-height:25px; *
-            width:200px;
-            height:25px;
-            overflow:hidden;
-            border:1px solid #ccc;
-        }
-        .selectBox ul {
-            width:200px;
-            /* position:absolute;
-            left:0;
-            top:27px; *
-            border:1px solid #ccc;
-            /* background:#fff; *
-            overflow: hidden;
-            display:none;
-            background:#ebebeb;
-            z-index:99999;
-        }
-        .selectBox ul li {
-            display:block;
-            height:30px;
-            overflow:hidden;
-            line-height:30px;
-            padding-left:5px;
-            width:100%;
-            cursor:pointer;
-        }
-        .hover {
-            background:#ccc;
-        } */
-        /* 图片列表 */
-        .pictureList {
-            display: inline-block;
-            text-align: center;
-            width: 280px;
-            height: 250px;
-            /* height: 305px; */
-            margin: 10px;
-            background-color: dimgrey;
-        }
-        .imageDiv {
-            width: 250px; 
-            height: 250px; 
-            margin: auto; 
-        }
-        img {
-            display: block;
-            margin: auto;
-        }
-        a {
-            overflow: hidden;
-            white-space: nowrap;
-            margin-bottom: 5px;
-            text-decoration: none;
-            color: lightgrey;
-        }
-        /* 页码 */
-        .next {
-            text-align: center;
-            margin: 30px;
-        }
-    </style>
-    <!-- 初始化 -->
+    <title>SunSite</title>
+
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+    <link href="/default.css" rel="stylesheet">
+</head>
+
+<body>
+    <nav id="menu" class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <!--<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">-->
+                    <!--<span class="sr-only">Toggle navigation</span>-->
+                    <!--<span class="icon-bar"></span>-->
+                    <!--<span class="icon-bar"></span>-->
+                    <!--<span class="icon-bar"></span>-->
+                <!--</button>-->
+                <a class="navbar-brand" href="/upload">SunSite</a>
+            </div>
+            <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="/gallery">Gallery</a></li>
+                    <li><a href="/illustrator">Illustrator</a></li>
+                    <li><a href="/group">Group</a></li>
+                    <li><a href="/collection">Collection</a></li>
+                    <li><a href="/type">Type</a></li>
+                </ul>
+                <!--<form class="navbar-form navbar-right">-->
+                    <!--<div class="form-group">-->
+                        <!--<input type="text" placeholder="Search" class="form-control">-->
+                    <!--</div>-->
+                    <!--<button type="submit" class="btn btn-success">Go</button>-->
+                <!--</form>-->
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div id="pictureList" class="row">
+        </div>
+    </div>
+
+    <div id="page">
+        <ul class="pager">
+            <li id="pageItem" class="disabled"><a id="pageLink">1</a></li>
+        </ul>
+    </div>
+
+    <div class="modal fade" id="messageBlank" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Message</h4>
+                </div>
+                <div class="modal-body">
+                    <p id="messageContent"></p>
+                </div>
+                <div class="modal-footer">
+                    <data-togglebutton type="button" class="btn btn-default" data-dismiss="modal">Close</data-togglebutton>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/jquery-2.0.3.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+
     <script>
         window.onload = function () {
-            // var cookie = decodeURIComponent(getCookie("filter"));
-            // if (cookie != "") {
-            //     var val = cookie.split("/");
-
-            //     var type = document.getElementById("types");
-            //     type.value = val[0];
-            //     var illustrators = document.getElementById("illustrators");
-            //     illustrators.value = val[1];
-            //     var collection = document.getElementById("collections");
-            //     collection.value = val[2];
-            // }
-            // getGalleryInfo();
-                        // deleteAllPicture();
-            // getPictureListWithFilter(0);
             getPictureList(0);
+
+            checkMessageBox();
         };
+        
+        function checkMessageBox() {
+            $.get("/check", function (data) {
+                if (data.code === 0) {
+                    var messageContent = document.getElementById("messageContent");
+                    messageContent.innerText = data.msg;
 
-        // function getCookie(collection) {
-        //     var reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
-        //     var cookie = document.cookie.match(reg);
-        //     if (cookie)
-        //         return cookie[2];
-        //     else
-        //         return "";
-        // }
-    </script>
-    <!--&lt;!&ndash; 页面变换 &ndash;&gt;-->
-    <!--<script>-->
-        <!--$(document).ready(function () {-->
-            <!--$(".selectBox input").click(function () {-->
-                <!--var thisinput = $(this);-->
-                <!--var thisul = $(this).parent().find("ul");-->
-                <!--if (thisul.css("display") == "none") {-->
-                    <!--//显示出来滚动条 -->
-                    <!--if (thisul.height() > 200) {-->
-                        <!--thisul.css({ height: "200" + "px", "overflow-y": "scroll" })-->
-                    <!--};-->
-                    <!--thisul.fadeIn("100");-->
-                    <!--thisul.hover(function () { }, function () { thisul.fadeOut("100"); });-->
-                    <!--//连续多个事件 -->
-                    <!--thisul.find("li").click(function () {-->
-                        <!--thisinput.val($(this).text());-->
-                        <!--thisul.fadeOut("100");-->
-                        <!--getGalleryInfo();-->
-                    <!--}).hover(-->
-                        <!--function () {-->
-                             <!--$(this).addClass("hover"); -->
-                        <!--}, -->
-                        <!--function () { -->
-                            <!--$(this).removeClass("hover"); -->
-                        <!--}-->
-                    <!--);-->
-                <!--}-->
-                <!--else {-->
-                    <!--thisul.fadeOut("fast");-->
-                <!--}-->
-            <!--})-->
-        <!--}); -->
-    <!--</script>-->
-    <!--&lt;!&ndash; 图库信息 &ndash;&gt;-->
-    <!--<script>-->
-        <!--function getGalleryInfo() {-->
-            <!--var illustrators = $('#illustrators').val();-->
-            <!--var collection = $('#collections').val();-->
-            <!--var type = $('#types').val();-->
-
-            <!--var data = {-->
-                <!--"illustrator": illustrator,-->
-                <!--"collection": collection,-->
-                <!--"type": type-->
-            <!--};-->
-
-            <!--$.ajax({-->
-                <!--method: 'post',-->
-                <!--url: "/gallery/galleryInfo",-->
-                <!--data: JSON.stringify(data),-->
-                <!--dataType: "JSON",-->
-                <!--contentType: "application/json"-->
-            <!--}).done(function (data) {-->
-                <!--setGalleryInfo(data);-->
-            <!--}).fail(function () {-->
-                <!--alert("error");-->
-                <!--window.location.href = "/error";-->
-            <!--});-->
-        <!--}-->
-        <!---->
-        <!--function setGalleryInfo(data) {-->
-            <!--var illustratorUl = document.getElementById("illustratorList");-->
-            <!--deleteGalleryInfo(illustratorUl);-->
-
-            <!--var emptyIllustratorLi = document.createElement("li");-->
-            <!--illustratorUl.appendChild(emptyIllustratorLi);-->
-            <!--for (i = 0; i < data.illustrators.length; ++i) {-->
-                <!--let illustrators = document.createElement("li");-->
-                <!--illustrator.innerText = data.illustrators[i];-->
-                <!--illustratorUl.appendChild(illustrator);-->
-            <!--}-->
-
-            <!--var collectionUl = document.getElementById("collectionList");-->
-            <!--deleteGalleryInfo(collectionUl);-->
-
-            <!--var emptyCollectionLi = document.createElement("li");-->
-            <!--collectionUl.appendChild(emptyCollectionLi);-->
-            <!--for (i = 0; i < data.collections.length; ++i) {-->
-                <!--let collection = document.createElement("li");-->
-                <!--collection.innerText = data.collections[i];-->
-                <!--collectionUl.appendChild(collection);-->
-            <!--}-->
-
-            <!--var typeUl = document.getElementById("typeList");-->
-            <!--deleteGalleryInfo(typeUl);-->
-
-            <!--var emptyTypeLi = document.createElement("li");-->
-            <!--typeUl.appendChild(emptyTypeLi);-->
-            <!--for (i = 0; i < data.types.length; ++i) {-->
-                <!--let type = document.createElement("li");-->
-                <!--type.innerText = data.types[i];-->
-                <!--typeUl.appendChild(type);-->
-            <!--}-->
-        <!--}-->
-
-        <!--function deleteGalleryInfo(div) {-->
-            <!--while(div.hasChildNodes()) -->
-                <!--div.removeChild(div.firstChild);-->
-        <!--}-->
-    <!--</script>-->
-    <!-- 图片列表 -->
-    <script>
-        $(function () {
-            $("#page").click(function () {
-                var page = document.getElementById("next");
-                if (page.getAttribute("isFilter") == 0)
-                    getPictureList(page.innerText);
-                // else
-                //     getPictureListWithFilter(page.innerHTML);
-            });
-        });
-
-        // @Deprecated
-        $(function () {
-            $("#getFilter").click(function () {
-                deleteAllPicture();
-                getPictureListWithFilter(0);
-            });
-        });
-
-        // @Deprecated
-        function getPictureListWithFilter(page) {
-            var illustrators = $('#illustrators').val();
-            var collection = $('#collections').val();
-            var type = $('#types').val();
-            var collection = $('#collection').val();
-
-            var data = {
-                "illustrator": illustrator,
-                "collection": collection,
-                "type": type,
-                "name": name,
-                "page": page,
-                "size": 20
-            };
-
-            $.ajax({
-                method: 'post',
-                url: "/gallery/filter",
-                data: JSON.stringify(data),
-                dataType: "JSON",
-                contentType: "application/json"
-            }).done(function (data) {
-                pictureListHandler(data, page, 1);
-            }).fail(function () {
-                alert("error");
-                window.location.href = "/error";
+                    $('#messageBlank').modal();
+                } else if (data.code === 4)
+                    alert("No Message");
             });
         }
 
         function getPictureList(page) {
             $.get("/gallery/list?p=" + page, function (data) {
-                pictureListHandler(data, page, 0);
+                pictureListHandler(data, page);
             });
         }
 
-        function pictureListHandler(data, page, isFilter) {
-            if (data.code == 0) {
+        function pictureListHandler(data, page) {
+            if (data.code === 0) {
                 for (i = 0; i < data.pictureList.length; ++i) {
                     // var sequence = data.fileList[i];
                     setPicture(data.pictureList[i]);
@@ -317,27 +109,24 @@
 
                 page = page - 0 + 1;
                 if (page >= data.pageCount) {   // 如果页数到顶了，就要删除页码
-                    if (page > 1) { // page=1时就是初始化的时候，创都没创建
-                        var nextButton = document.getElementById("next");
-                        nextButton.remove();
-                    }
-                } else if (page == 1) { // page=1即初始化，这时候创建页码
-                    var nextButton = document.createElement("h3");
-                    nextButton.setAttribute("id", "next");
-                    nextButton.setAttribute("class", "next");
-                    nextButton.innerText = page;
-                    nextButton.setAttribute("isFilter", isFilter);
+                    if (page > 1) { // page=1时就是初始化的时候，已经默认创建好了
+                        let pageButton = document.getElementById("pageItem");
+                        pageButton.setAttribute("class", "disabled");
 
-                    var pageElement = document.getElementById("page");
-                    pageElement.appendChild(nextButton);
+                        let pageLink = document.getElementById("pageLink");
+                        pageLink.innerText = page;
+                    }
+                } else if (page === 1) { // page=1即初始化，这时候创建页码
+                    let pageButton = document.getElementById("pageItem");
+                    pageButton.setAttribute("class", "");
                 } else {    // 正常情况page+1，更新
-                    var nextButton = document.getElementById("next");
-                    nextButton.innerText = page;
+                    let pageLink = document.getElementById("pageLink");
+                    pageLink.innerText = page;
                 }
-            } else if (data.code == 4) {
-                var nextButton = document.getElementById("next");
-                if (nextButton)
-                    nextButton.remove();
+            } else if (data.code === 4) {
+                let pageButton = document.getElementById("pageItem");
+                pageButton.setAttribute("class", "disabled");
+
                 alert(data.msg);
             } else
                 window.location.href = "/error";
@@ -352,13 +141,10 @@
             var cId = data.cid;
             var collection = data.collection;
 
-            var divElement = document.createElement("div");
-            divElement.setAttribute("class", "pictureList");
-            divElement.setAttribute("id", sequence);
-            pictureList.appendChild(divElement);
-
-            var imageDiv = document.createElement("div");
-            imageDiv.setAttribute("class", "imageDiv");
+            var imageElement = document.createElement("div");
+            imageElement.setAttribute("class", "col-sm-4 col-md-3 col-lg-2");
+            imageElement.setAttribute("id", sequence);
+            pictureList.appendChild(imageElement);
 
             var image = document.createElement("img");
             image.src = "/m/" + sequence;
@@ -367,103 +153,22 @@
             var imageLink = document.createElement("a");
             imageLink.setAttribute("href", "/gallery/show/" + sequence);
             imageLink.setAttribute("target", "_blank");
+            imageLink.setAttribute("class", "thumbnail");
+
             imageLink.appendChild(image);
-            imageDiv.appendChild(imageLink);
+            imageElement.appendChild(imageLink);
 
-            divElement.appendChild(imageDiv);
-
-            // var groupElement = document.createElement("a");
-            // groupElement.setAttribute("href", "/group/show/" + group);
-            // groupElement.innerHTML = group;
-            // groupElement.setAttribute("style", "display: block");
-            // divElement.appendChild(groupElement);
-
-            // var collectionElement = document.createElement("a");
-            // collectionElement.setAttribute("href", "/collection/show/" + cId);
-            // collectionElement.innerHTML = collection;
-            // collectionElement.setAttribute("style", "display: block");
-            // divElement.appendChild(collectionElement);
+            let h = imageElement.offsetWidth;
+            imageElement.setAttribute("style", "height: " + h + "px;");
+            imageLink.setAttribute("style", "height: " + h + "px;");
         }
 
-        function deleteAllPicture() {
-            $(".pictureList").remove();
-            $(".next").remove();
-        }
+        $(function () {
+            $("#pageLink").click(function () {
+                var page = document.getElementById("pageLink");
+                getPictureList(page.innerText);
+            });
+        });
     </script>
-</head>
-
-<body style="background-color:#333333; color:lightgrey">
-    <div class="menu">
-        <ul>
-            <li class="menuContent" style="text-align:center; font-size:50px">
-                <a href="/upload">SunSite</a>
-            </li>
-            <li class="menuContent">
-                <a class="menuLink" href="/gallery">Gallery</a>
-            </li>
-            <li class="menuContent">
-                <a class="menuLink" href="/illustrator">Illustrator</a>
-            </li>
-            <li class="menuContent">
-                <a class="menuLink" href="/group">Group</a>
-            </li>
-            <li class="menuContent">
-                <a class="menuLink" href="/collection">Collection</a>
-            </li>
-            <li class="menuContent">
-                <a class="menuLink" href="/type">Type</a>
-            </li>
-        </ul>
-    </div>
-    <hr style="border-color:black" />
-    <div id="content" style="margin:auto; width: 1800px;">
-        <!--<div class="filters">
-            <div class="filter">
-                <div class="labelElement">
-                    <label for="types">Type</label>
-                </div>
-                <div class="selectBox">
-                    <input id="types" type="text" readonly="readonly"> readonly="readonly"
-                    <ul id="typeList" class="selectUl">
-                    </ul>
-                </div>
-            </div>
-            <div class="filter">
-                <div class="labelElement">
-                    <label for="illustrators">Illustrator</label>
-                </div>
-                <div class="selectBox">
-                    <input id="illustrators" type="text" readonly="readonly">
-                    <ul id="illustratorList" class="selectUl">
-                    </ul>
-                </div>
-            </div>
-            <div class="filter">
-                <div class="labelElement">
-                    <label for="collections">CollectionController</label>
-                </div>
-                <div class="selectBox">
-                    <input id="collections" type="text" readonly="readonly">
-                    <ul id="collectionList" class="selectUl">
-                    </ul>
-                </div>
-            </div>
-            <div class="filter">
-                <div class="labelElement">
-                    <label for="collection">UploadPictureInfo</label>
-                </div>
-                <div class="selectBox">
-                    <input id="collection" type="text", autocomplete="off">
-                </div>
-            </div>
-            <div class="filter">
-                <button id="getFilter" style="margin-left:50px;">GET!</button>
-            </div>
-        </div> -->
-        <div id="pictureList">
-        </div>
-        <div id="page">
-        </div>
-    </div>
 </body>
 </html>

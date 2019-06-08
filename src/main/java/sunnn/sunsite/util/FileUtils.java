@@ -195,7 +195,7 @@ public class FileUtils {
      * 对一个文件进行复制
      *
      * @param srcFile  源文件
-     * @param destPath 复制的目标路径，路径不存在时，会自动创建
+     * @param destPath 复制的目标路径，不包含文件名，路径不存在时，会自动创建
      * @throws IOException 发生了意外错误
      */
     public static boolean copyFile(File srcFile, String destPath) throws IOException {
@@ -217,11 +217,30 @@ public class FileUtils {
     }
 
     /**
+     * 移动一个文件到另一个路径
+     *
+     * @param srcFile  需要移动的文件
+     * @param destPath 目标路径，不包含文件名
+     * @return 移动成功时返回true
+     */
+    public static boolean moveFile(File srcFile, String destPath) {
+        if (srcFile.isDirectory())
+            return false;
+
+        String fileName = srcFile.getName();
+        File destFile = new File(destPath + File.separator + fileName);
+        if (destFile.exists())
+            return false;
+
+        return srcFile.renameTo(destFile);
+    }
+
+    /**
      * 检查路径或文件是否存在
      */
     public static boolean isExists(String path) {
         File file = new File(path);
-        return  file.exists();
+        return file.exists();
     }
 
     /**
