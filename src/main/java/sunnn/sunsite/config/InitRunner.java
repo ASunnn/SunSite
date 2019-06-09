@@ -28,7 +28,7 @@ public class InitRunner implements ApplicationRunner {
 
     private static Logger log = LoggerFactory.getLogger(InitRunner.class);
 
-    private static final int[] versions = {200};
+    private static final int[] versions = {200, 201};
 
     private final PictureService pictureService;
 
@@ -208,7 +208,7 @@ public class InitRunner implements ApplicationRunner {
                     }
                     // 直接使用已有接口来更新序列号
                     picDao.updateName(p.getSequence(), newSequence, p.getName(), p.getThumbnailName());
-                    pictureDao.updateName(pBase.getSequence(), newSequence, pBase.getName());
+                    pictureDao.updateCollection(pBase.getSequence(), newSequence, pBase.getCId());
                     // 更新artwork表的序列号关联
                     illustratorDao.updatePicture(pBase.getSequence(), newSequence);
                 }

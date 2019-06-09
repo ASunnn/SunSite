@@ -229,8 +229,11 @@ public class FileUtils {
 
         String fileName = srcFile.getName();
         File destFile = new File(destPath + File.separator + fileName);
+
         if (destFile.exists())
             return false;
+        if (!destFile.getParentFile().exists())
+            createPath(destPath);
 
         return srcFile.renameTo(destFile);
     }
