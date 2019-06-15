@@ -72,7 +72,7 @@ public class Utils {
         String sys = System.getProperty("os.name");
 
         if (sys.contains("Windows")) {
-            return "C:\\ProgramData\\sunsite\\";
+            return "C:\\ProgramData\\Sunnn\\sunsite\\";
         } else if (sys.contains("Linux"))
             return "";
 

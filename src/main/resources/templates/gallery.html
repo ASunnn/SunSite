@@ -157,7 +157,7 @@
             imageLink.appendChild(image);
             imageElement.appendChild(imageLink);
 
-            let h = imageElement.offsetWidth;
+            let h = Math.ceil(imageElement.getBoundingClientRect().width);
             imageElement.setAttribute("style", "height: " + h + "px;");
             imageLink.setAttribute("style", "height: " + h + "px;");
         }

@@ -233,7 +233,7 @@
             imageLink.appendChild(image);
             imageElement.appendChild(imageLink);
 
-            let h = imageElement.offsetWidth;
+            let h = Math.ceil(imageElement.getBoundingClientRect().width);
             imageElement.setAttribute("style", "height: " + h + "px;");
             imageLink.setAttribute("style", "height: " + h + "px;");
         }
@@ -242,8 +242,7 @@
             $("#pageLink").click(function () {
                 var page = document.getElementById("pageLink");
                 getPictureList(page.innerText);
-            });
-        });
+            });on
     </script>
 
     <script>
@@ -278,8 +277,8 @@
             // var pictureList = document.getElementById("pictureList");
             // var height = header.offsetHeight + pictureList.offsetHeight;
 
-            floatBlock.style.width = content.offsetWidth + "px";
-            floatBlock.style.height = content.offsetHeight + "px";
+            floatBlock.style.width = (content.clientWidth - 30) + "px"; // 应付bootstrap里.container的30pxpadding
+            floatBlock.style.height = content.clientHeight + "px";
             floatBlock.style.display = "block";
             if (setZIndex)
                 floatBlock.style.zIndex = 256;
