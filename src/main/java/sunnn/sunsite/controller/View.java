@@ -44,15 +44,15 @@ public class View {
     /**
      * 社团
      */
-    @RequestMapping(value = "/group")
+    @RequestMapping(value = "/circle")
     public String group() {
-        return "group";
+        return "circle";
     }
 
     /**
      * 社团
      */
-    @RequestMapping(value = "/group/show/*")
+    @RequestMapping(value = "/circle/show/*")
     public String groupShow() {
         return "work";
     }

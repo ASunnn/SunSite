@@ -25,7 +25,7 @@ public class BeanConfiguration {
     @Bean
     public SunSiteProperties sunSiteProperties() throws UnSupportSystemException, IOException, IllegalPropertiesException {
         try {
-            loadSystemConfig();
+            ConfigLoader.loadSystemConfig();
         } catch (UnSupportSystemException | IOException | IllegalPropertiesException e) {
             Logger log = LoggerFactory.getLogger(SunSiteProperties.class);
             log.error("Start SunSite Failed : ", e);
@@ -34,7 +34,35 @@ public class BeanConfiguration {
         return new SunSiteProperties();
     }
 
-    private void loadSystemConfig() throws UnSupportSystemException, IOException, IllegalPropertiesException {
+    @Bean
+    public MultipartConfigElement multipartConfigElement() {
+        MultipartConfigFactory factory = new MultipartConfigFactory();
+        factory.setMaxFileSize("320MB");
+        factory.setMaxRequestSize("384MB");
+        return factory.createMultipartConfig();
+    }
+
+    @Bean
+    @DependsOn("sunSiteProperties")
+    public FileCache fileCache() {
+        return new FileCache(SunSiteProperties.cacheTimeout);
+    }
+
+    @Bean
+    @Scope(value = "prototype")
+    public InputDataScanner dataScanner() {
+        return new InputDataScanner();
+    }
+
+    @Bean
+    public RequestFilter requestFilter() {
+        return new RequestFilter();
+    }
+}
+
+class ConfigLoader {
+
+    public static void loadSystemConfig() throws UnSupportSystemException, IOException, IllegalPropertiesException {
         File propertiesFile =
                 new File(getPropertiesFilePath());
         InputStream is = new FileInputStream(propertiesFile);
@@ -44,11 +72,11 @@ public class BeanConfiguration {
         parseSunsiteProperties(properties);
     }
 
-    private String getPropertiesFilePath() throws UnSupportSystemException {
+    private static String getPropertiesFilePath() throws UnSupportSystemException {
         return Utils.getPropertiesPath() + SunsiteConstant.PROPERTIES_FILE;
     }
 
-    private void parseSunsiteProperties(Properties properties) throws IllegalPropertiesException {
+    private static void parseSunsiteProperties(Properties properties) throws IllegalPropertiesException {
         String port = properties.getProperty("port");
         if (port != null)
             SunSiteProperties.setPort(Integer.valueOf(port));
@@ -110,30 +138,5 @@ public class BeanConfiguration {
         if (password == null)
             throw new IllegalPropertiesException("Cannot Find Properties 'password'");
         SunSiteProperties.setPassword(password);
-    }
-
-    @Bean
-    public MultipartConfigElement multipartConfigElement() {
-        MultipartConfigFactory factory = new MultipartConfigFactory();
-        factory.setMaxFileSize("320MB");
-        factory.setMaxRequestSize("384MB");
-        return factory.createMultipartConfig();
-    }
-
-    @Bean
-    @DependsOn("sunSiteProperties")
-    public FileCache fileCache() {
-        return new FileCache(SunSiteProperties.cacheTimeout);
-    }
-
-    @Bean
-    @Scope(value = "prototype")
-    public InputDataScanner dataScanner() {
-        return new InputDataScanner();
-    }
-
-    @Bean
-    public RequestFilter requestFilter() {
-        return new RequestFilter();
     }
 }

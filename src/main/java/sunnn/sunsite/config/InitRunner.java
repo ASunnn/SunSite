@@ -28,7 +28,7 @@ public class InitRunner implements ApplicationRunner {
 
     private static Logger log = LoggerFactory.getLogger(InitRunner.class);
 
-    private static final int[] versions = {200, 201};
+    private static final int[] versions = {200, 201, 203, 210};
 
     private final PictureService pictureService;
 

@@ -24,7 +24,7 @@
                 <ul class="nav navbar-nav">
                     <li><a href="/gallery">Gallery</a></li>
                     <li><a href="/illustrator">Illustrator</a></li>
-                    <li class="active"><a href="/group">Group</a></li>
+                    <li class="active"><a href="/circle">Circle</a></li>
                     <li><a href="/collection">Collection</a></li>
                     <li><a href="/type">Type</a></li>
                 </ul>
@@ -34,7 +34,7 @@
 
     <div class="container  thumbSupport">
         <div id="header" class="row">
-            <div id="group" class="col-sm-12 col-md-12 col-lg-12">
+            <div id="circle" class="col-sm-12 col-md-12 col-lg-12">
             </div>
             <div id="alias" class="col-sm-12 col-md-12 col-lg-12">
             </div>
@@ -94,19 +94,19 @@
     <script>
         window.onload = function () {
             var r = window.location.href.split("/");
-            var group = r[r.length-1];
-            document.title = decodeURIComponent(group) + " | Group";
+            var circle = r[r.length-1];
+            document.title = decodeURIComponent(circle) + " | Circle";
 
-            getGroupInfo(group);
-            getCollectionList(group);
+            getcircleInfo(circle);
+            getCollectionList(circle);
         };
 
-        function getGroupInfo(group) {
-            $.get("/group/info?n=" + group, function (data) {
-                var group = document.getElementById("group");
+        function getcircleInfo(circle) {
+            $.get("/circle/info?n=" + circle, function (data) {
+                var circle = document.getElementById("circle");
                 var g = document.createElement("h3");
                 g.innerText = data.group;
-                group.appendChild(g);
+                circle.appendChild(g);
 
                 var alias = document.getElementById("alias");
                 var a = document.createElement("p");
@@ -119,8 +119,8 @@
             });
         }
 
-        function getCollectionList(group) {
-            $.get("/group/detail?n=" + group, function (data) {
+        function getCollectionList(circle) {
+            $.get("/circle/detail?n=" + circle, function (data) {
                 collectionListHandler(data);
             });
         }
@@ -181,9 +181,9 @@
         $(function () {
             $("#download").click(function () {
                 var r = window.location.href.split("/");
-                var group = decodeURIComponent(r[r.length-1]);
+                var circle = decodeURIComponent(r[r.length-1]);
 
-                window.location.href = "/group/download/" + group;
+                window.location.href = "/circle/download/" + circle;
             });
         });
 
@@ -193,21 +193,21 @@
                 $(button).attr('disabled', 'disabled');
 
                 var r = window.location.href.split("/");
-                var group = decodeURIComponent(r[r.length-1]);
+                var circle = decodeURIComponent(r[r.length-1]);
 
                 var data = {
-                    "deleteInfo": group
+                    "deleteInfo": circle
                 };
 
                 $.ajax({
                     method: 'post',
-                    url: "/group/delete",
+                    url: "/circle/delete",
                     data: JSON.stringify(data),
                     dataType: "JSON",
                     contentType: "application/json"
                 }).done(function (data) {
                     alert(data.msg);
-                    window.location.href = "/group";
+                    window.location.href = "/circle";
                 }).fail(function () {
                     alert("error");
                     window.location.href = "/error";
@@ -221,27 +221,27 @@
                 $(button).attr('disabled', 'disabled');
 
                 var r = window.location.href.split("/");
-                var group = decodeURIComponent(r[r.length-1]);
+                var circle = decodeURIComponent(r[r.length-1]);
 
                 var newName = $('#modifyName').val();
                 var aliases = $('#modifyAlias').val();
 
                 var data = {
-                    "group": group,
+                    "group": circle,
                     "newName": newName,
                     "aliases": aliases
                 };
 
                 $.ajax({
                     method: 'post',
-                    url: "/group/modify",
+                    url: "/circle/modify",
                     data: JSON.stringify(data),
                     dataType: "JSON",
                     contentType: "application/json"
                 }).done(function (data) {
                     alert(data.msg);
                     if (data.newLinkInfo)
-                        window.location.href = "/group/show/" + encodeURIComponent(data.newLinkInfo);
+                        window.location.href = "/circle/show/" + encodeURIComponent(data.newLinkInfo);
                     else
                         window.location.reload();
                 }).fail(function () {

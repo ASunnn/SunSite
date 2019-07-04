@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Group | SunSite</title>
+    <title>Circle | SunSite</title>
 
     <link href="/css/bootstrap.min.css" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
@@ -24,7 +24,7 @@
                 <ul class="nav navbar-nav">
                     <li><a href="/gallery">Gallery</a></li>
                     <li><a href="/illustrator">Illustrator</a></li>
-                    <li class="active"><a href="/group">Group</a></li>
+                    <li class="active"><a href="/circle">Circle</a></li>
                     <li><a href="/collection">Collection</a></li>
                     <li><a href="/type">Type</a></li>
                 </ul>
@@ -44,7 +44,7 @@
         <table id="content" class="table table-striped">
             <thead>
                 <tr>
-                    <th>Group</th>
+                    <th>Circle</th>
                     <th>Post</th>
                     <th>LastUpdate</th>
                 </tr>
@@ -65,25 +65,25 @@
 
     <script>
         window.onload = function () {
-            getGroupList(0);
+            getCircleList(0);
         };
 
-        function getGroupList(page) {
-            $.get("/group/list?p=" + page, function (data) {
-                groupListHandler(data, page);
+        function getCircleList(page) {
+            $.get("/circle/list?p=" + page, function (data) {
+                circleListHandler(data, page);
             });
         }
 
-        function getGroupListWithFilter(page, query) {
-            $.get("/group/list?p=" + page + "&query=" + encodeURIComponent(query), function (data) {
-                groupListHandler(data, page);
+        function getCircleListWithFilter(page, query) {
+            $.get("/circle/list?p=" + page + "&query=" + encodeURIComponent(query), function (data) {
+                circleListHandler(data, page);
             });
         }
 
-        function groupListHandler(data, page) {
+        function circleListHandler(data, page) {
             if (data.code === 0) {
                 for (i = 0; i < data.groupList.length; ++i) {
-                    setGroup(data.groupList[i]);
+                    setCircle(data.groupList[i]);
                 }
 
                 page = page - 0 + 1;
@@ -111,8 +111,8 @@
                 window.location.href = "/error";
         }
 
-        function setGroup(data) {
-            var group = data.group;
+        function setCircle(data) {
+            var circle = data.group;
             var post = data.post;
             var lastUpdate = data.lastUpdate;
 
@@ -121,12 +121,12 @@
             var trElement = document.createElement("tr");
             tableBody.appendChild(trElement);
 
-            var groupTd = document.createElement("td");
-            var groupLink = document.createElement("a");
-            groupLink.setAttribute("href", "/group/show/" + encodeURIComponent(group));
-            groupLink.innerText = group;
-            groupTd.appendChild(groupLink);
-            trElement.appendChild(groupTd);
+            var circleTd = document.createElement("td");
+            var circleLink = document.createElement("a");
+            circleLink.setAttribute("href", "/circle/show/" + encodeURIComponent(circle));
+            circleLink.innerText = circle;
+            circleTd.appendChild(circleLink);
+            trElement.appendChild(circleTd);
 
             var postTd = document.createElement("td");
             postTd.innerText = post;
@@ -137,12 +137,12 @@
             trElement.appendChild(lastUpdateTd);
 
             var img = document.createElement("img");
-            img.setAttribute("id", group);
+            img.setAttribute("id", circle);
             img.setAttribute("style", "display: none");
-            img.setAttribute("src", "/group/m/" + encodeURIComponent(group));
+            img.setAttribute("src", "/circle/m/" + encodeURIComponent(circle));
             trElement.appendChild(img);
 
-            initEvent(groupTd, group);
+            initEvent(circleTd, circle);
         }
 
         function clear() {
@@ -165,10 +165,10 @@
 
                 if (filterInfo.length === 0) {
                     $('#inFilter').val("");
-                    getGroupList(0);
+                    getCircleList(0);
                 } else {
                     $('#inFilter').val(filterInfo);
-                    getGroupListWithFilter(0, filterInfo);
+                    getCircleListWithFilter(0, filterInfo);
                 }
             });
         });
@@ -179,9 +179,9 @@
 
                 var query = $('#inFilter').val();
                 if (query.length === 0)
-                    getGroupList(page.innerText);
+                    getCircleList(page.innerText);
                 else
-                    getGroupListWithFilter(page.innerText, query);
+                    getCircleListWithFilter(page.innerText, query);
             });
         });
 
@@ -195,10 +195,10 @@
 
                 if (info.length === 0) {
                     $('#inFilter').val("");
-                    getGroupList(0);
+                    getCircleList(0);
                 } else {
                     $('#inFilter').val(info);
-                    getGroupListWithFilter(0, info);
+                    getCircleListWithFilter(0, info);
                 }
             }
         });

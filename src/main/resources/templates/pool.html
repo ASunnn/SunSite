@@ -33,7 +33,7 @@
                 <ul class="nav navbar-nav">
                     <li><a href="/gallery">Gallery</a></li>
                     <li><a href="/illustrator">Illustrator</a></li>
-                    <li><a href="/group">Group</a></li>
+                    <li><a href="/circle">Circle</a></li>
                     <li class="active"><a href="/collection">Collection</a></li>
                     <li><a href="/type">Type</a></li>
                 </ul>
@@ -47,7 +47,7 @@
         <div id="header" class="row">
             <div id="collection" class="col-sm-12 col-md-12 col-lg-12">
             </div>
-            <div id="group" class="col-sm-12 col-md-12 col-lg-12">
+            <div id="circle" class="col-sm-12 col-md-12 col-lg-12">
             </div>
         </div>
 
@@ -114,14 +114,14 @@
                 c.innerText = data.collection;
                 collection.appendChild(c);
 
-                var group = document.getElementById("group");
+                var circle = document.getElementById("circle");
                 var g = document.createElement("h5");
                 var link = document.createElement("a");
-                link.setAttribute("id", "groupInfo"); // 为了上传时能获取到
-                link.setAttribute("href", "/group/show/" + encodeURIComponent(data.group));
+                link.setAttribute("id", "circleInfo"); // 为了上传时能获取到
+                link.setAttribute("href", "/circle/show/" + encodeURIComponent(data.group));
                 link.innerText = data.group;
                 g.appendChild(link);
-                group.appendChild(g);
+                circle.appendChild(g);
 
                 $('#modifyName').val(data.collection);
             });
@@ -307,8 +307,8 @@
             }).done(function (data) {
                 // overEvent();
                 if (data.code === 0) {
-                    var group = document.getElementById("groupInfo").innerText;
-                    uploadInfo(prompt("Illustrator : ", group), data.uploadCode);
+                    var circle = document.getElementById("circleInfo").innerText;
+                    uploadInfo(prompt("Illustrator : ", circle), data.uploadCode);
                 } else {
                     alert(data.msg);
                     window.location.reload();
@@ -326,11 +326,11 @@
             }
 
             var collection = document.getElementById("collection").innerText;
-            var group = document.getElementById("groupInfo").innerText;
+            var circle = document.getElementById("circleInfo").innerText;
 
             var data = {
                 "illustrator": illustrator,
-                "group" : group,
+                "group" : circle,
                 "collection": collection,
                 "uploadCode": uploadCode
             };

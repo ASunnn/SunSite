@@ -25,7 +25,7 @@
                 <ul class="nav navbar-nav">
                     <li><a href="/gallery">Gallery</a></li>
                     <li><a href="/illustrator">Illustrator</a></li>
-                    <li><a href="/group">Group</a></li>
+                    <li><a href="/circle">Circle</a></li>
                     <li><a href="/collection">Collection</a></li>
                     <li><a href="/type">Type</a></li>
                 </ul>
@@ -50,9 +50,9 @@
             </div>
 
             <div class="col-sm-12 col-md-12 col-lg-12">
-                <h4><small>Group</small></h4>
+                <h4><small>Circle</small></h4>
             </div>
-            <div id="group" class="col-sm-12 col-md-12 col-lg-12">
+            <div id="circle" class="col-sm-12 col-md-12 col-lg-12">
             </div>
 
             <div class="col-sm-12 col-md-12 col-lg-12">
@@ -129,7 +129,7 @@
 
         function setPage(data) {
             var name = data.name;
-            var group = data.group;
+            var circle = data.group;
             var cId = data.cid;
             var collection = data.collection;
             var illustrators = data.illustrator;
@@ -161,14 +161,14 @@
                 illustratorDiv.appendChild(illustratorLink);
             }
 
-            var groupDiv = document.getElementById("group");
-            var groupElement = document.createElement("h4");
-            groupElement.innerText = group;
-            var groupLink = document.createElement("a");
-            groupLink.setAttribute("id", "pictureGroup");
-            groupLink.setAttribute("href", "/group/show/" + encodeURIComponent(group));
-            groupLink.appendChild(groupElement);
-            groupDiv.appendChild(groupLink);
+            var circleDiv = document.getElementById("circle");
+            var circleElement = document.createElement("h4");
+            circleElement.innerText = circle;
+            var circleLink = document.createElement("a");
+            circleLink.setAttribute("id", "picturecircle");
+            circleLink.setAttribute("href", "/circle/show/" + encodeURIComponent(circle));
+            circleLink.appendChild(circleElement);
+            circleDiv.appendChild(circleLink);
 
             var collectionDiv = document.getElementById("collection");
             var collectionElement = document.createElement("h4");

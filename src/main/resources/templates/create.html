@@ -25,7 +25,7 @@
                 <ul class="nav navbar-nav">
                     <li><a href="/gallery">Gallery</a></li>
                     <li><a href="/illustrator">Illustrator</a></li>
-                    <li><a href="/group">Group</a></li>
+                    <li><a href="/circle">Circle</a></li>
                     <li><a href="/collection">Collection</a></li>
                     <li><a href="/type">Type</a></li>
                 </ul>
@@ -40,8 +40,8 @@
                 <input type="text" class="form-control" id="collection" placeholder="Collection" autocomplete="off">
             </div>
             <div class="form-group">
-                <label for="group">Group</label>
-                <input type="text" class="form-control" id="group" placeholder="Group" autocomplete="off">
+                <label for="circle">Circle</label>
+                <input type="text" class="form-control" id="circle" placeholder="Circle" autocomplete="off">
             </div>
             <div class="form-group">
                 <label for="type">Type</label>
@@ -61,12 +61,12 @@
                 $(button).attr('disabled', 'disabled');
 
                 var collection = $('#collection').val();
-                var group = $('#group').val();
+                var circle = $('#circle').val();
                 var type = $('#type').val();
 
                 var data = {
                     "collection": collection,
-                    "group" : group,
+                    "group" : circle,
                     "type": type
                 };
 

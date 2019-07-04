@@ -24,7 +24,7 @@
                 <ul class="nav navbar-nav">
                     <li><a href="/gallery">Gallery</a></li>
                     <li class="active"><a href="/illustrator">Illustrator</a></li>
-                    <li><a href="/group">Group</a></li>
+                    <li><a href="/circle">Circle</a></li>
                     <li><a href="/collection">Collection</a></li>
                     <li><a href="/type">Type</a></li>
                 </ul>
@@ -160,7 +160,7 @@
 
             var sequence = data.sequence;
             var name = data.name;
-            var group = data.group;
+            var circle = data.group;
             var cId = data.cid;
             var collection = data.collection;
 
@@ -171,7 +171,7 @@
 
             var image = document.createElement("img");
             image.src = "/m/" + sequence;
-            image.title = name + "  [" + group + " - " + collection + "]";
+            image.title = name + "  [" + circle + " - " + collection + "]";
 
             var imageLink = document.createElement("a");
             imageLink.setAttribute("href", "/gallery/show/" + sequence);

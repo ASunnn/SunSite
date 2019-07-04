@@ -21,9 +21,3 @@ public class SunSiteApplication extends SpringBootServletInitializer {
         return application.sources(SunSiteApplication.class);
     }
 }
-
-/*
-    增加预览图
-    图库检索
-    新页面打开搜索
- */

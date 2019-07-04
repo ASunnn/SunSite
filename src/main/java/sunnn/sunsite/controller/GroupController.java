@@ -21,7 +21,7 @@ import java.io.File;
 import java.io.IOException;
 
 @Controller
-@RequestMapping("/group")
+@RequestMapping("/circle")
 public class GroupController {
 
     private final GroupService groupService;
