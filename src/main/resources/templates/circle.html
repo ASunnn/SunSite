@@ -76,6 +76,10 @@
 
         function getCircleListWithFilter(page, query) {
             $.get("/circle/list?p=" + page + "&query=" + encodeURIComponent(query), function (data) {
+                if (data.code === 0 && data.groupList.length === 1) {
+                    window.location.href ="/circle/show/"
+                        + encodeURIComponent(data.groupList[0].group);
+                }
                 circleListHandler(data, page);
             });
         }

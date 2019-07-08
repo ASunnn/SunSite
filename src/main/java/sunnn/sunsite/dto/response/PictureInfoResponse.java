@@ -30,6 +30,8 @@ public class PictureInfoResponse extends BaseResponse {
 
     private int height;
 
+    private String size;
+
     private String prev;
 
     private String next;
@@ -40,6 +42,22 @@ public class PictureInfoResponse extends BaseResponse {
 
     public PictureInfoResponse setSequence(long sequence) {
         this.sequence = String.valueOf(sequence);
+        return this;
+    }
+
+    public PictureInfoResponse setSize(long size) {
+        if (size < (1 << 10)) {
+            double res = (double) size / (1 << 10);
+            long mid = Math.round(res * 100);
+            this.size = ((double) mid / 100) + "KB";
+        } else if (size < (1 << 20)) {
+            this.size = (Math.round(size / (1 << 10))) + "KB";
+        } else {
+            double res = (double) size / (1 << 20);
+            long mid = Math.round(res * 10);
+            this.size = ((double) mid / 10) + "MB";
+        }
+
         return this;
     }
 

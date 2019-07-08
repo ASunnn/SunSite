@@ -14,6 +14,36 @@
         WHERE sequence = #{sequence}
     </select>
 
+    <select id="findAllBaseInfoByFilter" resultType="sunnn.sunsite.dto.PictureBase">
+        SELECT
+            pic.sequence AS sequence,
+            pic.name AS `name`,
+            g.name AS `group`,
+            c.cId AS cId,
+            c.name AS collection
+        FROM
+            pic,
+            picture AS p,
+            `group` AS g,
+            collection AS c,
+            type AS t
+        WHERE
+            pic.sequence = p.sequence
+            AND p.collection = c.cId
+            AND c.`group` = g.id
+            AND c.type = t.id
+            <if test="type != ''">
+                AND t.`name` = #{type}
+            </if>
+            <if test="orientation != 0">
+                AND (pic.vOrH = #{orientation} OR pic.vOrH = 0)
+            </if>
+        ORDER BY
+            pic.uploadTime DESC,
+            pic.name
+        LIMIT #{skip}, #{limit}
+    </select>
+
     <select id="findAllByCollection" parameterType="java.lang.Long" resultType="sunnn.sunsite.entity.Picture">
         SELECT *
         FROM picture
@@ -79,6 +109,26 @@
         SET `index` = #{index}
         WHERE sequence = #{sequence}
     </update>
+
+    <select id="countByFilter" resultType="java.lang.Integer">
+        SELECT
+            COUNT(*) AS c
+        FROM
+            picture AS p,
+            pic,
+            collection AS c,
+            type AS t
+        WHERE
+            p.sequence = pic.sequence
+            AND p.collection = c.cId
+            AND c.type = t.id
+            <if test="type != ''">
+                AND t.`name` = #{type}
+            </if>
+            <if test="orientation != 0">
+                AND (pic.vOrH = #{orientation} OR pic.vOrH = 0)
+            </if>
+    </select>
 
     <select id="countByCollection" resultType="java.lang.Integer">
         SELECT COUNT(*) AS c

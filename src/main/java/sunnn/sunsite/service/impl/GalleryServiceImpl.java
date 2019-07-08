@@ -78,6 +78,29 @@ public class GalleryServiceImpl implements GalleryService {
     }
 
     @Override
+    public PictureListResponse getPictureList(String type, String orientation, int page) {
+
+        if (isIllegalPageParam(page))
+            return new PictureListResponse(StatusCode.ILLEGAL_INPUT);
+
+        int size = SunsiteConstant.PAGE_SIZE;
+        int skip = page * size;
+
+        int ornt = getCurrentOrientation(orientation);
+        List<PictureBase> pictures = pictureDao.findAllBaseInfoByFilter(type, ornt, skip, size);
+
+        if (pictures.isEmpty())
+            return new PictureListResponse(StatusCode.NO_DATA);
+
+        int count = pictureDao.countByFilter(type, ornt);
+        int pageCount = (int) Math.ceil((double) count / SunsiteConstant.PAGE_SIZE);
+
+        return new PictureListResponse(StatusCode.OJBK)
+                .setPageCount(pageCount)
+                .convertTo(pictures);
+    }
+
+    @Override
     public PictureListResponse getPictureListInCollection(long cId, int page) {
         Collection c = collectionDao.find(cId);
         if (c == null || isIllegalPageParam(page))
@@ -161,6 +184,7 @@ public class GalleryServiceImpl implements GalleryService {
         PictureInfoResponse response = new PictureInfoResponse(StatusCode.OJBK);
         response.setSequence(pictureData.getSequence())
                 .setName(pictureData.getName())
+                .setSize(pictureData.getSize())
                 .setWidth(pictureData.getWidth())
                 .setHeight(pictureData.getHeight());
 
@@ -184,6 +208,16 @@ public class GalleryServiceImpl implements GalleryService {
         return response;
     }
 
+    @Override
+    public MsgResponse checkMsgBox() {
+        String msg = messageBoxService.getMessage();
+
+        if (msg == null)
+            return new MsgResponse(StatusCode.NO_DATA);
+
+        return new MsgResponse(StatusCode.OJBK).setMsg(msg);
+    }
+
     private long[] getClosePicture(Picture p) {
         List<Picture> pictures = pictureDao.findAllByCollection(p.getCollection());
 
@@ -195,13 +229,11 @@ public class GalleryServiceImpl implements GalleryService {
         return s;
     }
 
-    @Override
-    public MsgResponse checkMsgBox() {
-        String msg = messageBoxService.getMessage();
-
-        if (msg == null)
-            return new MsgResponse(StatusCode.NO_DATA);
-
-        return new MsgResponse(StatusCode.OJBK).setMsg(msg);
+    private int getCurrentOrientation(String orientation) {
+        if (orientation.equals("Landscape"))
+            return 1;
+        else if (orientation.equals("Portrait"))
+            return -1;
+        return 0;
     }
 }

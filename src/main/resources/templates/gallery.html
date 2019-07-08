@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 
 <head>
     <meta charset="utf-8">
@@ -45,6 +45,32 @@
     </nav>
 
     <div class="container">
+        <div id="filter" class="row">
+            <div class="btn-group">
+                <button type="button" class="btn btn-default" id="typeButton" style="width: 105px">-Type-</button>
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span class="caret"></span>
+                    <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <ul class="dropdown-menu" id="typeMenu">
+                    <li><a onclick='refresh("-Type-", "typeButton")'> - </a></li>
+                </ul>
+            </div>
+
+            <div class="btn-group">
+                <button type="button" class="btn btn-default" id="orientationButton" style="width: 105px">-Orientation-</button>
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span class="caret"></span>
+                    <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a onclick='refresh("-Orientation-", "orientationButton")'> - </a></li>
+                    <li><a onclick='refresh("Landscape", "orientationButton")'>Landscape</a></li>
+                    <li><a onclick='refresh("Portrait", "orientationButton")'>Portrait</a></li>
+                </ul>
+            </div>
+        </div>
+
         <div id="pictureList" class="row">
         </div>
     </div>
@@ -77,10 +103,33 @@
 
     <script>
         window.onload = function () {
+            initFilter();
             getPictureList(0);
 
             checkMessageBox();
         };
+
+        function initFilter() {
+            $.get("/type/list", function (data) {
+                if (data.code === 0) {
+                    for (i = 0; i < data.typeList.length; ++i) {
+                        var type = data.typeList[i].type;
+
+                        var typeItem = document.createElement("a");
+                        typeItem.setAttribute("onclick", "refresh(\"" + type + "\", \"typeButton\")");
+                        typeItem.innerText = type;
+
+                        var typeLi = document.createElement("li");
+                        typeLi.appendChild(typeItem);
+
+                        var typeMenu = document.getElementById("typeMenu");
+                        typeMenu.appendChild(typeLi);
+                    }
+                } else if (data.code === 4) {   // do nothing
+                } else
+                    alert("Init Type List Failed");
+            });
+        }
         
         function checkMessageBox() {
             $.get("/check", function (data) {
@@ -95,6 +144,17 @@
 
         function getPictureList(page) {
             $.get("/gallery/list?p=" + page, function (data) {
+                pictureListHandler(data, page);
+            });
+        }
+
+        function getPictureListWithFilter(page) {
+            var type = document.getElementById("typeButton").innerText;
+            var orientation = document.getElementById("orientationButton").innerText;
+
+            if (type === "-Type-")
+                type = "";
+            $.get("/gallery/list?p=" + page + "&t=" + type + "&o=" + orientation, function (data) {
                 pictureListHandler(data, page);
             });
         }
@@ -162,12 +222,47 @@
             imageLink.setAttribute("style", "height: " + h + "px;");
         }
 
+        function clear() {
+            var pictureList = document.getElementById("pictureList");
+            pictureList.innerHTML = "";
+
+            var pageButton = document.getElementById("pageItem");
+            pageButton.setAttribute("class", "disabled");
+            var pageLink = document.getElementById("pageLink");
+            pageLink.innerText = 1;
+        }
+
         $(function () {
             $("#pageLink").click(function () {
                 var page = document.getElementById("pageLink");
-                getPictureList(page.innerText);
+
+                if (needFilter())
+                    getPictureListWithFilter(page.innerText);
+                else
+                    getPictureList(page.innerText);
             });
         });
+
+        function refresh(value, item) {
+            var button = document.getElementById(item);
+            button.innerText = value;
+
+            reload();
+        }
+
+        function reload() {
+            clear();
+
+            if (needFilter())
+                getPictureListWithFilter(0);
+            else
+                getPictureList(0);
+        }
+
+        function needFilter() {
+            return !(document.getElementById("typeButton").innerText === "Type"
+                && document.getElementById("orientationButton").innerText === "Orientation");
+        }
     </script>
 </body>
 </html>

@@ -75,6 +75,10 @@
 
         function getIllustratorListWithFilter(page, query) {
             $.get("/illustrator/list?p=" + page + "&query=" + encodeURIComponent(query), function (data) {
+                if (data.code === 0 && data.illustratorList.length === 1) {
+                    window.location.href ="/illustrator/show/"
+                        + encodeURIComponent(data.illustratorList[0].illustrator);
+                }
                 illustratorListHandler(data, page, 0);
             });
         }

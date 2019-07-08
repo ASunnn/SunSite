@@ -56,6 +56,14 @@ a {
 .jumbotron a:hover { /* 不知道为什么会覆盖掉，只能手动设置 */
     color: #23527c;
 }
+.btn-group {
+    /*float: right;*/
+    padding-left: 15px;
+    padding-bottom: 5px;
+}
+.dropdown-menu {
+    left: 15px;
+}
 
 /* 工具栏按钮样式 */
 .toolBarButton {

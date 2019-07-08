@@ -12,6 +12,9 @@ public interface PictureDao {
 
     Picture find(long sequence);
 
+    List<PictureBase> findAllBaseInfoByFilter(
+            @Param("type") String type, @Param("orientation") int orientation, @Param("skip") int skip, @Param("limit") int limit);
+
     List<Picture> findAllByCollection(long collection);
 
     PictureBase findBaseInfo(long sequence);
@@ -23,6 +26,8 @@ public interface PictureDao {
     void updateName(@Param("sequence") long sequence, @Param("newSequence") long newSequence, @Param("name") String name);
 
     void updateIndex(@Param("index") int index, @Param("sequence") long sequence);
+
+    int countByFilter(@Param("type") String type, @Param("orientation") int orientation);
 
     int countByCollection(long collection);
 

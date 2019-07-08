@@ -18,6 +18,11 @@ public interface GalleryService {
     PictureListResponse getPictureList(int page);
 
     /**
+     * 根据过滤请求获取图片列表
+     */
+    PictureListResponse getPictureList(String type, String orientation, int page);
+
+    /**
      * 获取画集里的图片列表
      *
      * @param page 页码

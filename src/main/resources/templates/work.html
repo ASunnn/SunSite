@@ -127,6 +127,9 @@
 
         function collectionListHandler(data) {
             if (data.code === 0) {
+                if (data.collectionList.length === 1)
+                    window.location.href = "/collection/show/" + encodeURIComponent(data.collectionList[0].sequence);
+
                 for (i = 0; i < data.collectionList.length; ++i) {
                     setCollection(data.collectionList[i]);
                 }

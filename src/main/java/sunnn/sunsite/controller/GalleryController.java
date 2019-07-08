@@ -31,8 +31,13 @@ public class GalleryController {
 
     @GetMapping(value = "/list")
     @ResponseBody
-    public PictureListResponse pictureList(@RequestParam("p") int page) {
-        return galleryService.getPictureList(page);
+    public PictureListResponse pictureList(@RequestParam("p") int page,
+                                           @RequestParam(value = "t", required = false) String type,
+                                           @RequestParam(value = "o", required = false) String orientation) {
+        if ((type == null || type.isEmpty()) && (orientation == null || orientation.isEmpty()))
+            return galleryService.getPictureList(page);
+        else
+            return galleryService.getPictureList(type, orientation, page);
     }
 
     @GetMapping(value = "/info")

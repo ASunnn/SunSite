@@ -133,6 +133,7 @@
             var cId = data.cid;
             var collection = data.collection;
             var illustrators = data.illustrator;
+            var size = data.size;
             var width = data.width;
             var height = data.height;
 
@@ -181,7 +182,7 @@
 
             var sizeDiv = document.getElementById("size");
             var sizeElement = document.createElement("h4");
-            sizeElement.innerText = width + " × " + height;
+            sizeElement.innerText = width + " × " + height + " (" + size + ")";
             sizeElement.setAttribute("id", "pictureName");
             sizeDiv.appendChild(sizeElement);
 
