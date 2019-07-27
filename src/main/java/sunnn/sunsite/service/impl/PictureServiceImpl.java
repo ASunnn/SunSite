@@ -157,7 +157,7 @@ public class PictureServiceImpl implements PictureService {
         if (sequence == -1)
             return null;
         if (picDao.find(sequence) != null) {
-            log.warn("Duplicate Pic : " + md5Source);
+            log.warn("Duplicate Pic : " + file.getName());
             log.warn("Duplicate Sequence : " + sequence);
             return null;
         }

@@ -73,7 +73,7 @@ class ConfigLoader {
     }
 
     private static String getPropertiesFilePath() throws UnSupportSystemException {
-        return Utils.getPropertiesPath() + SunsiteConstant.PROPERTIES_FILE;
+        return Utils.getDataDirectory() + SunsiteConstant.PROPERTIES_FILE;
     }
 
     private static void parseSunsiteProperties(Properties properties) throws IllegalPropertiesException {

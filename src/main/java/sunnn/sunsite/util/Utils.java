@@ -68,7 +68,7 @@ public class Utils {
     /**
      * 根据不同系统获取配置文件路径
      */
-    public static String getPropertiesPath() throws UnSupportSystemException {
+    public static String getDataDirectory() throws UnSupportSystemException {
         String sys = System.getProperty("os.name");
 
         if (sys.contains("Windows")) {
@@ -79,6 +79,9 @@ public class Utils {
         throw new UnSupportSystemException(sys);
     }
 
+    /**
+     * 读取文件某一行的数据
+     */
     @Deprecated
     public static String readDataFromFile(int line) {
 //        InputStreamReader is;
@@ -102,6 +105,9 @@ public class Utils {
         return null;
     }
 
+    /**
+     * 将数据写入文件某一行
+     */
     @Deprecated
     public static void writeDataToFile(String data, int line) {
         ArrayList<String> content = new ArrayList<>();
@@ -141,7 +147,7 @@ public class Utils {
     @Deprecated
     private static String getDataFilePath() {
         try {
-            return Utils.getPropertiesPath() + SunsiteConstant.DATA_FILE;
+            return Utils.getDataDirectory() + SunsiteConstant.DATA_FILE;
         } catch (UnSupportSystemException ignored) {
         }
         return "";

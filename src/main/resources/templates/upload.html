@@ -58,10 +58,6 @@
                     <label for="collection">Collection</label>
                     <input type="text" class="form-control" id="collection" placeholder="Collection" autocomplete="off">
                 </div>
-                <div class="form-group">
-                    <label for="type">Type</label>
-                    <input type="text" class="form-control" id="type" placeholder="Type" autocomplete="off">
-                </div>
                 <input type="hidden" id="uploadCode" value="" />
                 <button type="button" class="btn btn-default" id="submitInfo">Submit</button>
             </form>
@@ -72,87 +68,98 @@
     <script src="/js/bootstrap.min.js"></script>
 
     <script>
-        // function upload() {
-        //     var content = document.getElementById("content");
-        //     content.style.display = "none";
+        // 0:上传文件   1:上传信息
+        var flag = 0;
 
-        //     var uploadFile = document.getElementById("uploadFile");
-        //     uploadFile.style.display = "block";
-
-        //     var title = document.getElementById("titleText");
-        //     title.onclick = null;
-        // }
         function uploadInfo() {
             var uploadFile = document.getElementById("uploadFile");
             uploadFile.style.display = "none";
 
             var uploadInfo = document.getElementById("uploadInfo");
             uploadInfo.style.display = "block";
-        }
-    </script>
 
-    <script>
+            flag = 1;
+        }
+
+        document.onkeydown = function (e) {
+            var key = e.which;
+
+            if (key === 13) {
+                if (flag === 1) {
+                    submitInfo();
+                }
+            }
+        };
+
         $(function () {
             $("#submitFile").click(function () {
-                var button = this;
-                $(button).attr('disabled', 'disabled');
-
-                var formData = new FormData($('#uploadFileForm')[0]);
-                $.ajax({
-                    method: 'post',
-                    url: "/gallery/upload",
-                    data: formData,
-                    cache: false,   //上传文件无需缓存
-                    processData: false, //用于对data参数进行序列化处理 这里必须false
-                    contentType: false //必须
-                }).done(function (data) {
-                    alert(data.msg);
-                    if (data.code === 0) {
-                        var uploadCode = document.getElementById("uploadCode");
-                        uploadCode.value = data.uploadCode;
-                        uploadInfo();
-                    } else {
-                        window.location.reload();
-                    }
-                }).fail(function () {
-                    alert("error");
-                    window.location.href = "./error";
-                });
+                submitFile();
             });
         });
+
+        function submitFile() {
+            var button = document.getElementById("submitFile");
+            $(button).attr('disabled', 'disabled');
+
+            var formData = new FormData($('#uploadFileForm')[0]);
+            $.ajax({
+                method: 'post',
+                url: "/gallery/upload",
+                data: formData,
+                cache: false,   //上传文件无需缓存
+                processData: false, //用于对data参数进行序列化处理 这里必须false
+                contentType: false //必须
+            }).done(function (data) {
+                alert(data.msg);
+                if (data.code === 0) {
+                    var uploadCode = document.getElementById("uploadCode");
+                    uploadCode.value = data.uploadCode;
+                    uploadInfo();
+                } else {
+                    window.location.reload();
+                }
+            }).fail(function () {
+                alert("error");
+                window.location.href = "./error";
+            });
+        }
 
         $(function () {
             $("#submitInfo").click(function () {
-                var button = this;
-                $(button).attr('disabled', 'disabled');
-
-                var illustrator = $('#illustrator').val();
-                var circle = $('#circle').val();
-                var collection = $('#collection').val();
-                var uploadCode = $('#uploadCode').val();
-
-                var data = {
-                    "illustrator": illustrator,
-                    "group" : circle,
-                    "collection": collection,
-                    "uploadCode": uploadCode
-                };
-
-                $.ajax({
-                    method: 'post',
-                    url: "/gallery/uploadInfo",
-                    data: JSON.stringify(data),
-                    dataType: "JSON",
-                    contentType: "application/json"
-                }).done(function (data) {
-                    alert(data.msg);
-                    window.location.reload();
-                }).fail(function () {
-                    alert("error");
-                    window.location.href = "/error";
-                });
+                submitInfo();
             });
         });
+
+        function submitInfo() {
+            var button = document.getElementById("submitInfo");
+            $(button).attr('disabled', 'disabled');
+
+            var illustrator = $('#illustrator').val();
+            var circle = $('#circle').val();
+            var collection = $('#collection').val();
+            var uploadCode = $('#uploadCode').val();
+
+            var data = {
+                "illustrator": illustrator,
+                "group" : circle,
+                "collection": collection,
+                "uploadCode": uploadCode
+            };
+
+            $.ajax({
+                method: 'post',
+                url: "/gallery/uploadInfo",
+                data: JSON.stringify(data),
+                dataType: "JSON",
+                contentType: "application/json"
+            }).done(function (data) {
+                alert(data.msg);
+                window.location.reload();
+            }).fail(function () {
+                alert("error");
+                window.location.href = "/error";
+            });
+        }
     </script>
 </body>
 </html>

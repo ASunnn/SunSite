@@ -55,36 +55,52 @@
     <script src="/js/bootstrap.min.js"></script>
 
     <script>
+        document.onkeydown = function (e) {
+            var key = e.which;
+
+            if (key === 13) {
+                create();
+            }
+        };
+
         $(function () {
             $("#submit").click(function () {
-                var button = this;
-                $(button).attr('disabled', 'disabled');
-
-                var collection = $('#collection').val();
-                var circle = $('#circle').val();
-                var type = $('#type').val();
-
-                var data = {
-                    "collection": collection,
-                    "group" : circle,
-                    "type": type
-                };
-
-                $.ajax({
-                    method: 'post',
-                    url: "/collection/create",
-                    data: JSON.stringify(data),
-                    dataType: "JSON",
-                    contentType: "application/json"
-                }).done(function (data) {
-                    alert(data.msg);
-                    window.location.reload();
-                }).fail(function () {
-                    alert("error");
-                    window.location.href = "/error";
-                });
+                create();
             });
         });
+
+        function create() {
+            disableButtom();
+
+            var collection = $('#collection').val();
+            var circle = $('#circle').val();
+            var type = $('#type').val();
+
+            var data = {
+                "collection": collection,
+                "group" : circle,
+                "type": type
+            };
+
+            $.ajax({
+                method: 'post',
+                url: "/collection/create",
+                data: JSON.stringify(data),
+                dataType: "JSON",
+                contentType: "application/json"
+            }).done(function (data) {
+                alert(data.msg);
+                window.location.reload();
+            }).fail(function () {
+                alert("error");
+                window.location.href = "/error";
+            });
+        }
+
+        function disableButtom() {
+            var button = document.getElementById("submit");
+            $(button).attr('disabled', 'disabled');
+        }
     </script>
 </body>
 </html>
