@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Temp</title>
+
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+    <link href="/default.css" rel="stylesheet">
+
+    <style>
+        .floatBlock {
+            position: absolute;
+            opacity: 0.5;
+            background-color: #f4f4f4;
+            z-index: -1;
+        }
+    </style>
+</head>
+
+<body>
+    <nav id="menu" class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/gallery">SunSite</a>
+            </div>
+
+            <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="/gallery">Gallery</a></li>
+                    <li><a href="/illustrator">Illustrator</a></li>
+                    <li><a href="/circle">Circle</a></li>
+                    <li class="active"><a href="/collection">Collection</a></li>
+                    <li><a href="/type">Type</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div id="content" class="container">
+        <div id="pictureList" class="row">
+        </div>
+    </div>
+
+    <script src="/jquery-2.0.3.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+
+    <script>
+        window.onload = function () {
+            getPictureList();
+        };
+
+        function getPictureList() {
+            $.get("/temp/searchByPicture", function (data) {
+                pictureListHandler(data);
+            });
+        }
+
+        function pictureListHandler(data) {
+            if (data.code === 0) {
+                for (i = 0; i < data.pictureList.length; ++i) {
+                    // var sequence = data.fileList[i];
+                    setPicture(data.pictureList[i]);
+                }
+            } else if (data.code === 4) {
+                alert(data.msg);
+            } else
+                window.location.href = "/error";
+        }
+
+        function setPicture(data) {
+            var pictureList = document.getElementById("pictureList");
+
+            var sequence = data.sequence;
+            var name = data.name;
+
+            var imageElement = document.createElement("div");
+            imageElement.setAttribute("class", "col-sm-4 col-md-3 col-lg-2");
+            imageElement.setAttribute("id", sequence);
+            pictureList.appendChild(imageElement);
+
+            var image = document.createElement("img");
+            image.src = "/m/" + sequence;
+            image.title = name;
+
+            var imageLink = document.createElement("a");
+            imageLink.setAttribute("href", "/gallery/show/" + sequence);
+            imageLink.setAttribute("target", "_blank");
+            imageLink.setAttribute("class", "thumbnail");
+
+            imageLink.appendChild(image);
+            imageElement.appendChild(imageLink);
+
+            let h = Math.ceil(imageElement.getBoundingClientRect().width);
+            imageElement.setAttribute("style", "height: " + h + "px;");
+            imageLink.setAttribute("style", "height: " + h + "px;");
+        }
+    </script>
+</body>
+</html>
