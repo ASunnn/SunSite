@@ -14,6 +14,7 @@ import sunnn.sunsite.dao.PictureDao;
 import sunnn.sunsite.dto.CollectionBase;
 import sunnn.sunsite.dto.CollectionInfo;
 import sunnn.sunsite.dto.PictureBase;
+import sunnn.sunsite.dto.request.UploadCollectionInfo;
 import sunnn.sunsite.dto.response.CollectionInfoResponse;
 import sunnn.sunsite.dto.response.CollectionListResponse;
 import sunnn.sunsite.dto.response.ModifyResultResponse;
@@ -83,7 +84,7 @@ public class CollectionServiceImpl implements CollectionService {
     @Override
     @Transactional(propagation = Propagation.REQUIRED,
             isolation = Isolation.DEFAULT)
-    public StatusCode createCollection(CollectionBase info) {
+    public StatusCode createCollection(UploadCollectionInfo info) {
         String c = info.getCollection().trim();
         String g = info.getGroup().trim();
         String t = info.getType().trim();
@@ -191,9 +192,44 @@ public class CollectionServiceImpl implements CollectionService {
             return new CollectionInfoResponse(StatusCode.ILLEGAL_INPUT);
 
         return new CollectionInfoResponse(StatusCode.OJBK)
+                .setSequence(baseInfo.getSequence())
                 .setGroup(baseInfo.getGroup())
                 .setCollection(baseInfo.getCollection())
                 .setType(baseInfo.getType());
+    }
+
+    @Override
+    public CollectionInfoResponse getRandomCollection() {
+        int count = collectionDao.count();
+        if (count == 0)
+            return new CollectionInfoResponse(StatusCode.NO_DATA);
+
+        int randomIndex = Utils.randomNum(count);
+        List<CollectionInfo> collectionList = collectionDao.findAllInfo(randomIndex, 1);
+
+        CollectionInfo info = collectionList.get(0);
+        return new CollectionInfoResponse(StatusCode.OJBK)
+                .setSequence(info.getSequence())
+                .setGroup(info.getGroup())
+                .setCollection(info.getCollection())
+                .setType(info.getType());
+    }
+
+    @Override
+    public CollectionInfoResponse getRandomCollectionByType(String type) {
+        int count = collectionDao.countByType(type);
+        if (count == 0)
+            return new CollectionInfoResponse(StatusCode.NO_DATA);
+
+        int randomIndex = Utils.randomNum(count);
+        List<CollectionInfo> collectionList = collectionDao.findAllInfoByType(type, randomIndex, 1);
+
+        CollectionInfo info = collectionList.get(0);
+        return new CollectionInfoResponse(StatusCode.OJBK)
+                .setSequence(info.getSequence())
+                .setGroup(info.getGroup())
+                .setCollection(info.getCollection())
+                .setType(info.getType());
     }
 
     @Override

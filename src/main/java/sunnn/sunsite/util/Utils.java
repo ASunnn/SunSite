@@ -11,6 +11,7 @@ import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Random;
 
 public class Utils {
 
@@ -77,6 +78,14 @@ public class Utils {
             return "";
 
         throw new UnSupportSystemException(sys);
+    }
+
+    /**
+     * 产生一个随机数
+     */
+    public static int randomNum(int bound) {
+        Random r = new Random(System.currentTimeMillis());
+        return bound < 0 ? r.nextInt() : r.nextInt(bound);
     }
 
     /**

@@ -1,6 +1,6 @@
 package sunnn.sunsite.service;
 
-import sunnn.sunsite.dto.CollectionBase;
+import sunnn.sunsite.dto.request.UploadCollectionInfo;
 import sunnn.sunsite.dto.response.CollectionInfoResponse;
 import sunnn.sunsite.dto.response.CollectionListResponse;
 import sunnn.sunsite.dto.response.ModifyResultResponse;
@@ -17,7 +17,7 @@ public interface CollectionService {
      * @param collectionInfo 新画集信息
      * @return 处理结果
      */
-    StatusCode createCollection(CollectionBase collectionInfo);
+    StatusCode createCollection(UploadCollectionInfo collectionInfo);
 
     /**
      * 获取画集列表
@@ -44,6 +44,16 @@ public interface CollectionService {
      * @return 画集信息
      */
     CollectionInfoResponse getCollectionInfo(long sequence);
+
+    /**
+     * 随机打开一个画集
+     */
+    CollectionInfoResponse getRandomCollection();
+
+    /**
+     * 随机打开一个画集
+     */
+    CollectionInfoResponse getRandomCollectionByType(String type);
 
     /**
      * 获取画集预览

@@ -1,4 +1,4 @@
-package sunnn.sunsite.dto;
+package sunnn.sunsite.dto.request;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -7,16 +7,11 @@ import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotBlank;
 
-/**
- * 画集的基本信息
- */
 @Getter
 @Setter
 @Accessors(chain = true)
 @ToString
-public class CollectionBase {
-
-    private long sequence;
+public class UploadCollectionInfo {
 
     @NotBlank
     private String collection;

@@ -26,6 +26,7 @@
 
     <select id="findBaseInfo" parameterType="java.lang.Long" resultType="sunnn.sunsite.dto.CollectionBase">
         SELECT
+            c.cId AS sequence,
             c.`name` AS `collection`,
             g.name AS `group`,
             t.name AS `type`

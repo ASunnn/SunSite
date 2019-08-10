@@ -16,6 +16,8 @@ import java.util.List;
 @ToString
 public class CollectionInfoResponse extends BaseResponse {
 
+    private String sequence;
+
     private String collection;
 
     private String group;
@@ -24,5 +26,10 @@ public class CollectionInfoResponse extends BaseResponse {
 
     public CollectionInfoResponse(StatusCode statusCode) {
         super(statusCode);
+    }
+
+    public CollectionInfoResponse setSequence(long sequence) {
+        this.sequence = String.valueOf(sequence);
+        return this;
     }
 }

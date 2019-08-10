@@ -8,9 +8,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import sunnn.sunsite.dto.CollectionBase;
 import sunnn.sunsite.dto.request.DeleteRequest;
 import sunnn.sunsite.dto.request.ModifyCollection;
+import sunnn.sunsite.dto.request.UploadCollectionInfo;
 import sunnn.sunsite.dto.response.*;
 import sunnn.sunsite.exception.IllegalFileRequestException;
 import sunnn.sunsite.service.CollectionService;
@@ -36,7 +36,7 @@ public class CollectionController {
 
     @PostMapping(value = "/create")
     @ResponseBody
-    public BaseResponse createCollection(@Valid @RequestBody CollectionBase info) {
+    public BaseResponse createCollection(@Valid @RequestBody UploadCollectionInfo info) {
         return new BaseResponse(collectionService.createCollection(info));
     }
 

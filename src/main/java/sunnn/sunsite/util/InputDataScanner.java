@@ -3,7 +3,7 @@ package sunnn.sunsite.util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import sunnn.sunsite.dto.CollectionBase;
+import sunnn.sunsite.dto.request.UploadCollectionInfo;
 import sunnn.sunsite.dto.request.UploadPictureInfo;
 import sunnn.sunsite.service.CollectionService;
 import sunnn.sunsite.service.PictureService;
@@ -110,7 +110,7 @@ public class InputDataScanner {
     }
 
     private boolean prepareRegister(String type, String group, String collection) {
-        CollectionBase collectionInfo = new CollectionBase()
+        UploadCollectionInfo collectionInfo = new UploadCollectionInfo()
                 .setType(type)
                 .setGroup(group)
                 .setCollection(collection);
