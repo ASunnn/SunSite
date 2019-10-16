@@ -35,6 +35,12 @@ public class SearchByImageService {
     @Resource
     private PictureDao pictureDao;
 
+    /**
+     * 匹配图库中是否有相似的图片
+     *
+     * @param pictureFile 拿去匹配的文件
+     * @return 匹配中的图片seq
+     */
     public long[] matcherPicture(File pictureFile) {
         DatabaseImageMatcher matcher;
         try {
@@ -49,7 +55,7 @@ public class SearchByImageService {
         try {
             result = matcher.getMatchingImages(pictureFile);
         } catch (IOException | SQLException e) {
-            log.error("Add Image To Hash Failed : ", e);
+            log.error("Add Image To Hash Failed. ", e);
             return new long[0];
         }
 
@@ -61,66 +67,61 @@ public class SearchByImageService {
         return sequences;
     }
 
+    /**
+     * 插入新的图片数据
+     */
+    public void insertPictureData(Pic... pic) {
+        DatabaseImageMatcher matcher;
+        try {
+            matcher = getImageMatcher();
+        } catch (SQLException | ClassNotFoundException e) {
+            log.error("Can't Get H2Database Connection. ", e);
+            return;
+        }
+        matcher = setAlgorithm(matcher);
+
+        doInsertPictureData(matcher, pic);
+    }
+
+    /**
+     * 初始化图库的哈希数据
+     * 基本上只会运行一次
+     */
     public void initPictureHashData() {
+        // 获取计数
         int page = 0;
         int limit = SunsiteConstant.PAGE_SIZE;
         int count = picDao.count();
 
+        // 初始化H2Database
+        DatabaseImageMatcher matcher;
+        try {
+            matcher = getImageMatcher();
+        } catch (SQLException | ClassNotFoundException e) {
+            log.error("Can't Get H2Database Connection. ", e);
+            return;
+        }
+        matcher = setAlgorithm(matcher);
+
         while (count > 0) {
-            DatabaseImageMatcher matcher;
-            try {
-                matcher = getImageMatcher();
-            } catch (SQLException | ClassNotFoundException e) {
-                log.error("Can't Get H2Database Connection. ", e);
-                return;
-            }
-            matcher = setAlgorithm(matcher);
+            List<Pic> picList = picDao.findAll(page++ * limit, limit);
 
-            List<Pic>  picList = picDao.findAll(page++ * limit, limit);
-            long totalSize = 0;
-            for (Pic p : picList) {
-                totalSize += p.getSize();
-            }
-            System.out.println(totalSize / 1024 + "kb");
-            for (Pic p : picList) {
-                try {
-                    matcher.addImage(
-                            String.valueOf(p.getSequence()),
-                            new File(SunSiteProperties.savePath + p.getPath() + p.getName()));
-                } catch (IOException | SQLException e) {
-                    log.error("Add Image To Hash Failed : ", e);
-                }
-            }
-
+            doInsertPictureData(matcher, (Pic[]) picList.toArray());
             count -= limit;
-            System.out.println(count);
         }
     }
 
-//    public void initPictureHashData() {
-//        DatabaseImageMatcher matcher = null;
-//        try {
-//            matcher = getImageMatcher();
-//        } catch (SQLException | ClassNotFoundException e) {
-//            log.error("Can't Get H2Database Connection. ", e);
-//            return;
-//        }
-//        matcher = setAlgorithm(matcher);
-//
-//            List<Picture>  picList = pictureDao.findAllByCollection(7125496005125348588L);
-//
-//            for (Picture pic : picList) {
-//                System.out.println(pic.getName());
-//                Pic p = picDao.find(pic.getSequence());
-//                try {
-//                    matcher.addImage(
-//                            String.valueOf(p.getSequence()),
-//                            new File(SunSiteProperties.savePath + p.getPath() + p.getName()));
-//                } catch (IOException | SQLException e) {
-//                    log.error("Add Image To Hash Failed : ", e);
-//                }
-//            }
-//    }
+    private void doInsertPictureData(DatabaseImageMatcher matcher, Pic... picList) {
+        for (Pic p : picList) {
+            try {
+                matcher.addImage(
+                        String.valueOf(p.getSequence()),
+                        new File(SunSiteProperties.savePath + p.getPath() + p.getName()));
+            } catch (IOException | SQLException e) {
+                log.error("Add Image To Hash Failed : ", e);
+            }
+        }
+    }
 
     private DatabaseImageMatcher getImageMatcher() throws SQLException, ClassNotFoundException {
         String databasePath = null;

@@ -38,7 +38,7 @@ public class TempController {
     @ResponseBody
     public PictureListResponse pictureList() {
 //        searchByImageService.initPictureHashData();
-        return handler(searchByImageService.matcherPicture(new File("C:\\Users\\劉日豐\\Desktop\\75676061_p0.png")));
+        return handler(searchByImageService.matcherPicture(new File("C:\\Users\\劉日豐\\Desktop\\__hazuki_watora_original_drawn_by_peko__86ce0e0ce073041b3846746882cb1a70.jpg")));
 //        return new PictureListResponse(StatusCode.NO_DATA);
     }
 

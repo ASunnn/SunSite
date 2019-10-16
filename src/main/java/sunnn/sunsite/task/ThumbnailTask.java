@@ -43,11 +43,11 @@ public class ThumbnailTask {
             String dest = path + thumbnailName;
 
             try {
-                Thumbnails.of(src)
-                        .size(SunsiteConstant.THUMBNAIL_SIZE, SunsiteConstant.THUMBNAIL_SIZE)
-                        .toFile(dest);
-            } catch (IOException e) {
-                log.error("Cannot Create Thumbnail : "+ e);
+                Thumbnails.Builder b = Thumbnails.of(src);
+                b = b.size(SunsiteConstant.THUMBNAIL_SIZE, SunsiteConstant.THUMBNAIL_SIZE);
+                b.toFile(dest);
+            } catch (Exception e) {
+                log.error("Cannot Create Thumbnail - "+ e);
             }
         }
     }

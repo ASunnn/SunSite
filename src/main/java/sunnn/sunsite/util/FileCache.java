@@ -10,8 +10,6 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * 文件的缓存工具
  * 此工具只负责保存文件信息，并不保证文件本体的修改
- *
- * @author ASun
  */
 public class FileCache {
 
@@ -127,14 +125,14 @@ public class FileCache {
         return cache.size();
     }
 
+    public synchronized boolean isContains(String key) {
+        return cache.containsKey(key);
+    }
+
     private void checkAndPut(String key) {
         if (!isContains(key))
             cache.put(key,  //若是新缓存，则新建一个缓存
                     new TempFiles());
-    }
-
-    public synchronized boolean isContains(String key) {
-        return cache.containsKey(key);
     }
 
     private long now() {

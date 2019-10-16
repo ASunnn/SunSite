@@ -192,19 +192,12 @@ public class PictureIndexTask {
                 /**
                  * 判断一个字符的归属
                  * 这里使用UnicodeBlock来判断一个字符归属
-                 * <p>
                  * 分为五种情况：
-                 * <p>
                  * 1.空格
-                 * <p>
                  * 2.符号：包括了ASCII码中的符号、中文符号、Latin-1中的符号
-                 * <p>
                  * 3.数字
-                 * <p>
                  * 4.大小写英文字母
-                 * <p>
                  * 5.其他符号：比如汉字，拉丁字母，日文假名等
-                 * <p>
                  * 别想了这个没有异常处理，往这里丢文件名中不可能有的字符会直接返回CHARACTER
                  */
                 private int charHandler(char c) {
