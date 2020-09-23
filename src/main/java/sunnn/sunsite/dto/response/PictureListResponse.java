@@ -5,7 +5,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 import sunnn.sunsite.dto.Convertible;
-import sunnn.sunsite.dto.PictureBase;
+import sunnn.sunsite.dto.PicInfo;
 import sunnn.sunsite.util.StatusCode;
 
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.List;
 @Setter
 @Accessors(chain = true)
 @ToString
-public class PictureListResponse extends BaseResponse implements Convertible<PictureListResponse, PictureBase> {
+public class PictureListResponse extends BaseResponse implements Convertible<PictureListResponse, PicInfo> {
 
     private PictureListInfo[] pictureList;
 
@@ -25,7 +25,7 @@ public class PictureListResponse extends BaseResponse implements Convertible<Pic
     }
 
     @Override
-    public PictureListResponse convertTo(List<PictureBase> entity) {
+    public PictureListResponse convertTo(List<PicInfo> entity) {
         if (entity.isEmpty())
             return this;
 

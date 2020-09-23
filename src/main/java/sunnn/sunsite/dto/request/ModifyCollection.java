@@ -12,8 +12,5 @@ import javax.validation.constraints.NotBlank;
 public class ModifyCollection {
 
     @NotBlank
-    private String sequence;
-
-    @NotBlank
     private String newName;
 }

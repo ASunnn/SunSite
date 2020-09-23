@@ -14,7 +14,14 @@
         WHERE sequence = #{sequence}
     </select>
 
-    <select id="findAllBaseInfoByFilter" resultType="sunnn.sunsite.dto.PictureBase">
+    <select id="findAllByCollection" parameterType="java.lang.Long" resultType="sunnn.sunsite.entity.Picture">
+        SELECT *
+        FROM picture
+        WHERE collection = #{collection}
+        ORDER BY `index`
+    </select>
+
+    <select id="findAllBaseInfoByFilter" resultType="sunnn.sunsite.dto.PicInfo">
         SELECT
             pic.sequence AS sequence,
             pic.name AS `name`,
@@ -26,14 +33,14 @@
             picture AS p,
             `group` AS g,
             collection AS c,
-            type AS t
+            `type` AS t
         WHERE
             pic.sequence = p.sequence
             AND p.collection = c.cId
-            AND c.`group` = g.id
+            AND c.group = g.id
             AND c.type = t.id
             <if test="type != ''">
-                AND t.`name` = #{type}
+                AND t.name = #{type}
             </if>
             <if test="orientation != 0">
                 AND (pic.vOrH = #{orientation} OR pic.vOrH = 0)
@@ -44,14 +51,7 @@
         LIMIT #{skip}, #{limit}
     </select>
 
-    <select id="findAllByCollection" parameterType="java.lang.Long" resultType="sunnn.sunsite.entity.Picture">
-        SELECT *
-        FROM picture
-        WHERE collection = #{collection}
-        ORDER BY `index`
-    </select>
-
-    <select id="findBaseInfo" parameterType="java.lang.Long" resultType="sunnn.sunsite.dto.PictureBase">
+    <select id="findBaseInfo" parameterType="java.lang.Long" resultType="sunnn.sunsite.dto.PicInfo">
         SELECT
             p.sequence AS sequence,
             p.name AS `name`,
@@ -64,11 +64,11 @@
             `group` AS g
         WHERE
             p.collection = c.cId
-            AND c.`group` = g.id
+            AND c.group = g.id
             AND p.sequence = #{sequence}
     </select>
 
-    <select id="findAllBaseInfoByCollection" resultType="sunnn.sunsite.dto.PictureBase">
+    <select id="findAllBaseInfoByCollection" resultType="sunnn.sunsite.dto.PicInfo">
         SELECT
             p.sequence AS sequence,
             p.name AS `name`,
@@ -81,9 +81,9 @@
             `group` AS g
         WHERE
             p.collection = c.cId
-            AND c.`group` = g.id
+            AND c.group = g.id
             AND c.cId = #{collection}
-        ORDER BY p.`index`
+        ORDER BY p.index
         LIMIT #{skip}, #{limit}
     </select>
 
@@ -123,7 +123,7 @@
             AND p.collection = c.cId
             AND c.type = t.id
             <if test="type != ''">
-                AND t.`name` = #{type}
+                AND t.name = #{type}
             </if>
             <if test="orientation != 0">
                 AND (pic.vOrH = #{orientation} OR pic.vOrH = 0)

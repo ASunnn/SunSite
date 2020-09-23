@@ -9,9 +9,9 @@ import lombok.experimental.Accessors;
 @Setter
 @Accessors(chain = true)
 @ToString
-public class IllustratorInfo {
+public class TypeInfo {
 
-    String illustrator;
+    String type;
 
-    int post;
+    String lastUpdate;
 }

@@ -11,7 +11,7 @@
 
     <select id="findAllInfo" resultType="sunnn.sunsite.dto.IllustratorInfo">
         SELECT
-            i.`name` AS illustrator,
+            i.name AS illustrator,
             COUNT(a.illustrator) AS post
         FROM
             illustrator AS i
@@ -25,21 +25,21 @@
 
     <select id="findAllInfoByName" resultType="sunnn.sunsite.dto.IllustratorInfo">
         SELECT
-            i.`name` AS illustrator,
+            i.name AS illustrator,
             COUNT(a.illustrator) AS post
         FROM
             illustrator AS i
             LEFT JOIN artwork AS a ON i.id = a.illustrator
         WHERE
-            i.`name` IN (
+            i.name IN (
             SELECT DISTINCT
-                i.`name`
+                i.name
             FROM
-                `illustrator` AS i
+                illustrator AS i
                 LEFT JOIN alias AS a ON (i.id = a.origin AND a.kind = 0)
             WHERE
 --                 (kind = 0 OR kind IS NULL)
-                (i.`name` LIKE CONCAT('%', #{query}, '%') OR a.alias LIKE CONCAT('%', #{query}, '%'))
+                (i.name LIKE CONCAT('%', #{query}, '%') OR a.alias LIKE CONCAT('%', #{query}, '%'))
             )
         GROUP BY
             i.id
@@ -60,13 +60,13 @@
 
     <select id="countByName" resultType="java.lang.Integer">
         SELECT
-            COUNT(*) AS c
+            COUNT(DISTINCT i.name) AS c
         FROM
-            `illustrator` AS i
+            illustrator AS i
             LEFT JOIN alias AS a ON (i.id = a.origin AND a.kind = 0)
         WHERE
 --             ( kind = 0 OR kind IS NULL )
-            (i.`name` LIKE CONCAT('%', #{query}, '%') OR a.alias LIKE CONCAT('%', #{query}, '%'));
+            (i.name LIKE CONCAT('%', #{query}, '%') OR a.alias LIKE CONCAT('%', #{query}, '%'));
     </select>
 
     <update id="update">
@@ -90,7 +90,7 @@
     </insert>
 
     <select id="findAllByPicture" parameterType="java.lang.Long" resultType="sunnn.sunsite.entity.Illustrator">
-        SELECT i.id, i.`name`
+        SELECT i.id, i.name
         FROM illustrator AS i, artwork AS a
         WHERE i.id = a.illustrator AND a.sequence = #{sequence};
     </select>
@@ -98,7 +98,7 @@
     <select id="findAllByIllustrator" resultType="sunnn.sunsite.entity.Pic">
         SELECT
             p.sequence,
-            p.`name`,
+            p.name,
             p.size,
             p.width,
             p.height,
@@ -113,17 +113,17 @@
         WHERE
             i.id = a.illustrator
             AND a.sequence = p.sequence
-            AND i.`name` = #{illustrator}
+            AND i.name = #{illustrator}
         ORDER BY
             p.uploadTime DESC,
-            p.`name`
+            p.name
         LIMIT #{skip}, #{limit}
     </select>
 
     <select id="countByIllustrator" parameterType="java.lang.String" resultType="java.lang.Integer">
         SELECT COUNT(*) AS c
         FROM illustrator AS i, artwork AS a
-        WHERE i.id = a.illustrator AND i.`name` = #{illustrator}
+        WHERE i.id = a.illustrator AND i.name = #{illustrator}
     </select>
 
     <update id="updateIllustrator">

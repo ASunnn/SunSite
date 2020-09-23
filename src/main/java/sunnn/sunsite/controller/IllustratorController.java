@@ -8,11 +8,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import sunnn.sunsite.dto.request.DeleteRequest;
 import sunnn.sunsite.dto.request.ModifyIllustrator;
 import sunnn.sunsite.dto.response.*;
 import sunnn.sunsite.exception.IllegalFileRequestException;
-import sunnn.sunsite.service.GalleryService;
 import sunnn.sunsite.service.IllustratorService;
 import sunnn.sunsite.util.StatusCode;
 
@@ -26,12 +24,9 @@ public class IllustratorController {
 
     private final IllustratorService illustratorService;
 
-    private final GalleryService galleryService;
-
     @Autowired
-    public IllustratorController(IllustratorService illustratorService, GalleryService galleryService) {
+    public IllustratorController(IllustratorService illustratorService) {
         this.illustratorService = illustratorService;
-        this.galleryService = galleryService;
     }
 
     @GetMapping(value = "/list")
@@ -43,16 +38,10 @@ public class IllustratorController {
             return illustratorService.getIllustratorList(query.trim(), page);
     }
 
-    @GetMapping(value = "/info")
+    @GetMapping(value = "/{name}")
     @ResponseBody
-    public IllustratorInfoResponse illustratorInfo(@RequestParam("n") String illustrator) {
-        return illustratorService.getIllustratorInfo(illustrator);
-    }
-
-    @GetMapping(value = "/detail")
-    @ResponseBody
-    public PictureListResponse illustratorDetail(@RequestParam("n") String illustrator, @RequestParam("p") int page) {
-        return galleryService.getPictureListByiIllustrator(illustrator, page);
+    public IllustratorInfoResponse illustratorInfo(@PathVariable("name") String name) {
+        return illustratorService.getIllustratorInfo(name);
     }
 
     @GetMapping(value = "/m/{name}")
@@ -77,14 +66,13 @@ public class IllustratorController {
         return new ResponseEntity<>(FileUtils.readFileToByteArray(file), headers, HttpStatus.OK);
     }
 
-    @PostMapping(value = "/modify")
+    @PostMapping(value = "/modify/{name}")
     @ResponseBody
-    public ModifyResultResponse modifyGroup(@Valid @RequestBody ModifyIllustrator modifyInfo) {
-        StatusCode modifyAlias = illustratorService.modifyAlias(
-                modifyInfo.getIllustrator(), modifyInfo.getAliases());
-        StatusCode modifyName = illustratorService.modifyName(modifyInfo.getIllustrator(), modifyInfo.getNewName());
+    public ModifyResultResponse modifyGroup(@PathVariable("name") String name, @Valid @RequestBody ModifyIllustrator modifyInfo) {
+        StatusCode modifyAlias = illustratorService.modifyAlias(name, modifyInfo.getAliases());
+        StatusCode modifyName = illustratorService.modifyName(name, modifyInfo.getNewName());
 
-        String newLink = modifyName.equals(StatusCode.OJBK) ? modifyInfo.getNewName() : modifyInfo.getIllustrator();
+        String newLink = modifyName.equals(StatusCode.OJBK) ? modifyInfo.getNewName() : name;
         ModifyResultResponse response;
         if (!modifyAlias.equals(StatusCode.OJBK))
             response = new ModifyResultResponse(modifyAlias);
@@ -97,10 +85,9 @@ public class IllustratorController {
     }
 
 
-    @PostMapping(value = "/delete")
+    @PostMapping(value = "/delete/{name}")
     @ResponseBody
-    public BaseResponse deleteIllustrator(@Valid @RequestBody DeleteRequest info) {
-        return new BaseResponse(
-                illustratorService.delete(info.getDeleteInfo()));
+    public BaseResponse deleteIllustrator(@PathVariable("name") String name) {
+        return new BaseResponse(illustratorService.delete(name));
     }
 }

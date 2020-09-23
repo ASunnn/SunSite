@@ -1,6 +1,7 @@
 package sunnn.sunsite.dao;
 
 import org.apache.ibatis.annotations.Param;
+import sunnn.sunsite.dto.TypeInfo;
 import sunnn.sunsite.entity.Type;
 
 import java.sql.Timestamp;
@@ -10,7 +11,7 @@ public interface TypeDao {
 
     Type find(String name);
 
-    List<Type> findAll();
+    List<TypeInfo> findAllInfo();
 
     void insert(Type type);
 

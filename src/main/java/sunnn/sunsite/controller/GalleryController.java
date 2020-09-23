@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import sunnn.sunsite.dto.request.DeleteRequest;
 import sunnn.sunsite.dto.request.ModifyPicture;
 import sunnn.sunsite.dto.request.UploadPictureInfo;
 import sunnn.sunsite.dto.response.*;
@@ -40,12 +39,25 @@ public class GalleryController {
             return galleryService.getPictureList(type, orientation, page);
     }
 
-    @GetMapping(value = "/info")
+    @GetMapping(value = "/listByIllustrator")
     @ResponseBody
-    public PictureInfoResponse pictureDetail(@RequestParam("seq") long sequence) {
+    public PictureListResponse listByIllustrator(@RequestParam("n") String illustrator, @RequestParam("p") int page) {
+        return galleryService.getPictureListByIllustrator(illustrator, page);
+    }
+
+    @GetMapping(value = "/listByCollection")
+    @ResponseBody
+    public PictureListResponse listByCollection(@RequestParam("seq") long sequence, @RequestParam("p") int page) {
+        return galleryService.getPictureListByCollection(sequence, page);
+    }
+
+    @GetMapping(value = "/{sequence}")
+    @ResponseBody
+    public PictureInfoResponse pictureInfo(@PathVariable("sequence") long sequence) {
         return galleryService.getPictureInfo(sequence);
     }
 
+//    TODO 考虑合并上传
     @PostMapping(value = "/upload")
     @ResponseBody
     public FileUploadResponse upload(@RequestParam("file") MultipartFile[] files) {
@@ -69,17 +81,15 @@ public class GalleryController {
     @PostMapping(value = "/uploadInfo")
     @ResponseBody
     public BaseResponse upload(@Valid @RequestBody UploadPictureInfo info) {
-        // 保存上传
-        return new BaseResponse(
-                pictureService.uploadInfoAndSave(info));
+        return new BaseResponse(pictureService.uploadInfoAndSave(info));
     }
 
-    @PostMapping(value = "/modify")
+    @PostMapping(value = "/modify/{sequence}")
     @ResponseBody
-    public BaseResponse modify(@Valid @RequestBody ModifyPicture modifyInfo) {
-        StatusCode modifyIllustrator = pictureService.modifyIllustrator(  // 这个修改必须在前
-                Long.valueOf(modifyInfo.getSequence()), modifyInfo.getIllustrators());
-        ModifyResultResponse modifyPicture = pictureService.modifyPicture(Long.valueOf(modifyInfo.getSequence()), modifyInfo.getName());
+    public BaseResponse modify(@PathVariable("sequence") long sequence, @Valid @RequestBody ModifyPicture modifyInfo) {
+        // 这个修改必须在前
+        StatusCode modifyIllustrator = pictureService.modifyIllustrator(sequence, modifyInfo.getIllustrators());
+        ModifyResultResponse modifyPicture = pictureService.modifyPicture(sequence, modifyInfo.getName());
 
         if (modifyPicture.getCode() == 0 && !modifyIllustrator.equals(StatusCode.OJBK))
             modifyPicture.setCode(modifyIllustrator.getCode())
@@ -87,10 +97,9 @@ public class GalleryController {
         return modifyPicture;
     }
 
-    @PostMapping(value = "/delete")
+    @PostMapping(value = "/delete/{sequence}")
     @ResponseBody
-    public BaseResponse deletePicture(@Valid @RequestBody DeleteRequest info) {
-        return new BaseResponse(
-                pictureService.delete(Long.valueOf(info.getDeleteInfo())));
+    public BaseResponse deletePicture(@PathVariable("sequence") long sequence) {
+        return new BaseResponse(pictureService.delete(sequence));
     }
 }

@@ -8,11 +8,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import sunnn.sunsite.dto.request.DeleteRequest;
 import sunnn.sunsite.dto.request.ModifyGroup;
 import sunnn.sunsite.dto.response.*;
 import sunnn.sunsite.exception.IllegalFileRequestException;
-import sunnn.sunsite.service.CollectionService;
 import sunnn.sunsite.service.GroupService;
 import sunnn.sunsite.util.StatusCode;
 
@@ -26,12 +24,9 @@ public class GroupController {
 
     private final GroupService groupService;
 
-    private final CollectionService collectionService;
-
     @Autowired
-    public GroupController(GroupService groupService, CollectionService collectionService) {
+    public GroupController(GroupService groupService) {
         this.groupService = groupService;
-        this.collectionService = collectionService;
     }
 
     @GetMapping(value = "/list")
@@ -43,16 +38,10 @@ public class GroupController {
             return groupService.getGroupList(query.trim(), page);
     }
 
-    @GetMapping(value = "/info")
+    @GetMapping(value = "/{name}")
     @ResponseBody
-    public GroupInfoResponse groupInfo(@RequestParam("n") String group) {
-        return groupService.getGroupInfo(group);
-    }
-
-    @GetMapping(value = "/detail")
-    @ResponseBody
-    public CollectionListResponse groupDetail(@RequestParam("n") String group) {
-        return collectionService.getCollectionListByGroup(group);
+    public GroupInfoResponse groupInfo(@PathVariable("name") String name) {
+        return groupService.getGroupInfo(name);
     }
 
     @GetMapping(value = "/m/{name}")
@@ -77,14 +66,13 @@ public class GroupController {
         return new ResponseEntity<>(FileUtils.readFileToByteArray(file), headers, HttpStatus.OK);
     }
 
-    @PostMapping(value = "/modify")
+    @PostMapping(value = "/modify/{name}")
     @ResponseBody
-    public ModifyResultResponse modifyGroup(@Valid @RequestBody ModifyGroup modifyInfo) {
-        StatusCode modifyAlias = groupService.modifyAlias(
-                modifyInfo.getGroup(), modifyInfo.getAliases());
-        StatusCode modifyName = groupService.modifyName(modifyInfo.getGroup(), modifyInfo.getNewName());
+    public ModifyResultResponse modifyGroup(@PathVariable("name") String name, @Valid @RequestBody ModifyGroup modifyInfo) {
+        StatusCode modifyAlias = groupService.modifyAlias(name, modifyInfo.getAliases());
+        StatusCode modifyName = groupService.modifyName(name, modifyInfo.getNewName());
 
-        String newLink = modifyName.equals(StatusCode.OJBK) ? modifyInfo.getNewName() : modifyInfo.getGroup();
+        String newLink = modifyName.equals(StatusCode.OJBK) ? modifyInfo.getNewName() : name;
         ModifyResultResponse response;
         if (!modifyAlias.equals(StatusCode.OJBK))
             response = new ModifyResultResponse(modifyAlias);
@@ -96,10 +84,9 @@ public class GroupController {
         return response.setNewLinkInfo(newLink);
     }
 
-    @PostMapping(value = "/delete")
+    @PostMapping(value = "/delete/{name}")
     @ResponseBody
-    public BaseResponse deleteGroup(@Valid @RequestBody DeleteRequest info) {
-        return new BaseResponse(
-                groupService.delete(info.getDeleteInfo()));
+    public BaseResponse deleteGroup(@PathVariable("name") String name) {
+        return new BaseResponse(groupService.delete(name));
     }
 }

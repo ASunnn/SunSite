@@ -11,9 +11,6 @@ public interface GroupDao {
 
     Group find(String name);
 
-    @Deprecated
-    List<String> findAllBaseInfoByName(@Param("query") String query);
-
     List<GroupInfo> findAllInfo(@Param("skip") int skip, @Param("limit") int limit);
 
     List<GroupInfo> findAllInfoByName(@Param("query") String query, @Param("skip") int skip, @Param("limit") int limit);

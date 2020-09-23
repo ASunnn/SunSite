@@ -107,7 +107,7 @@ class ConfigLoader {
             SunSiteProperties.setSessionTimeout(Integer.valueOf(sessionTimeout));
 
         String loginTimeout = properties.getProperty("loginTimeout");
-        if (sessionTimeout != null)
+        if (loginTimeout != null)
             SunSiteProperties.setLoginTimeout(Integer.valueOf(loginTimeout));
 
         String missPicture = properties.getProperty("missPicture");

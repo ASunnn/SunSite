@@ -1,34 +1,74 @@
 package sunnn.sunsite.service;
 
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import sunnn.sunsite.dao.AliasDao;
 import sunnn.sunsite.entity.Alias;
+import sunnn.sunsite.service.AliasService;
 import sunnn.sunsite.util.StatusCode;
 
-public interface AliasService {
+import javax.annotation.Resource;
+import java.util.*;
 
-    /**
-     * 获取别名
-     *
-     * @param origin 正式名
-     * @param kind   类型
-     * @return 别名列表
-     */
-    String[] getAlias(int origin, int kind);
+@Service
+public class AliasService {
 
-    /**
-     * 修改别名
-     *
-     * @param origin  正式名
-     * @param kind    类型
-     * @param aliases 别名列表
-     * @return 修改结果
-     */
-    StatusCode modifyAlias(int origin, int kind, String[] aliases);
+    @Resource
+    private AliasDao aliasDao;
 
-    /**
-     * 删除别名
-     *
-     * @param alias 别名
-     * @return 删除结果
-     */
-    StatusCode deleteAlias(Alias alias);
+    public String[] getAlias(int origin, int kind) {
+        List<String> aliasList = aliasDao.getAllAliasByOrigin(origin, kind);
+
+        if (aliasList.isEmpty())
+            return new String[0];
+        else {
+            String[] aliases = new String[aliasList.size()];
+            aliasList.toArray(aliases);
+            return aliases;
+        }
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW,
+            isolation = Isolation.DEFAULT)
+    public StatusCode modifyAlias(int origin, int kind, String[] aliases) {
+        String[] aliasRecord = getAlias(origin, kind);
+
+        HashSet<String> aliasSet = new HashSet<>();
+        for (int i = 0; i < aliases.length; ++i)
+            aliases[i] = aliases[i].trim();
+        Collections.addAll(aliasSet, aliases);
+
+        for (String a : aliasRecord) {
+            if (aliasSet.contains(a)) {
+                aliasSet.remove(a);
+            } else {
+                deleteAlias(new Alias()
+                        .setOrigin(origin)
+                        .setKind(kind)
+                        .setAlias(a));
+            }
+        }
+
+        List<Alias> aliasList = new ArrayList<>();
+        for (String a : aliasSet) {
+            if (!a.isEmpty()) {
+                aliasList.add(new Alias()
+                        .setAlias(a)
+                        .setOrigin(origin)
+                        .setKind(kind));
+            }
+        }
+        if (!aliasList.isEmpty())
+            aliasDao.insertAllAlias(aliasList);
+        return StatusCode.OJBK;
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED,
+            isolation = Isolation.DEFAULT)
+    public StatusCode deleteAlias(Alias alias) {
+        aliasDao.deleteAlias(alias);
+        return StatusCode.OJBK;
+    }
 }

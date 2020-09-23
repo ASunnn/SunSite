@@ -11,7 +11,7 @@
 
     <select id="findAllInfo" resultType="sunnn.sunsite.dto.GroupInfo">
         SELECT
-            g.`name` AS `group`,
+            g.name AS `group`,
             g.lastUpdate,
             COUNT(p.sequence) AS post
         FROM
@@ -22,13 +22,13 @@
             g.id
         ORDER BY
             g.lastUpdate DESC,
-	        g.`name`
+	        g.name
         LIMIT #{skip}, #{limit}
     </select>
 
     <select id="findAllInfoByName" resultType="sunnn.sunsite.dto.GroupInfo">
         SELECT
-            g.`name` AS `group`,
+            g.name AS `group`,
             g.lastUpdate,
             COUNT(p.sequence) AS post
         FROM
@@ -36,21 +36,21 @@
             LEFT JOIN collection AS c ON g.id = c.`group`
             LEFT JOIN picture AS p ON c.cId = p.collection
         WHERE
-            g.`name` IN (
+            g.name IN (
             SELECT DISTINCT
-                g.`name`
+                g.name
             FROM
                 `group` AS g
                 LEFT JOIN alias AS a ON (g.id = a.origin AND a.kind = 1)
             WHERE
 --                 (kind = 1 OR kind IS NULL)
-                (g.`name` LIKE CONCAT('%', #{query}, '%') OR a.alias LIKE CONCAT('%', #{query}, '%'))
+                (g.name LIKE CONCAT('%', #{query}, '%') OR a.alias LIKE CONCAT('%', #{query}, '%'))
             )
         GROUP BY
             g.id
         ORDER BY
             g.lastUpdate DESC,
-	        g.`name`
+	        g.name
         LIMIT #{skip}, #{limit}
     </select>
 
@@ -77,14 +77,14 @@
     </select>
 
     <select id="countByName" resultType="java.lang.Integer">
-        SELECT DISTINCT
-         	COUNT(*) AS c
+        SELECT
+         	COUNT(DISTINCT g.name) AS c
         FROM
             `group` AS g
             LEFT JOIN alias AS a ON (g.id = a.origin AND a.kind = 1)
         WHERE
 --             (kind = 1 OR kind IS NULL)
-            (g.`name` LIKE CONCAT('%', #{query}, '%') OR a.alias LIKE CONCAT('%', #{query}, '%'))
+            (g.name LIKE CONCAT('%', #{query}, '%') OR a.alias LIKE CONCAT('%', #{query}, '%'))
     </select>
 
     <delete id="delete">

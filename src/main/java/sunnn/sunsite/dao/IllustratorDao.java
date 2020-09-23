@@ -11,9 +11,6 @@ public interface IllustratorDao {
 
     Illustrator find(String name);
 
-    @Deprecated
-    List<String> findAllBaseInfoByName(@Param("query") String query);
-
     List<IllustratorInfo> findAllInfo(@Param("skip") int skip, @Param("limit") int limit);
 
     List<IllustratorInfo> findAllInfoByName(@Param("query") String query, @Param("skip") int skip, @Param("limit") int limit);

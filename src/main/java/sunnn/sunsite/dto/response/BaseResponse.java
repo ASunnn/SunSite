@@ -16,6 +16,8 @@ public class BaseResponse {
 
     private String msg;
 
+    private String detail;
+
     public BaseResponse(StatusCode statusCode) {
         this.code = statusCode.getCode();
         this.msg = statusCode.name();

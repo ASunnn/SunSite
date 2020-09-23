@@ -12,26 +12,29 @@
     <select id="findByInfo" resultType="sunnn.sunsite.entity.Collection">
         SELECT
             c.cId AS cId,
-            c.`name` AS `name`,
-            c.`group` AS `group`,
-            c.type AS type
+            c.name AS `name`,
+            c.group AS `group`,
+            c.type AS `type`
         FROM
             collection AS c,
             `group` AS g
         WHERE
-            c.`group` = g.id
+            c.group = g.id
             AND c.name = #{name}
             AND g.name = #{group}
     </select>
 
-    <select id="findBaseInfo" parameterType="java.lang.Long" resultType="sunnn.sunsite.dto.CollectionBase">
+    <select id="findInfo" parameterType="java.lang.Long" resultType="sunnn.sunsite.dto.CollectionBase">
         SELECT
             c.cId AS sequence,
-            c.`name` AS `collection`,
             g.name AS `group`,
-            t.name AS `type`
+            c.name AS `collection`,
+            t.name AS `type`,
+            c.lastUpdate,
+            COUNT(p.sequence) AS post
         FROM
-            collection AS c,
+            collection AS c
+            LEFT JOIN picture AS p ON c.cId = p.collection,
             `group` AS g,
             `type` AS t
         WHERE
@@ -43,18 +46,18 @@
     <select id="findRecentlyCollectionByGroup" parameterType="java.lang.String" resultType="sunnn.sunsite.dto.CollectionInfo">
         SELECT
             c.cId AS sequence,
-            g.`name` AS `group`,
-            c.`name` AS collection,
-            t.`name` AS type,
+            g.name AS `group`,
+            c.name AS collection,
+            t.name AS `type`,
             c.lastUpdate,
             COUNT(p.sequence) AS post
         FROM
             collection AS c
             LEFT JOIN picture AS p ON c.cId = p.collection
-            JOIN `group` AS g ON c.`group` = g.id
-            JOIN type AS t ON c.type = t.id
+            JOIN `group` AS g ON c.group = g.id
+            JOIN `type` AS t ON c.type = t.id
         WHERE
-            g.`name` =  #{group}
+            g.name =  #{group}
         GROUP BY
             c.cId
         ORDER BY
@@ -65,39 +68,39 @@
     <select id="findAllInfo" resultType="sunnn.sunsite.dto.CollectionInfo">
         SELECT
             c.cId AS sequence,
-            g.`name` AS `group`,
-            c.`name` AS collection,
-            t.`name` AS type,
+            g.name AS `group`,
+            c.name AS collection,
+            t.name AS `type`,
             c.lastUpdate,
             COUNT(p.sequence) AS post
         FROM
             collection AS c
             LEFT JOIN picture AS p ON c.cId = p.collection
-            JOIN `group` AS g ON c.`group` = g.id
-            JOIN type AS t ON c.type = t.id
+            JOIN `group` AS g ON c.group = g.id
+            JOIN `type` AS t ON c.type = t.id
         GROUP BY
             c.cId
         ORDER BY
             c.lastUpdate DESC,
-            g.`name`
+            g.name
         LIMIT #{skip}, #{limit}
     </select>
 
     <select id="findAllInfoByGroup" resultType="sunnn.sunsite.dto.CollectionInfo">
         SELECT
             c.cId AS sequence,
-            g.`name` AS `group`,
-            c.`name` AS collection,
-            t.`name` AS type,
+            g.name AS `group`,
+            c.name AS collection,
+            t.name AS `type`,
             c.lastUpdate,
             COUNT(p.sequence) AS post
         FROM
             collection AS c
             LEFT JOIN picture AS p ON c.cId = p.collection
-            JOIN `group` AS g ON c.`group` = g.id
-            JOIN type AS t ON c.type = t.id
+            JOIN `group` AS g ON c.group = g.id
+            JOIN `type` AS t ON c.type = t.id
         WHERE
-            g.`name` =  #{group}
+            g.name =  #{group}
         GROUP BY
             c.cId
         ORDER BY
@@ -108,23 +111,23 @@
     <select id="findAllInfoByType" resultType="sunnn.sunsite.dto.CollectionInfo">
         SELECT
             c.cId AS sequence,
-            g.`name` AS `group`,
-            c.`name` AS collection,
-            t.`name` AS type,
+            g.name AS `group`,
+            c.name AS collection,
+            t.name AS `type`,
             c.lastUpdate,
             COUNT(p.sequence) AS post
         FROM
             collection AS c
             LEFT JOIN picture AS p ON c.cId = p.collection
-            JOIN `group` AS g ON c.`group` = g.id
-            JOIN type AS t ON c.type = t.id
+            JOIN `group` AS g ON c.group = g.id
+            JOIN `type` AS t ON c.type = t.id
         WHERE
-            t.`name` = #{type}
+            t.name = #{type}
         GROUP BY
             c.cId
         ORDER BY
             c.lastUpdate DESC,
-            g.`name`
+            g.name
         LIMIT #{skip}, #{limit}
     </select>
 
@@ -162,7 +165,7 @@
             collection, `group`
         WHERE
             collection.group = `group`.id
-            AND `group`.`name` = #{group}
+            AND `group`.name = #{group}
     </select>
 
     <select id="countByType" parameterType="java.lang.String" resultType="java.lang.Integer">
@@ -171,7 +174,7 @@
             collection, `type`
         WHERE
             collection.type = `type`.id
-            AND `type`.`name` = #{type}
+            AND `type`.name = #{type}
     </select>
 
     <delete id="delete">

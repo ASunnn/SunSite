@@ -8,7 +8,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import sunnn.sunsite.dto.request.DeleteRequest;
 import sunnn.sunsite.dto.response.BaseResponse;
 import sunnn.sunsite.dto.response.CollectionListResponse;
 import sunnn.sunsite.dto.response.TypeListResponse;
@@ -16,7 +15,6 @@ import sunnn.sunsite.exception.IllegalFileRequestException;
 import sunnn.sunsite.service.CollectionService;
 import sunnn.sunsite.service.TypeService;
 
-import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
 
@@ -40,12 +38,6 @@ public class TypeController {
         return typeService.getTypeList();
     }
 
-    @GetMapping(value = "/detail")
-    @ResponseBody
-    public CollectionListResponse typeDetail(@RequestParam("n") String type, @RequestParam("p") int page) {
-        return collectionService.getCollectionListByType(type, page);
-    }
-
     @GetMapping(value = "/download/{name}")
     @ResponseBody
     public ResponseEntity downloadType(@PathVariable("name") String name) throws IllegalFileRequestException, IOException {
@@ -58,10 +50,9 @@ public class TypeController {
         return new ResponseEntity<>(FileUtils.readFileToByteArray(file), headers, HttpStatus.OK);
     }
 
-    @PostMapping(value = "/delete")
+    @PostMapping(value = "/delete/{name}")
     @ResponseBody
-    public BaseResponse deleteType(@Valid @RequestBody DeleteRequest info) {
-        return new BaseResponse(
-                typeService.delete(info.getDeleteInfo()));
+    public BaseResponse deleteType(@PathVariable("name") String name) {
+        return new BaseResponse(typeService.delete(name));
     }
 }

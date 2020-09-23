@@ -1,7 +1,6 @@
 package sunnn.sunsite.dao;
 
 import org.apache.ibatis.annotations.Param;
-import sunnn.sunsite.dto.CollectionBase;
 import sunnn.sunsite.dto.CollectionInfo;
 import sunnn.sunsite.entity.Collection;
 
@@ -14,7 +13,7 @@ public interface CollectionDao {
 
     Collection findByInfo(@Param("name") String name, @Param("group") String group);
 
-    CollectionBase findBaseInfo(long cId);
+    CollectionInfo findInfo(long cId);
 
     CollectionInfo findRecentlyCollectionByGroup(String group);
 

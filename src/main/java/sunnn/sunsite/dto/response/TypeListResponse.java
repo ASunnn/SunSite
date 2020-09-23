@@ -5,6 +5,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 import sunnn.sunsite.dto.Convertible;
+import sunnn.sunsite.dto.TypeInfo;
 import sunnn.sunsite.entity.Type;
 import sunnn.sunsite.util.StatusCode;
 
@@ -15,36 +16,11 @@ import java.util.List;
 @Setter
 @Accessors(chain = true)
 @ToString
-public class TypeListResponse extends BaseResponse implements Convertible<TypeListResponse, Type> {
+public class TypeListResponse extends BaseResponse {
 
-    private TypeListInfo[] typeList;
+    private TypeInfo[] typeList;
 
     public TypeListResponse(StatusCode statusCode) {
         super(statusCode);
     }
-
-    @Override
-    public TypeListResponse convertTo(List<Type> entity) {
-        if (entity.isEmpty())
-            return this;
-
-        TypeListInfo[] typeList = new TypeListInfo[entity.size()];
-        for (int i = 0; i < entity.size(); ++i) {
-            TypeListInfo info = new TypeListInfo();
-            info.type = entity.get(i).getName();
-            info.lastUpdate = entity.get(i).getLastUpdate().toString();
-            typeList[i] = info;
-        }
-
-        return setTypeList(typeList);
-    }
-}
-
-@Getter
-@Setter
-class TypeListInfo {
-
-    String type;
-
-    String lastUpdate;
 }

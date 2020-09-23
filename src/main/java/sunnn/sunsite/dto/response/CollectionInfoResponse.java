@@ -4,11 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
-import sunnn.sunsite.dto.Convertible;
-import sunnn.sunsite.dto.PictureBase;
 import sunnn.sunsite.util.StatusCode;
-
-import java.util.List;
 
 @Getter
 @Setter

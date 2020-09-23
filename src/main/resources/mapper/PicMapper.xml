@@ -4,7 +4,7 @@
 <mapper namespace="sunnn.sunsite.dao.PicDao">
 
     <insert id="insert" parameterType="sunnn.sunsite.entity.Pic">
-        INSERT INTO pic (sequence, `name`, size, width, height, vOrH, uploadTime, thumbnailName, path)
+        INSERT INTO pic (sequence, `name`, `size`, width, height, vOrH, uploadTime, thumbnailName, path)
         VALUES (#{sequence}, #{name}, #{size}, #{width}, #{height}, #{vOrH}, #{uploadTime}, #{thumbnailName}, #{path})
     </insert>
 

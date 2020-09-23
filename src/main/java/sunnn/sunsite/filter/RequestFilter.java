@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+@Deprecated
 public class RequestFilter implements Filter {
 
     private static Logger log = LoggerFactory.getLogger(RequestFilter.class);
@@ -20,14 +21,14 @@ public class RequestFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        HttpServletRequest request = (HttpServletRequest) servletRequest;
-        DateTimeFormatter time = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        log.info("Time - " + time.format(LocalDateTime.now()));
-        log.info("IP - " + request.getRemoteAddr());
-        log.info("URL - " + request.getRequestURL());
+//        HttpServletRequest request = (HttpServletRequest) servletRequest;
+//        DateTimeFormatter time = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+//        log.info("Time - " + time.format(LocalDateTime.now()));
+//        log.info("IP - " + request.getRemoteAddr());
+//        log.info("URL - " + request.getRequestURL());
 //        log.info("Method - " + request.getMethod());
 
-        filterChain.doFilter(servletRequest, servletResponse);
+//        filterChain.doFilter(servletRequest, servletResponse);
     }
 
     @Override

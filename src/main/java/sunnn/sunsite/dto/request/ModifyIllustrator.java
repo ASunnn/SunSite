@@ -12,9 +12,6 @@ import javax.validation.constraints.NotBlank;
 public class ModifyIllustrator {
 
     @NotBlank
-    private String illustrator;
-
-    @NotBlank
     private String newName;
 
     private String aliases;

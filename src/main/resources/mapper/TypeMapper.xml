@@ -9,8 +9,10 @@
         WHERE `name` = #{name}
     </select>
 
-    <select id="findAll" resultType="sunnn.sunsite.entity.Type">
-        SELECT *
+    <select id="findAllInfo" resultType="sunnn.sunsite.entity.Type">
+        SELECT
+            `name` AS `type`,
+            lastUpdate
         FROM `type`
     </select>
 
@@ -21,7 +23,7 @@
 
     <update id="update">
         UPDATE `type`
-        SET `lastUpdate` = #{lastUpdate}
+        SET lastUpdate = #{lastUpdate}
         WHERE id = #{id}
     </update>
 

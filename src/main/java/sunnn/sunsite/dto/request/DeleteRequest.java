@@ -9,6 +9,7 @@ import javax.validation.constraints.NotBlank;
 @Getter
 @Setter
 @ToString
+@Deprecated
 public class DeleteRequest {
 
     @NotBlank

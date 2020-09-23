@@ -14,7 +14,7 @@ import java.util.List;
 @Setter
 @Accessors(chain = true)
 @ToString
-public class IllustratorListResponse extends BaseResponse implements Convertible<IllustratorListResponse, IllustratorInfo> {
+public class IllustratorListResponse extends BaseResponse {
 
     private IllustratorInfo[] illustratorList;
 
@@ -22,16 +22,5 @@ public class IllustratorListResponse extends BaseResponse implements Convertible
 
     public IllustratorListResponse(StatusCode statusCode) {
         super(statusCode);
-    }
-
-    @Override
-    public IllustratorListResponse convertTo(List<IllustratorInfo> entity) {
-        if (entity.isEmpty())
-            return this;
-
-        IllustratorInfo[] illustratorList = new IllustratorInfo[entity.size()];
-        entity.toArray(illustratorList);
-
-        return setIllustratorList(illustratorList);
     }
 }

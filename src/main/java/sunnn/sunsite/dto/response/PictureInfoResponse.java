@@ -24,8 +24,6 @@ public class PictureInfoResponse extends BaseResponse {
 
     private String[] illustrator;
 
-    private String[] tag;
-
     private int width;
 
     private int height;

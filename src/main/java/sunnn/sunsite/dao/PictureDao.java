@@ -1,7 +1,7 @@
 package sunnn.sunsite.dao;
 
 import org.apache.ibatis.annotations.Param;
-import sunnn.sunsite.dto.PictureBase;
+import sunnn.sunsite.dto.PicInfo;
 import sunnn.sunsite.entity.Picture;
 
 import java.util.List;
@@ -12,14 +12,14 @@ public interface PictureDao {
 
     Picture find(long sequence);
 
-    List<PictureBase> findAllBaseInfoByFilter(
-            @Param("type") String type, @Param("orientation") int orientation, @Param("skip") int skip, @Param("limit") int limit);
-
     List<Picture> findAllByCollection(long collection);
 
-    PictureBase findBaseInfo(long sequence);
+    List<PicInfo> findAllInfoByFilter(
+            @Param("type") String type, @Param("orientation") int orientation, @Param("skip") int skip, @Param("limit") int limit);
 
-    List<PictureBase> findAllBaseInfoByCollection(@Param("collection") long collection, @Param("skip") int skip, @Param("limit") int limit);
+    PicInfo findInfo(long sequence);
+
+    List<PicInfo> findAllInfoByCollection(@Param("collection") long collection, @Param("skip") int skip, @Param("limit") int limit);
 
     void updateCollection(@Param("sequence") long sequence, @Param("newSequence") long newSequence, @Param("collection") long collection);
 

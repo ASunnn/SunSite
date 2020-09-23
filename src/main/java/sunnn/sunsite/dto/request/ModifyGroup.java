@@ -12,9 +12,6 @@ import javax.validation.constraints.NotBlank;
 public class ModifyGroup {
 
     @NotBlank
-    private String group;
-
-    @NotBlank
     private String newName;
 
     private String aliases;
