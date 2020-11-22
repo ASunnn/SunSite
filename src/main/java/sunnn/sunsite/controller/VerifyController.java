@@ -20,9 +20,9 @@ public class VerifyController {
      * @param passCode 登录信息
      * @return 若认证成功，请求转发至主页，否则至错误页面
      */
-    @PostMapping(value = "/login")
+    @PostMapping(value = "/verify")
     @ResponseBody
-    public BaseResponse login(@RequestParam("code") String passCode) {
+    public BaseResponse verify(@RequestParam("code") String passCode) {
 //        String md5Code = MD5s.getMD5(passCode);
 //        if (md5Code == null)    // 注意MD5工具里的异常处理
 //            return "redirect:/error";
@@ -47,9 +47,9 @@ public class VerifyController {
      *
      * @return 若认证成功，请求转发至主页，否则需要登录
      */
-    @GetMapping(value = "/verify")
+    @GetMapping(value = "/try")
     @ResponseBody
-    public BaseResponse verify() {
+    public BaseResponse tryVerify() {
 //        UsernamePasswordToken token = new UsernamePasswordToken("", passCode);
         Subject subject = SecurityUtils.getSubject();
 

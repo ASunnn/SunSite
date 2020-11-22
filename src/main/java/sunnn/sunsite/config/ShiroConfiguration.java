@@ -64,7 +64,7 @@ public class ShiroConfiguration {
             顺序拦截
          */
         filterChainDefinitionMap.put("/hello", "anon");
-        filterChainDefinitionMap.put("/login", "anon");
+        filterChainDefinitionMap.put("/try", "anon");
         filterChainDefinitionMap.put("/verify", "anon");
         filterChainDefinitionMap.put("/error", "anon");
 
@@ -73,7 +73,7 @@ public class ShiroConfiguration {
         filterChainDefinitionMap.put("/default.css", "anon");
         filterChainDefinitionMap.put("/js/**", "anon");
         filterChainDefinitionMap.put("/css/**", "anon");
-        filterChainDefinitionMap.put("/**", "user");
+        filterChainDefinitionMap.put("/**", "anon");
 //        filterChainDefinitionMap.put("/**", "authc");
 //        filterChainDefinitionMap.put("/index", "logout");
 

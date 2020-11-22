@@ -28,7 +28,7 @@ public class RequestFilter implements Filter {
 //        log.info("URL - " + request.getRequestURL());
 //        log.info("Method - " + request.getMethod());
 
-//        filterChain.doFilter(servletRequest, servletResponse);
+        filterChain.doFilter(servletRequest, servletResponse);
     }
 
     @Override

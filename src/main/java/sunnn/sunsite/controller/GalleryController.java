@@ -89,12 +89,12 @@ public class GalleryController {
     public BaseResponse modify(@PathVariable("sequence") long sequence, @Valid @RequestBody ModifyPicture modifyInfo) {
         // 这个修改必须在前
         StatusCode modifyIllustrator = pictureService.modifyIllustrator(sequence, modifyInfo.getIllustrators());
-        ModifyResultResponse modifyPicture = pictureService.modifyPicture(sequence, modifyInfo.getName());
+        ModifyResultResponse response = pictureService.modifyPicture(sequence, modifyInfo.getName());
 
-        if (modifyPicture.getCode() == 0 && !modifyIllustrator.equals(StatusCode.OJBK))
-            modifyPicture.setCode(modifyIllustrator.getCode())
+        if (response.getCode() == 0 && !modifyIllustrator.equals(StatusCode.OJBK))
+            response.setCode(modifyIllustrator.getCode())
                     .setMsg(modifyIllustrator.name());
-        return modifyPicture;
+        return response;
     }
 
     @PostMapping(value = "/delete/{sequence}")

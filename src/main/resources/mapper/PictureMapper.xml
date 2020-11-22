@@ -51,7 +51,7 @@
         LIMIT #{skip}, #{limit}
     </select>
 
-    <select id="findBaseInfo" parameterType="java.lang.Long" resultType="sunnn.sunsite.dto.PicInfo">
+    <select id="findInfo" parameterType="java.lang.Long" resultType="sunnn.sunsite.dto.PicInfo">
         SELECT
             p.sequence AS sequence,
             p.name AS `name`,

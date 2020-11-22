@@ -9,7 +9,7 @@
         WHERE `name` = #{name}
     </select>
 
-    <select id="findAllInfo" resultType="sunnn.sunsite.entity.Type">
+    <select id="findAllInfo" resultType="sunnn.sunsite.dto.TypeInfo">
         SELECT
             `name` AS `type`,
             lastUpdate

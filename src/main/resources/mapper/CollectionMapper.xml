@@ -24,7 +24,7 @@
             AND g.name = #{group}
     </select>
 
-    <select id="findInfo" parameterType="java.lang.Long" resultType="sunnn.sunsite.dto.CollectionBase">
+    <select id="findInfo" parameterType="java.lang.Long" resultType="sunnn.sunsite.dto.CollectionInfo">
         SELECT
             c.cId AS sequence,
             g.name AS `group`,
