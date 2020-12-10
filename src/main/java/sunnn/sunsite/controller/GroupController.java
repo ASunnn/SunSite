@@ -81,7 +81,7 @@ public class GroupController {
         else
             response = new ModifyResultResponse(StatusCode.OJBK);
 
-        return response.setNewLinkInfo(newLink);
+        return response.setNewLink(newLink);
     }
 
     @PostMapping(value = "/delete/{name}")

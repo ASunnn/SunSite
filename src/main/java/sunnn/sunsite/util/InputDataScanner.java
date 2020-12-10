@@ -3,6 +3,7 @@ package sunnn.sunsite.util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.multipart.MultipartFile;
 import sunnn.sunsite.dto.request.UploadCollectionInfo;
 import sunnn.sunsite.dto.request.UploadPictureInfo;
 import sunnn.sunsite.service.CollectionService;
@@ -91,20 +92,21 @@ public class InputDataScanner {
             if (code.equals(StatusCode.OJBK))
                 FileUtils.deletePathForce(targets[0].getParentFile());
             else
-                log.warn("Service Return '" + code.toString() + "' While Scan The Path Of "
-                        + type + "-" + group + "-" + collection);
+                log.warn("Service Return '" + code.toString() + "' While Scan The Path Of " + type + "-" + group + "-" + collection);
         }
     }
 
     private StatusCode pictureServiceAdapter(String type, String group, String collection, File[] pics) {
         UploadPictureInfo info = (UploadPictureInfo) generatePictureInfo(group, collection);
 
+        String uploadCode = String.valueOf(System.currentTimeMillis()) + group + collection;
+
         for (File p : pics)
-            fileCache.setFile(info.getUploadCode(), p);
+            fileCache.setFile(uploadCode, p);
 
-        StatusCode code = pictureService.uploadInfoAndSave(info);
+        StatusCode code = pictureService.uploadPicture(new MultipartFile[0], info, uploadCode);
 
-        fileCache.remove(info.getUploadCode());
+        fileCache.remove(uploadCode);
 
         return code;
     }
@@ -120,13 +122,9 @@ public class InputDataScanner {
     }
 
     private Object generatePictureInfo(String group, String collection) {
-        String uploadCode = String.valueOf(System.currentTimeMillis())
-                + group + collection;
-
         return new UploadPictureInfo()
                 .setGroup(group)
                 .setCollection(collection)
-                .setIllustrator(autoFill ? group : "")
-                .setUploadCode(uploadCode);
+                .setIllustrator(new String[]{autoFill ? group : ""});
     }
 }

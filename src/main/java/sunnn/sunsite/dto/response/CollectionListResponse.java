@@ -16,7 +16,7 @@ import java.util.List;
 @ToString
 public class CollectionListResponse extends BaseResponse implements Convertible<CollectionListResponse, CollectionInfo> {
 
-    private CollectionListInfo[] collectionList;
+    private CollectionListInfo[] list;
 
     private int pageCount;
 
@@ -41,7 +41,7 @@ public class CollectionListResponse extends BaseResponse implements Convertible<
             collectionList[i] = info;
         }
 
-        return setCollectionList(collectionList);
+        return setList(collectionList);
     }
 }
 

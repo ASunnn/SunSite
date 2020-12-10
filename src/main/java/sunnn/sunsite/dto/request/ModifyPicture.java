@@ -12,9 +12,12 @@ import javax.validation.constraints.NotBlank;
 public class ModifyPicture {
 
     @NotBlank
+    private String sequence;
+
+    @NotBlank
     private String name;
 
-    private String illustrators;
+    private String[] illustrators;
 
 //    @NotBlank
 //    private String group;

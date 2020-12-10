@@ -16,7 +16,7 @@ import java.util.List;
 @ToString
 public class IllustratorListResponse extends BaseResponse {
 
-    private IllustratorInfo[] illustratorList;
+    private IllustratorInfo[] list;
 
     private int pageCount;
 

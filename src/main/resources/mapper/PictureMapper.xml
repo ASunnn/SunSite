@@ -21,7 +21,7 @@
         ORDER BY `index`
     </select>
 
-    <select id="findAllBaseInfoByFilter" resultType="sunnn.sunsite.dto.PicInfo">
+    <select id="findAllInfoByFilter" resultType="sunnn.sunsite.dto.PicInfo">
         SELECT
             pic.sequence AS sequence,
             pic.name AS `name`,
@@ -68,7 +68,7 @@
             AND p.sequence = #{sequence}
     </select>
 
-    <select id="findAllBaseInfoByCollection" resultType="sunnn.sunsite.dto.PicInfo">
+    <select id="findAllInfoByCollection" resultType="sunnn.sunsite.dto.PicInfo">
         SELECT
             p.sequence AS sequence,
             p.name AS `name`,

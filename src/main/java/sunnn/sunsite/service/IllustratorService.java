@@ -69,7 +69,7 @@ public class IllustratorService {
 
         return new IllustratorListResponse(StatusCode.OJBK)
                 .setPageCount(pageCount)
-                .setIllustratorList((IllustratorInfo[]) illustratorList.toArray());
+                .setList(illustratorList.toArray(new IllustratorInfo[0]));
     }
 
     public IllustratorListResponse getIllustratorList(String query, int page) {
@@ -88,7 +88,7 @@ public class IllustratorService {
 
         return new IllustratorListResponse(StatusCode.OJBK)
                 .setPageCount(pageCount)
-                .setIllustratorList((IllustratorInfo[]) illustratorList.toArray());
+                .setList((IllustratorInfo[]) illustratorList.toArray());
     }
 
     public IllustratorInfoResponse getIllustratorInfo(String name) {

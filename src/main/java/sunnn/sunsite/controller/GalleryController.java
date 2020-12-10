@@ -57,36 +57,27 @@ public class GalleryController {
         return galleryService.getPictureInfo(sequence);
     }
 
-//    TODO 考虑合并上传
     @PostMapping(value = "/upload")
     @ResponseBody
-    public FileUploadResponse upload(@RequestParam("file") MultipartFile[] files) {
-        // notice:RequestParam里的值需要与页面内的id一致
-        if (files.length == 0)
-            return new FileUploadResponse(StatusCode.ILLEGAL_INPUT);
+    public BaseResponse upload(@RequestParam("file") MultipartFile[] files, @RequestParam("illustrator") String[] illustrator,
+                                     @RequestParam("group") String group, @RequestParam("collection") String collection) {
+        if (files.length == 0 || group.trim().isEmpty() || collection.trim().isEmpty())
+            return new BaseResponse(StatusCode.ILLEGAL_INPUT);
 
+        UploadPictureInfo info = new UploadPictureInfo()
+                .setIllustrator(illustrator)
+                .setGroup(group)
+                .setCollection(collection);
         String uploadCode = String.valueOf(System.currentTimeMillis())
                 + SecurityUtils.getSubject().getSession().getId();
 
-        for (MultipartFile file : files) {
-            StatusCode code = pictureService.uploadPicture(file, uploadCode);
-            // 非法文件，直接返回错误
-            if (code != StatusCode.OJBK)
-                return new FileUploadResponse(code);
-        }
-
-        return new FileUploadResponse(StatusCode.OJBK, uploadCode);
+        return new BaseResponse(pictureService.uploadPicture(files, info, uploadCode));
     }
 
-    @PostMapping(value = "/uploadInfo")
+    @PostMapping(value = "/modify")
     @ResponseBody
-    public BaseResponse upload(@Valid @RequestBody UploadPictureInfo info) {
-        return new BaseResponse(pictureService.uploadInfoAndSave(info));
-    }
-
-    @PostMapping(value = "/modify/{sequence}")
-    @ResponseBody
-    public BaseResponse modify(@PathVariable("sequence") long sequence, @Valid @RequestBody ModifyPicture modifyInfo) {
+    public BaseResponse modify(@Valid @RequestBody ModifyPicture modifyInfo) {
+        long sequence = Long.valueOf(modifyInfo.getSequence());
         // 这个修改必须在前
         StatusCode modifyIllustrator = pictureService.modifyIllustrator(sequence, modifyInfo.getIllustrators());
         ModifyResultResponse response = pictureService.modifyPicture(sequence, modifyInfo.getName());
@@ -97,9 +88,9 @@ public class GalleryController {
         return response;
     }
 
-    @PostMapping(value = "/delete/{sequence}")
+    @PostMapping(value = "/delete")
     @ResponseBody
-    public BaseResponse deletePicture(@PathVariable("sequence") long sequence) {
+    public BaseResponse deletePicture(@RequestParam("sequence") long sequence) {
         return new BaseResponse(pictureService.delete(sequence));
     }
 }

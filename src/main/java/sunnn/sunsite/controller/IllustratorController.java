@@ -81,7 +81,7 @@ public class IllustratorController {
         else
             response = new ModifyResultResponse(StatusCode.OJBK);
 
-        return response.setNewLinkInfo(newLink);
+        return response.setNewLink(newLink);
     }
 
 

@@ -16,7 +16,7 @@ import java.util.List;
 @ToString
 public class GroupListResponse extends BaseResponse {
 
-    private GroupInfo[] groupList;
+    private GroupInfo[] list;
 
     private int pageCount;
 

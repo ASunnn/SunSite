@@ -63,57 +63,45 @@ public class PictureService {
         this.fileCache = fileCache;
     }
 
-    public StatusCode uploadPicture(MultipartFile file, String uploadCode) {
-        // 检测文件是否为空
-        if (file == null || file.isEmpty())
-            return StatusCode.ILLEGAL_INPUT;
-        // 对文件名进行检查
-        String fileName = file.getOriginalFilename().toLowerCase();
-        if (!checkFileName(fileName))
-            return StatusCode.ILLEGAL_INPUT;
-        // 将图片放入缓存
-        try {
-            //将MultipartFile转换为File
-            File f = FileUtils.storeFile(file,
-                SunSiteProperties.tempPath + uploadCode + File.separator);
-            fileCache.setFile(uploadCode, f);
-        } catch (IOException e) {
-            log.error("Trans TempFile Failed : " + e);
-            //发生IO错误的情况下，直接返回
-            return StatusCode.ERROR;
+    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT)
+    public StatusCode uploadPicture(MultipartFile[] multipartFiles, UploadPictureInfo info, String uploadCode) {
+        // controller层已经有空数组检查，加之其他内部模块会在已暂存文件的基础上调用此方法
+        // 这里不再做空数组检查
+        for (MultipartFile file: multipartFiles) {
+            if (file == null || file.isEmpty()
+                    || !checkFileName(file.getOriginalFilename().toLowerCase()))
+                return StatusCode.ILLEGAL_INPUT;
+            // 将图片放入缓存
+            try {
+                File f = FileUtils.storeFile(file, SunSiteProperties.tempPath + uploadCode + File.separator);
+                fileCache.setFile(uploadCode, f);
+            } catch (IOException e) {
+                log.error("Trans TempFile Failed : " + e);
+                return StatusCode.ERROR;
+            }
         }
-        return StatusCode.OJBK;
-    }
 
-    @Transactional(propagation = Propagation.REQUIRED,
-            isolation = Isolation.DEFAULT)
-    public StatusCode uploadInfoAndSave(UploadPictureInfo info) {
         // 获取上传的文件
-        List<File> files = fileCache.getFile(info.getUploadCode());
-        if (files == null)
-            return StatusCode.UPLOAD_TIMEOUT;
-
+        List<File> files = fileCache.getFile(uploadCode);
         // 图片信息处理
         Collection c = collectionDao.findByInfo(info.getCollection().trim(), info.getGroup().trim());
         if (c == null)
             return StatusCode.ILLEGAL_INPUT;
-
         List<Illustrator> illustrators = illustratorHandler(info.getIllustrator());
 
         // 进行文件的保存
         for (File file : files) {
-            // 生成图片系统信息
             Pic pictureData = generateInfo(file, c);
             if (pictureData == null)
                 continue;
-            // 存文件
+
             try {
                 FileUtils.copyFile(file, SunSiteProperties.savePath + pictureData.getPath());
             } catch (IOException e) {
                 log.error("Error When Save Pic " + pictureData.getName() + " : ", e);
                 continue;
             }
-            // 存数据库
+
             picDao.insert(pictureData);
 
             Picture pictureInfo = new Picture()
@@ -153,8 +141,7 @@ public class PictureService {
         if (sequence == -1)
             return null;
         if (picDao.find(sequence) != null) {
-            log.warn("Duplicate Pic : " + file.getName());
-            log.warn("Duplicate Sequence : " + sequence);
+            log.warn("Duplicate Pic : " + file.getName() + "  Sequence : " + sequence);
             return null;
         }
 
@@ -162,16 +149,13 @@ public class PictureService {
                 .setName(file.getName())
                 .setSize(file.length())
                 .setUploadTime(new Timestamp(System.currentTimeMillis()))
-                .setPath(info.getType() + File.separator + info.getGroup()
-                        + File.separator + info.getCollection() + File.separator);
+                .setPath(info.getType() + File.separator + info.getGroup() + File.separator + info.getCollection() + File.separator);
 
         //缩略图文件名
         String thumbnailName = Pic.THUMBNAIL_PREFIX + picture.getName();
-        Matcher extensionNameMatcher = Pattern.compile("\\.(jpg|jpeg)$")
-                .matcher(picture.getName());
+        Matcher extensionNameMatcher = Pattern.compile("\\.(jpg|jpeg)$").matcher(picture.getName());
         if (!extensionNameMatcher.find())
-            thumbnailName = thumbnailName.substring(
-                    0, thumbnailName.lastIndexOf('.')) + ".jpg";
+            thumbnailName = thumbnailName.substring(0, thumbnailName.lastIndexOf('.')) + ".jpg";
         picture.setThumbnailName(thumbnailName);
 
         // get图片长宽
@@ -235,7 +219,7 @@ public class PictureService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW,
             isolation = Isolation.DEFAULT)
-    public StatusCode modifyIllustrator(long sequence, String illustrators) {
+    public StatusCode modifyIllustrator(long sequence, String[] illustrators) {
         Picture picture = pictureDao.find(sequence);
         if (picture == null)
             return StatusCode.ILLEGAL_INPUT;
@@ -287,21 +271,18 @@ public class PictureService {
         return StatusCode.OJBK;
     }
 
-    private List<Illustrator> illustratorHandler(String illustrator) {
-        String[] illustratorInfo;
-        if (illustrator != null && !illustrator.isEmpty())
-            illustratorInfo = illustrator.split(SunsiteConstant.SEPARATOR);
-        else
-            illustratorInfo = new String[]{Illustrator.DEFAULT_VALUE};
+    private List<Illustrator> illustratorHandler(String[] illustrators) {
+        if (illustrators.length <= 0)
+            illustrators = new String[]{Illustrator.DEFAULT_VALUE};
 
-        List<Illustrator> illustrators = new ArrayList<>();
-        for (String i : illustratorInfo) {
+        List<Illustrator> result = new ArrayList<>();
+        for (String i : illustrators) {
             String iTrim = i.trim();
             if (!iTrim.isEmpty())
-                illustrators.add(illustratorService.createIllustrator(iTrim));
+                result.add(illustratorService.createIllustrator(iTrim));
         }
 
-        return illustrators;
+        return result;
     }
 
     /**

@@ -19,9 +19,10 @@ public class GlobalExceptionResolver {
     private static Logger log = LoggerFactory.getLogger(GlobalExceptionResolver.class);
 
     @ExceptionHandler(value = Exception.class)
-    public String errorResolver(Exception e) {
+    @ResponseBody
+    public BaseResponse errorResolver(Exception e) {
         log.error("", e);
-        return "error";
+        return new BaseResponse(StatusCode.ERROR);
     }
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)

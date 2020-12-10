@@ -95,7 +95,7 @@ public class GroupService {
 
         return new GroupListResponse(StatusCode.OJBK)
                 .setPageCount(pageCount)
-                .setGroupList((GroupInfo[]) groupList.toArray());
+                .setList(groupList.toArray(new GroupInfo[0]));
     }
 
     public GroupListResponse getGroupList(String query, int page) {
@@ -114,7 +114,7 @@ public class GroupService {
 
         return new GroupListResponse(StatusCode.OJBK)
                 .setPageCount(pageCount)
-                .setGroupList((GroupInfo[]) groupList.toArray());
+                .setList((GroupInfo[]) groupList.toArray());
     }
 
     public GroupInfoResponse getGroupInfo(String name) {

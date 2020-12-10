@@ -18,7 +18,7 @@ import java.util.List;
 @ToString
 public class TypeListResponse extends BaseResponse {
 
-    private TypeInfo[] typeList;
+    private TypeInfo[] list;
 
     public TypeListResponse(StatusCode statusCode) {
         super(statusCode);

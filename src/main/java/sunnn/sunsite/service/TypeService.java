@@ -62,7 +62,7 @@ public class TypeService {
             return new TypeListResponse(StatusCode.NO_DATA);
 
         return new TypeListResponse(StatusCode.OJBK)
-                .setTypeList(typeList.toArray(new TypeInfo[0]));
+                .setList(typeList.toArray(new TypeInfo[0]));
     }
 
     public File download(String name) throws IllegalFileRequestException {

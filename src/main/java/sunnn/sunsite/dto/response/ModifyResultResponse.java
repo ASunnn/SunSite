@@ -12,19 +12,19 @@ import sunnn.sunsite.util.StatusCode;
 @ToString
 public class ModifyResultResponse extends BaseResponse {
 
-    private String newLinkInfo;
+    private String newLink;
 
     public ModifyResultResponse(StatusCode statusCode) {
         super(statusCode);
     }
 
-    public ModifyResultResponse(StatusCode statusCode, String newLinkInfo) {
+    public ModifyResultResponse(StatusCode statusCode, String newLink) {
         super(statusCode);
-        this.newLinkInfo = newLinkInfo;
+        this.newLink = newLink;
     }
 
-    public ModifyResultResponse(StatusCode statusCode, long newLinkInfo) {
+    public ModifyResultResponse(StatusCode statusCode, long newLink) {
         super(statusCode);
-        this.newLinkInfo = String.valueOf(newLinkInfo);
+        this.newLink = String.valueOf(newLink);
     }
 }
