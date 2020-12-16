@@ -69,7 +69,7 @@ public class GroupController {
     @PostMapping(value = "/modify/{name}")
     @ResponseBody
     public ModifyResultResponse modifyGroup(@PathVariable("name") String name, @Valid @RequestBody ModifyGroup modifyInfo) {
-        StatusCode modifyAlias = groupService.modifyAlias(name, modifyInfo.getAliases());
+        StatusCode modifyAlias = groupService.modifyAlias(name, modifyInfo.getAlias());
         StatusCode modifyName = groupService.modifyName(name, modifyInfo.getNewName());
 
         String newLink = modifyName.equals(StatusCode.OJBK) ? modifyInfo.getNewName() : name;

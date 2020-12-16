@@ -9,11 +9,28 @@
         WHERE `name` = #{name}
     </select>
 
+    <select id="findInfo" resultType="sunnn.sunsite.dto.GroupInfo">
+        SELECT
+            g.name AS `group`,
+            g.lastUpdate,
+            COUNT(p.sequence) AS post,
+            COUNT(DISTINCT c.cId) AS book
+        FROM
+            `group` AS g
+            LEFT JOIN collection AS c ON g.id = c.`group`
+            LEFT JOIN picture AS p ON c.cId = p.collection
+        WHERE
+            g.name = #{name}
+        GROUP BY
+            g.id
+    </select>
+
     <select id="findAllInfo" resultType="sunnn.sunsite.dto.GroupInfo">
         SELECT
             g.name AS `group`,
             g.lastUpdate,
-            COUNT(p.sequence) AS post
+            COUNT(p.sequence) AS post,
+            COUNT(DISTINCT c.cId) AS book
         FROM
             `group` AS g
             LEFT JOIN collection AS c ON g.id = c.`group`
@@ -30,21 +47,22 @@
         SELECT
             g.name AS `group`,
             g.lastUpdate,
-            COUNT(p.sequence) AS post
+            COUNT(p.sequence) AS post,
+            COUNT(DISTINCT c.cId) AS book
         FROM
             `group` AS g
             LEFT JOIN collection AS c ON g.id = c.`group`
             LEFT JOIN picture AS p ON c.cId = p.collection
         WHERE
             g.name IN (
-            SELECT DISTINCT
-                g.name
-            FROM
-                `group` AS g
-                LEFT JOIN alias AS a ON (g.id = a.origin AND a.kind = 1)
-            WHERE
---                 (kind = 1 OR kind IS NULL)
-                (g.name LIKE CONCAT('%', #{query}, '%') OR a.alias LIKE CONCAT('%', #{query}, '%'))
+                SELECT DISTINCT
+                    g.name
+                FROM
+                    `group` AS g
+                    LEFT JOIN alias AS a ON (g.id = a.origin AND a.kind = 1)
+                WHERE
+    --                 (kind = 1 OR kind IS NULL)
+                    (g.name LIKE CONCAT('%', #{query}, '%') OR a.alias LIKE CONCAT('%', #{query}, '%'))
             )
         GROUP BY
             g.id

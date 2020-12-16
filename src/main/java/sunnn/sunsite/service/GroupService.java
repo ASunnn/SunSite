@@ -122,18 +122,15 @@ public class GroupService {
         if (g == null)
             return new GroupInfoResponse(StatusCode.ILLEGAL_INPUT);
 
-        String[] aliases = aliasService.getAlias(g.getId(), Alias.GROUP);
-
-        StringBuilder alias = new StringBuilder();
-        if (aliases.length > 0) {
-            for (String a : aliases)
-                alias.append(a).append(SunsiteConstant.SEPARATOR);
-            alias.deleteCharAt(alias.length() - 1);
-        }
+        String[] alias = aliasService.getAlias(g.getId(), Alias.GROUP);
+        GroupInfo info = groupDao.findInfo(name);
 
         return new GroupInfoResponse(StatusCode.OJBK)
                 .setGroup(g.getName())
-                .setAlias(alias.toString());
+                .setBook(info.getBook())
+                .setPost(info.getPost())
+                .setLastUpdate(info.getLastUpdate())
+                .setAlias(alias);
     }
 
     public File getGroupThumbnail(String name) {
@@ -255,12 +252,12 @@ public class GroupService {
         return StatusCode.OJBK;
     }
 
-    public StatusCode modifyAlias(String name, String alias) {
+    public StatusCode modifyAlias(String name, String[] alias) {
         Group g = groupDao.find(name);
         if (g == null)
             return StatusCode.ILLEGAL_INPUT;
 
-        return aliasService.modifyAlias(g.getId(), Alias.GROUP, alias.split(SunsiteConstant.SEPARATOR));
+        return aliasService.modifyAlias(g.getId(), Alias.GROUP, alias);
     }
 
     @Transactional(propagation = Propagation.REQUIRED,

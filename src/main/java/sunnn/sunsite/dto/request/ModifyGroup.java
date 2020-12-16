@@ -14,5 +14,5 @@ public class ModifyGroup {
     @NotBlank
     private String newName;
 
-    private String aliases;
+    private String[] alias;
 }

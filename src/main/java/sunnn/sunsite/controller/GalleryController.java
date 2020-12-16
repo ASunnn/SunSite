@@ -79,7 +79,7 @@ public class GalleryController {
     public BaseResponse modify(@Valid @RequestBody ModifyPicture modifyInfo) {
         long sequence = Long.valueOf(modifyInfo.getSequence());
         // 这个修改必须在前
-        StatusCode modifyIllustrator = pictureService.modifyIllustrator(sequence, modifyInfo.getIllustrators());
+        StatusCode modifyIllustrator = pictureService.modifyIllustrator(sequence, modifyInfo.getIllustrator());
         ModifyResultResponse response = pictureService.modifyPicture(sequence, modifyInfo.getName());
 
         if (response.getCode() == 0 && !modifyIllustrator.equals(StatusCode.OJBK))

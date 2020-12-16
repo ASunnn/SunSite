@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface AliasDao {
 
-    void insertAllAlias(@Param("aliases") List aliases);
+    void insertAllAlias(@Param("alias") List aliases);
 
     void deleteAlias(Alias alias);
 

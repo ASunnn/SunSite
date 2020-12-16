@@ -6,6 +6,8 @@ import lombok.ToString;
 import lombok.experimental.Accessors;
 import sunnn.sunsite.util.StatusCode;
 
+import java.sql.Timestamp;
+
 @Getter
 @Setter
 @Accessors(chain = true)
@@ -20,12 +22,21 @@ public class CollectionInfoResponse extends BaseResponse {
 
     private String type;
 
+    int post;
+
+    String lastUpdate;
+
     public CollectionInfoResponse(StatusCode statusCode) {
         super(statusCode);
     }
 
     public CollectionInfoResponse setSequence(long sequence) {
         this.sequence = String.valueOf(sequence);
+        return this;
+    }
+
+    public CollectionInfoResponse setLastUpdate(Timestamp lastUpdate) {
+        this.lastUpdate = lastUpdate.toString();
         return this;
     }
 }

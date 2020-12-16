@@ -11,6 +11,8 @@ public interface GroupDao {
 
     Group find(String name);
 
+    GroupInfo findInfo(String name);
+
     List<GroupInfo> findAllInfo(@Param("skip") int skip, @Param("limit") int limit);
 
     List<GroupInfo> findAllInfoByName(@Param("query") String query, @Param("skip") int skip, @Param("limit") int limit);

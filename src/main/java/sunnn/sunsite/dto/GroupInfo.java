@@ -15,6 +15,8 @@ public class GroupInfo {
 
     String group;
 
+    int book;
+
     int post;
 
     Timestamp lastUpdate;

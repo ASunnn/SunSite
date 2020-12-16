@@ -17,7 +17,7 @@ public class ModifyPicture {
     @NotBlank
     private String name;
 
-    private String[] illustrators;
+    private String[] illustrator;
 
 //    @NotBlank
 //    private String group;

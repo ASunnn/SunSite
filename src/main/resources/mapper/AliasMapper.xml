@@ -6,7 +6,7 @@
     <insert id="insertAllAlias" parameterType="java.util.List">
         INSERT INTO alias (alias, origin, kind)
         VALUES
-        <foreach collection="aliases" item="a" separator=",">
+        <foreach collection="alias" item="a" separator=",">
             (#{a.alias}, #{a.origin}, #{a.kind})
         </foreach>
     </insert>

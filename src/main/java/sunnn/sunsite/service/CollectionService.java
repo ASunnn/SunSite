@@ -174,7 +174,9 @@ public class CollectionService {
                 .setSequence(info.getSequence())
                 .setGroup(info.getGroup())
                 .setCollection(info.getCollection())
-                .setType(info.getType());
+                .setType(info.getType())
+                .setPost(info.getPost())
+                .setLastUpdate(info.getLastUpdate());
     }
 
     public CollectionInfoResponse getRandomCollection() {
