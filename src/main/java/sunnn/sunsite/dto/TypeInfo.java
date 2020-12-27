@@ -13,5 +13,7 @@ public class TypeInfo {
 
     String type;
 
+    int book;
+
     String lastUpdate;
 }

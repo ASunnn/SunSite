@@ -97,17 +97,12 @@ public class IllustratorService {
             return new IllustratorInfoResponse(StatusCode.ILLEGAL_INPUT);
 
         String[] aliases = aliasService.getAlias(i.getId(), Alias.ILLUSTRATOR);
-
-        StringBuilder alias = new StringBuilder();
-        if (aliases.length > 0) {
-            for (String a : aliases)
-                alias.append(a).append(SunsiteConstant.SEPARATOR);
-            alias.deleteCharAt(alias.length() - 1);
-        }
+        IllustratorInfo info = illustratorDao.findInfo(name);
 
         return new IllustratorInfoResponse(StatusCode.OJBK)
                 .setIllustrator(i.getName())
-                .setAlias(alias.toString());
+                .setPost(info.getPost())
+                .setAlias(aliases);
     }
 
     public File getIllustratorThumbnail(String name) {
@@ -187,12 +182,12 @@ public class IllustratorService {
         return StatusCode.OJBK;
     }
 
-    public StatusCode modifyAlias(String name, String alias) {
+    public StatusCode modifyAlias(String name, String[] alias) {
         Illustrator i = illustratorDao.find(name);
         if (i == null)
             return StatusCode.ILLEGAL_INPUT;
 
-        return aliasService.modifyAlias(i.getId(), Alias.ILLUSTRATOR, alias.split(SunsiteConstant.SEPARATOR));
+        return aliasService.modifyAlias(i.getId(), Alias.ILLUSTRATOR, alias);
     }
 
     @Transactional

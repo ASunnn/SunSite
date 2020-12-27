@@ -11,6 +11,8 @@ public interface IllustratorDao {
 
     Illustrator find(String name);
 
+    IllustratorInfo findInfo(String name);
+
     List<IllustratorInfo> findAllInfo(@Param("skip") int skip, @Param("limit") int limit);
 
     List<IllustratorInfo> findAllInfoByName(@Param("query") String query, @Param("skip") int skip, @Param("limit") int limit);

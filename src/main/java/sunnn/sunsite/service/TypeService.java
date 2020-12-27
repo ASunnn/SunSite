@@ -11,6 +11,7 @@ import sunnn.sunsite.dao.CollectionDao;
 import sunnn.sunsite.dao.TypeDao;
 import sunnn.sunsite.dto.CollectionInfo;
 import sunnn.sunsite.dto.TypeInfo;
+import sunnn.sunsite.dto.response.TypeInfoResponse;
 import sunnn.sunsite.dto.response.TypeListResponse;
 import sunnn.sunsite.entity.Type;
 import sunnn.sunsite.exception.IllegalFileRequestException;
@@ -63,6 +64,19 @@ public class TypeService {
 
         return new TypeListResponse(StatusCode.OJBK)
                 .setList(typeList.toArray(new TypeInfo[0]));
+    }
+
+    public TypeInfoResponse getTypeInfo(String name) {
+        Type t = typeDao.find(name);
+        if (t == null)
+            return new TypeInfoResponse(StatusCode.ILLEGAL_INPUT);
+
+        TypeInfo info = typeDao.findInfo(name);
+
+        return new TypeInfoResponse(StatusCode.OJBK)
+                .setType(t.getName())
+                .setBook(info.getBook())
+                .setLastUpdate(info.getLastUpdate());
     }
 
     public File download(String name) throws IllegalFileRequestException {

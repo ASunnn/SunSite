@@ -14,5 +14,5 @@ public class ModifyIllustrator {
     @NotBlank
     private String newName;
 
-    private String aliases;
+    private String[] alias;
 }

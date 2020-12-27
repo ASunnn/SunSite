@@ -18,11 +18,11 @@ public class GroupInfoResponse extends BaseResponse {
 
     private String[] alias;
 
-    int book;
+    private int book;
 
-    int post;
+    private int post;
 
-    String lastUpdate;
+    private String lastUpdate;
 
     public GroupInfoResponse(StatusCode statusCode) {
         super(statusCode);

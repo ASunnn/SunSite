@@ -69,7 +69,7 @@ public class IllustratorController {
     @PostMapping(value = "/modify/{name}")
     @ResponseBody
     public ModifyResultResponse modifyGroup(@PathVariable("name") String name, @Valid @RequestBody ModifyIllustrator modifyInfo) {
-        StatusCode modifyAlias = illustratorService.modifyAlias(name, modifyInfo.getAliases());
+        StatusCode modifyAlias = illustratorService.modifyAlias(name, modifyInfo.getAlias());
         StatusCode modifyName = illustratorService.modifyName(name, modifyInfo.getNewName());
 
         String newLink = modifyName.equals(StatusCode.OJBK) ? modifyInfo.getNewName() : name;

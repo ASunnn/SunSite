@@ -9,6 +9,19 @@
         WHERE `name` = #{name}
     </select>
 
+    <select id="findInfo" resultType="sunnn.sunsite.dto.IllustratorInfo">
+        SELECT
+            i.name AS illustrator,
+            COUNT(a.illustrator) AS post
+        FROM
+            illustrator AS i
+            LEFT JOIN artwork AS a ON i.id = a.illustrator
+        WHERE
+            i.name = #{name}
+        GROUP BY
+            i.id
+    </select>
+
     <select id="findAllInfo" resultType="sunnn.sunsite.dto.IllustratorInfo">
         SELECT
             i.name AS illustrator,

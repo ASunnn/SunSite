@@ -9,11 +9,30 @@
         WHERE `name` = #{name}
     </select>
 
+    <select id="findInfo" resultType="sunnn.sunsite.dto.TypeInfo">
+        SELECT
+            t.name AS `type`,
+            ANY_VALUE(t.lastUpdate) AS lastUpdate,
+            COUNT(c.cId) AS book
+        FROM
+            `type` AS t
+            LEFT JOIN collection AS c ON t.id = c.type
+        WHERE
+            t.name = #{name}
+        GROUP BY
+            t.name
+    </select>
+
     <select id="findAllInfo" resultType="sunnn.sunsite.dto.TypeInfo">
         SELECT
-            `name` AS `type`,
-            lastUpdate
-        FROM `type`
+            t.name AS `type`,
+            ANY_VALUE(t.lastUpdate) AS lastUpdate,
+            COUNT(c.cId) AS book
+        FROM
+            `type` AS t
+            LEFT JOIN collection AS c ON t.id = c.type
+        GROUP BY
+          t.name
     </select>
 
     <insert id="insert" parameterType="sunnn.sunsite.entity.Type" useGeneratedKeys="true" keyProperty="id">

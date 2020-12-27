@@ -22,9 +22,9 @@ public class CollectionInfoResponse extends BaseResponse {
 
     private String type;
 
-    int post;
+    private int post;
 
-    String lastUpdate;
+    private String lastUpdate;
 
     public CollectionInfoResponse(StatusCode statusCode) {
         super(statusCode);

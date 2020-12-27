@@ -10,15 +10,15 @@ import sunnn.sunsite.util.StatusCode;
 @Setter
 @Accessors(chain = true)
 @ToString
-public class IllustratorInfoResponse extends BaseResponse {
+public class TypeInfoResponse extends BaseResponse {
 
-    private String illustrator;
+    private String type;
 
-    private String[] alias;
+    private int book;
 
-    private int post;
+    private String lastUpdate;
 
-    public IllustratorInfoResponse(StatusCode statusCode) {
+    public TypeInfoResponse(StatusCode statusCode) {
         super(statusCode);
     }
 }

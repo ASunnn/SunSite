@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import sunnn.sunsite.dto.response.BaseResponse;
-import sunnn.sunsite.dto.response.CollectionListResponse;
+import sunnn.sunsite.dto.response.TypeInfoResponse;
 import sunnn.sunsite.dto.response.TypeListResponse;
 import sunnn.sunsite.exception.IllegalFileRequestException;
 import sunnn.sunsite.service.CollectionService;
@@ -24,18 +24,21 @@ public class TypeController {
 
     private final TypeService typeService;
 
-    private final CollectionService collectionService;
-
     @Autowired
-    public TypeController(TypeService typeService, CollectionService collectionService) {
+    public TypeController(TypeService typeService) {
         this.typeService = typeService;
-        this.collectionService = collectionService;
     }
 
     @GetMapping(value = "/list")
     @ResponseBody
     public TypeListResponse typeList() {
         return typeService.getTypeList();
+    }
+
+    @GetMapping(value = "/{name}")
+    @ResponseBody
+    public TypeInfoResponse groupInfo(@PathVariable("name") String name) {
+        return typeService.getTypeInfo(name);
     }
 
     @GetMapping(value = "/download/{name}")

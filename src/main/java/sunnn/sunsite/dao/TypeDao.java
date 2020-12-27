@@ -11,6 +11,8 @@ public interface TypeDao {
 
     Type find(String name);
 
+    TypeInfo findInfo(String name);
+
     List<TypeInfo> findAllInfo();
 
     void insert(Type type);
