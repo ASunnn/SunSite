@@ -8,9 +8,9 @@ public interface SysDao {
 
     int selectVersion();
 
-    String selectMsg();
+//    String selectMsg();
 
     void updateVersion(@Param("version") int version, @Param("newVersion") int newVersion);
 
-    void updateMsgBox(@Param("version") int version, @Param("msg") String msg);
+//    void updateMsgBox(@Param("version") int version, @Param("msg") String msg);
 }

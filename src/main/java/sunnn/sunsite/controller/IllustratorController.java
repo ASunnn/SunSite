@@ -31,7 +31,7 @@ public class IllustratorController {
 
     @GetMapping(value = "/list")
     @ResponseBody
-    public IllustratorListResponse illustratorList(@RequestParam("p") int page, @RequestParam(value = "query", required = false) String query) {
+    public IllustratorListResponse illustratorList(@RequestParam("p") int page, @RequestParam(value = "q", required = false) String query) {
         if (query == null || query.isEmpty())
             return illustratorService.getIllustratorList(page);
         else

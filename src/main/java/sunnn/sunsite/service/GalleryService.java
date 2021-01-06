@@ -42,13 +42,6 @@ public class GalleryService {
     @Resource
     private IllustratorDao illustratorDao;
 
-    private final MessageBoxService messageBoxService;
-
-    @Autowired
-    public GalleryService(MessageBoxService messageBoxService) {
-        this.messageBoxService = messageBoxService;
-    }
-
     public PictureListResponse getPictureList(int page) {
         if (isIllegalPageParam(page))
             return new PictureListResponse(StatusCode.ILLEGAL_INPUT);
@@ -199,15 +192,6 @@ public class GalleryService {
         return response;
     }
 
-    public MsgResponse checkMsgBox() {
-        String msg = messageBoxService.getMessage();
-
-        if (msg == null)
-            return new MsgResponse(StatusCode.NO_DATA);
-
-        return new MsgResponse(StatusCode.OJBK).setMsg(msg);
-    }
-
     private long[] getClosePicture(Picture p) {
         List<Picture> pictures = pictureDao.findAllByCollection(p.getCollection());
 
@@ -220,9 +204,9 @@ public class GalleryService {
     }
 
     private int getCurrentOrientation(String orientation) {
-        if (orientation.equals("Landscape"))
+        if (orientation.equals("landscape"))
             return 1;
-        else if (orientation.equals("Portrait"))
+        else if (orientation.equals("portrait"))
             return -1;
         return 0;
     }

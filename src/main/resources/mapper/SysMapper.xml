@@ -13,9 +13,9 @@
         SELECT IFNULL(SUM(version), -1) AS version FROM sys LIMIT 0, 1
     </select>
 
-    <select id="selectMsg" resultType="java.lang.String">
-        SELECT msgBox FROM sys LIMIT 0, 1
-    </select>
+    <!--<select id="selectMsg" resultType="java.lang.String">-->
+        <!--SELECT msgBox FROM sys LIMIT 0, 1-->
+    <!--</select>-->
 
     <update id="updateVersion">
         UPDATE sys
@@ -23,9 +23,9 @@
         WHERE version = #{version}
     </update>
 
-    <update id="updateMsgBox">
-        UPDATE sys
-        SET msgBox = #{msg}
-        WHERE version = #{version}
-    </update>
+    <!--<update id="updateMsgBox">-->
+        <!--UPDATE sys-->
+        <!--SET msgBox = #{msg}-->
+        <!--WHERE version = #{version}-->
+    <!--</update>-->
 </mapper>

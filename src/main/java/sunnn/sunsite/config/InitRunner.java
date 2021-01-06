@@ -35,6 +35,7 @@ public class InitRunner implements ApplicationRunner {
             log.warn("Clean TempPath Fail In InitializeRunner. Maybe TempPath Not Exists");
     }
 
+    @Deprecated
     private void checkPatch() {
         int currentVersion = sysDao.selectVersion();
 
@@ -64,10 +65,10 @@ public class InitRunner implements ApplicationRunner {
 
         void patchInvoker(int version) {
             switch (version) {
-                case 200:
-                    // 由于代码重构，不再兼容200版本补丁
-                    patch200();
-                    break;
+                // 由于代码重构，不再兼容200版本补丁
+//                case 200:
+//                    patch200();
+//                    break;
             }
         }
 

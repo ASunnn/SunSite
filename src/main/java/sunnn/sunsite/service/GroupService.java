@@ -114,7 +114,7 @@ public class GroupService {
 
         return new GroupListResponse(StatusCode.OJBK)
                 .setPageCount(pageCount)
-                .setList((GroupInfo[]) groupList.toArray());
+                .setList(groupList.toArray(new GroupInfo[0]));
     }
 
     public GroupInfoResponse getGroupInfo(String name) {

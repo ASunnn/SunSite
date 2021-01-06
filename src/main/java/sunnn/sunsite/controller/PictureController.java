@@ -76,10 +76,4 @@ public class PictureController {
         }
         return new ResponseEntity<>(FileUtils.readFileToByteArray(file), headers, HttpStatus.OK);
     }
-
-    @GetMapping(value = "/check")
-    @ResponseBody
-    public MsgResponse checkMsgBox() {
-        return galleryService.checkMsgBox();
-    }
 }
