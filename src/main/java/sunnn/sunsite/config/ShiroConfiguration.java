@@ -63,23 +63,19 @@ public class ShiroConfiguration {
         /*
             顺序拦截
          */
-        filterChainDefinitionMap.put("/hello", "anon");
         filterChainDefinitionMap.put("/try", "anon");
         filterChainDefinitionMap.put("/verify", "anon");
-        filterChainDefinitionMap.put("/error", "anon");
 
         filterChainDefinitionMap.put("/favicon.ico", "anon");
-        filterChainDefinitionMap.put("/jquery-2.0.3.min.js", "anon");
-        filterChainDefinitionMap.put("/default.css", "anon");
         filterChainDefinitionMap.put("/js/**", "anon");
         filterChainDefinitionMap.put("/css/**", "anon");
-        filterChainDefinitionMap.put("/**", "anon");
-//        filterChainDefinitionMap.put("/**", "authc");
-//        filterChainDefinitionMap.put("/index", "logout");
+        filterChainDefinitionMap.put("/fonts/**", "anon");
 
-        shiroFilterFactoryBean.setLoginUrl("/index");
-        shiroFilterFactoryBean.setSuccessUrl("/gallery");
-        shiroFilterFactoryBean.setUnauthorizedUrl("/index");
+        filterChainDefinitionMap.put("/**", "user");
+
+        shiroFilterFactoryBean.setLoginUrl("/login");
+        shiroFilterFactoryBean.setSuccessUrl("/index");
+        shiroFilterFactoryBean.setUnauthorizedUrl("/login");
 
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
 

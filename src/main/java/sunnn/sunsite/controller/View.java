@@ -3,155 +3,76 @@ package sunnn.sunsite.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-/**
- * 视图映射
- */
 @Controller
 public class View {
 
-    /**
-     * 主页
-     */
+    @RequestMapping(value = "/login")
+    public String login() {
+        return "/index.html";
+    }
+
     @RequestMapping(value = "/index")
     public String index() {
-        return "index";
+        return "/index.html";
     }
 
-    /**
-     * HelloWorld页面
-     */
-    @RequestMapping(value = "/hello")
-    public String helloWorld() {
-        return "helloWorld";
-    }
-
-    /**
-     * 主页
-     */
     @RequestMapping(value = "/gallery")
     public String gallery() {
-        return "gallery";
+        return "/index.html";
     }
 
-    /**
-     * 图片页
-     */
-    @RequestMapping(value = "/gallery/show/*")
-    public String galleryShow() {
-        return "post";
-    }
-
-    /**
-     * 社团
-     */
-    @RequestMapping(value = "/circle")
-    public String group() {
-        return "circle";
-    }
-
-    /**
-     * 社团
-     */
-    @RequestMapping(value = "/circle/show/*")
-    public String groupShow() {
-        return "work";
-    }
-
-    /**
-     * 画集
-     */
-    @RequestMapping(value = "/collection")
-    public String collection() {
-        return "collection";
-    }
-
-    /**
-     * 画集页
-     */
-    @RequestMapping(value = "/collection/show/*")
-    public String collectionShow() {
-        return "pool";
-    }
-
-    /**
-     * 类型
-     */
-    @RequestMapping(value = "/type")
-    public String type() {
-        return "type";
-    }
-
-    /**
-     * 类型页
-     */
-    @RequestMapping(value = "/type/show/*")
-    public String typeShow() {
-        return "list";
-    }
-
-    /**
-     * 创建画集页
-     */
-    @RequestMapping(value = "/create")
-    public String create() {
-        return "create";
-    }
-
-    /**
-     * 画师
-     */
     @RequestMapping(value = "/illustrator")
     public String illustrator() {
-        return "illustrator";
+        return "/index.html";
     }
 
-    /**
-     * 画师页
-     */
-    @RequestMapping(value = "/illustrator/show/*")
-    public String illustratorShow() {
-        return "artwork";
+    @RequestMapping(value = "/work/*")
+    public String work() {
+        return "/index.html";
     }
 
-    /**
-     * 上传图片页
-     */
+    @RequestMapping(value = "/circle")
+    public String group() {
+        return "/index.html";
+    }
+
+    @RequestMapping(value = "/book/*")
+    public String book() {
+        return "/index.html";
+    }
+
+    @RequestMapping(value = "/collection")
+    public String collection() {
+        return "/index.html";
+    }
+
+    @RequestMapping(value = "/pool/*")
+    public String pool() {
+        return "/index.html";
+    }
+
+    @RequestMapping(value = "/type")
+    public String type() {
+        return "/index.html";
+    }
+
+    @RequestMapping(value = "/list/*")
+    public String typeShow() {
+        return "/index.html";
+    }
+
+    @RequestMapping(value = "/post/*")
+    public String post() {
+        return "/index.html";
+    }
+
+    @RequestMapping(value = "/create")
+    public String create() {
+        return "/index.html";
+    }
+
     @RequestMapping(value = "/upload")
     public String upload() {
-        return "upload";
+        return "/index.html";
     }
-
-//
-//    /**
-//     * 图片显示
-//     */
-//    @RequestMapping(value = "/gallery/show/*")
-//    public String gallery() {
-//        return "gallery";
-//    }
-//
-//    /**
-//     * 画师显示
-//     */
-//    @RequestMapping(value = "/illustrators/show/*")
-//    public String illustrators() {
-//        return "illustrators";
-//    }
-//
-//    /**
-//     * 画册显示
-//     */
-//    @RequestMapping(value = "/collection/show/*")
-//    public String collection() {
-//        return "collection";
-//    }
-//
-//    /**
-//     * Pool显示
-//     */
-//    @RequestMapping(value = "/pool/show/**")
-//    public String pool() {
-//        return "pool";
-//    }
-
 }
