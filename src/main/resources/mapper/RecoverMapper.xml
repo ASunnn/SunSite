@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="sunnn.sunsite.dao.RecoverDao">
+
+    <insert id="insert" parameterType="sunnn.sunsite.recover.Recover">
+        INSERT INTO temp (seq, `name`, path, `type`, `group`, collection, uploadTime, cId)
+        VALUES (#{seq}, #{name}, #{path}, #{type}, #{group}, #{collection}, #{uploadTime}, #{cId})
+    </insert>
+    
+    <select id="getCollection" resultType="sunnn.sunsite.recover.RecoverCollection">
+        SELECT
+            type,
+            `group`,
+            collection,
+            cId,
+            COUNT(seq) AS count
+        FROM
+            temp
+        GROUP BY
+            cId
+        ORDER BY
+            `group`
+    </select>
+
+    <select id="getPics" resultType="sunnn.sunsite.recover.Recover">
+        SELECT * FROM temp WHERE cId = #{cId} ORDER BY uploadTime
+    </select>
+
+    <update id="update">
+        UPDATE
+            pic
+        SET
+            `size` = #{size},
+            width = #{width},
+            height = #{height}
+        WHERE
+            sequence = #{sequence}
+    </update>
+</mapper>
+
+
+

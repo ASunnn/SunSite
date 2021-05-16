@@ -1,28 +1,32 @@
 package sunnn.sunsite;
 
+import cn.hutool.core.io.FileUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import sunnn.sunsite.dao.*;
-import sunnn.sunsite.service.PictureService;
-import sunnn.sunsite.task.ThumbnailTask;
+import sunnn.sunsite.recover.*;
+import sunnn.sunsite.util.MD5s;
 
-import javax.annotation.Resource;
+import java.io.File;
+import java.sql.Timestamp;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class SunSiteApplicationTests {
 
 	@Autowired
-	private PictureService service;
+	private DeleteRecover deleteRecover;
 
 	@Autowired
-	private ThumbnailTask task;
+	private FindRecover findRecover;
 
-	@Resource
-	private PictureDao dao;
+	@Autowired
+	private BuildRecover buildRecover;
+
+	@Autowired
+	private CalibrateRecover calibrateRecover;
 
 	@Test
 	public void contextLoads() throws Exception {
